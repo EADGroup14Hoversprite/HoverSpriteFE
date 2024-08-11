@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Input } from "./input";
+import { Input } from "../components/form/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export interface PasswordInputProps
