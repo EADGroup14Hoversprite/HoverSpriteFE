@@ -1,0 +1,83 @@
+
+  /* -------- Left side of the screen -------- */
+  .left-side-login {
+    flex: 9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  @media (min-width: 1024px) {
+    .left-side-login {
+      width: auto;
+    }
+  }
+  
+  .left-side-login h1 {
+    font-weight: bold;
+    font-size: 2.25rem; /* text-4xl */
+    color: #1e3a8a; /* text-blue-800 */
+    white-space: nowrap;
+    padding-bottom: 2.5rem; /* pb-10 */
+  }
+  
+  
+  .remember-me {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem; /* mt-4 */
+  }
+  
+  .checkbox {
+    margin-right: 0.5rem; /* mr-2 */
+    height: 1rem; /* h-4 */
+    width: 1rem; /* w-4 */
+    color: #2563eb; /* text-blue-600 */
+    border-color: #d1d5db; /* border-gray-300 */
+    border-radius: 0.25rem;
+  }
+  
+  .forgot-password {
+    color: #3b82f6; /* text-blue-500 */
+    text-decoration: underline;
+    font-size: 0.875rem; /* text-sm */
+  }
+  
+  .forgot-password:hover {
+    color: #1e3a8a; /* hover:text-blue-800 */
+  }
+  
+  .sign-in-button {
+    width: 100%;
+    margin-top: 2.5rem; /* mt-10 */
+    background-color: #1e3a8a; /* bg-blue-800 */
+    border-radius: 0.5rem;
+  }
+  
+  .sign-in-button:hover {
+    background-color: #1c366b; /* hover:bg-blue-900 */
+  }
+
+  /*------ Right side of the screen ------ */
+  .right-side-login {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .right-side-login {
+      display: flex;
+      flex: 11;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #2563eb; /* bg-blue-600 */
+    }
+  }
+  
+  
+  
+  
+  

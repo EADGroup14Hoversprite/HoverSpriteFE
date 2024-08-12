@@ -1,4 +1,5 @@
 "use client";
+import "./signup.css";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,24 +13,65 @@ import {
 import { Input } from "@/components/form/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PasswordInput } from "@/utils/password-input";
+import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { BarChart2Icon } from "lucide-react";
 
 export default function Page() {
-  const signupSchema = z.object({
-    email: z
-      .string()
-      .email({ message: "invalid email" })
-      .min(6, { message: "invalid email" }),
-    password: z
-      .string()
-      .min(7, { message: "Password must have at least 7 characters" }),
-  });
+  const passwordValidation = new RegExp(
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@$%^&*-]).{8,}$/
+  );
+
+  const phoneValidation = new RegExp(/^(0|\+84)\s?\d{2,3}\s?\d{3}\s?\d{3,4}$/);
+
+  const nameValidation = new RegExp(/^(?!.*[A-Z]{2}).*$/);
+
+  const signupSchema = z
+    .object({
+      lastName: z
+        .string()
+        .min(2, { message: "Invalid name" })
+        .regex(nameValidation, { message: "Invalid name" }),
+      middleName: z.string().regex(nameValidation, { message: "Invalid name" }),
+      firstName: z
+        .string()
+        .min(2, { message: "Invalid name" })
+        .regex(nameValidation, { message: "Invalid name" }),
+      email: z
+        .string()
+        .email({ message: "invalid email" })
+        .min(6, { message: "invalid email" }),
+      phone: z
+        .string()
+        .min(1, { message: "Please enter your phone number" })
+        .regex(phoneValidation, {
+          message:
+            "Invalid phone number. Phone number must start with 0 or +84, followed by nine or ten digits",
+        }),
+      address: z.string().min(1, { message: "Please enter your address" }),
+      password: z
+        .string()
+        .min(8, { message: "Password must have at least 8 characters" })
+        .regex(passwordValidation, {
+          message:
+            "Your password must contain at least one lowercase, one uppercase and one special character",
+        }),
+      confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    });
 
   type Signup = z.infer<typeof signupSchema>;
   const defaultState: Partial<Signup> = {
+    lastName: "",
+    middleName: "",
+    firstName: "",
     email: "",
+    phone: "",
+    address: "",
     password: "",
+    confirmPassword: "",
   };
 
   const form = useForm<Signup>({
@@ -43,15 +85,13 @@ export default function Page() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left side of the screen, full width on small screens */}
-      <div className="hidden lg:flex flex-[11] flex-col justify-center items-center bg-blue-600">
-        <div className="relative bg-white flex flex-col justify-center mx-20 rounded-lg w-3/5 min-w-96">
-          <div className="mx-10 mt-10 w-4/5 text-balance pb-20">
-            <h1 className="text-sky-700 font-bold text-3xl">
-              Already have an account? Sign in!
-            </h1>
-            <p className="text-sky-800 pt-3">
+    <div className="flex screen">
+      {/* Left side of the screen hidden on small & medium screen */}
+      <div className="left-side">
+        <div className="info-box">
+          <div className="info-content">
+            <h1 className="text-blue">Already have an account? Sign in!</h1>
+            <p className="text-blue pt-3">
               Enter your personal details and start a wonderful journey with us!
             </p>
           </div>
@@ -67,14 +107,14 @@ export default function Page() {
             </Link>
           </div>
 
-          {/* Small rating box */}
-          <div className="flex flex-row relative -bottom-9 left-5 bg-white shadow-all rounded-full px-4 py-4 w-6/12">
+          {/* Rating box */}
+          <div className="rating-box shadow-all">
             <BarChart2Icon
               className="self-center"
               style={{ color: "blue" }}
               strokeWidth={3}
             />
-            <div className="pl-5 text-blue-800">
+            <div className="pl-5 text-blue">
               <span className="block text-sm"> Our rating among farms! </span>
               <span className="block text-xl font-bold"> 0.85 </span>
             </div>
@@ -90,34 +130,97 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Right side of the screen, hidden on small screens */}
-      <div className="flex-[9] flex flex-col justify-center items-center w-full lg:w-auto">
-        <h1 className="font-bold text-4xl text-blue-800 text-nowrap pb-10">
-          Account Creation
-        </h1>
+      {/* Right side of the screen, full width on big small & medium screen*/}
+      <div className="right-side">
+        <h1>Account Creation</h1>
 
         <div className="w-4/5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
+              {/* Name Fields: Last Name, Middle Name, First Name */}
+              <div className="flex gap-4 mb-3">
+                <FormField
+                  name="lastName"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex-1 basis-1/3">
+                      <FormLabel>Last Name</FormLabel>
+                      <Input {...field} placeholder="Your last name:" />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="middleName"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex-1 basis-1/2">
+                      <FormLabel>Middle Name</FormLabel>
+                      <Input {...field} placeholder="Your middle name:" />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="firstName"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="flex-1 basis-1/3">
+                      <FormLabel>First Name</FormLabel>
+                      <Input {...field} placeholder="Your first name:" />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Phone Number Field */}
               <FormField
-                name="email"
+                name="phone"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
-                    <FormLabel>E-mail</FormLabel>
-                    <Input {...field} placeholder="Enter your email:" />
+                    <FormLabel>Phone Number</FormLabel>
+                    <Input {...field} placeholder="Enter your phone number:" />
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
+              {/* Email Address Field */}
+              <FormField
+                name="email"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="mb-3">
+                    <FormLabel>Email Address</FormLabel>
+                    <Input {...field} placeholder="Enter your email address:" />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Home Address Field */}
+              <FormField
+                name="address"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="mb-3">
+                    <FormLabel>Home Address</FormLabel>
+                    <Input {...field} placeholder="Enter your home address:" />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Password Field */}
               <FormField
                 name="password"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="mb-3">
                     <FormLabel>Password</FormLabel>
-                    <PasswordInput
+                    <PasswordVisibility
                       {...field}
                       placeholder="Enter your password:"
                     />
@@ -126,8 +229,24 @@ export default function Page() {
                 )}
               />
 
+              {/* Confirm Password Field */}
+              <FormField
+                name="confirmPassword"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Confirm Password</FormLabel>
+                    <PasswordVisibility
+                      {...field}
+                      placeholder="Confirm your password:"
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <Button
-                className="w-full mt-4 bg-blue-800 mt-10 rounded-lg hover:bg-blue-900"
+                className="w-full mt-4 bg-blue-800 rounded-lg hover:bg-blue-900"
                 variant={"default"}
               >
                 Sign Up
@@ -143,11 +262,25 @@ export default function Page() {
           <div className="flex-grow border-t border-gray-300 mr-12"></div>
         </div>
 
-        {/* Add social login buttons here */}
-        <div className="flex flex-col justify-center">
-          <Button className="mx-2 rounded-full " variant={"outline"}>
-            Continue with Google
-          </Button>
+        {/* Social login*/}
+        <div className="flex flex-col justify-center items-center ">
+          <Link href={``}>
+            <Button
+              className="mx-2 rounded-full mb-2 w-96 "
+              variant={"outline"}
+            >
+              Continue with Google
+            </Button>
+          </Link>
+
+          <Link href={``}>
+            <Button
+              className="mx-2 rounded-full w-96 mb-2 "
+              variant={"outline"}
+            >
+              Continue with Facebook
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
