@@ -1,4 +1,5 @@
 "use client";
+import "./signup.css";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -261,7 +262,6 @@ export default function Page() {
           <span className="text-sm"> OR </span>
           <Separator className="mr-12"/> 
         </div>
-
 
         {/* Social login*/}
         <div className="flex flex-col justify-center items-center ">
