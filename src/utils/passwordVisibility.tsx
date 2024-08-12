@@ -2,10 +2,10 @@ import * as React from "react";
 import { Input } from "../components/form/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
-export interface PasswordInputProps
+export interface PasswordVisibilityProp
   extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
+const PasswordVisibility = React.forwardRef<HTMLInputElement, PasswordVisibilityProp>(
   ({ className, ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(true);
 
@@ -33,6 +33,6 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
   }
 );
 
-PasswordInput.displayName = "PasswordInput";
+PasswordVisibility.displayName = "PasswordInput";
 
-export { PasswordInput };
+export { PasswordVisibility };

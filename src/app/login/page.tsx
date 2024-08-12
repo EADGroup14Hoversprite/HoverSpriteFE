@@ -1,4 +1,5 @@
 "use client";
+import "./login.css";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +13,7 @@ import {
 import { Input } from "@/components/form/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PasswordInput } from "@/utils/password-input";
+import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { BarChart2Icon } from "lucide-react";
 
 export default function Page() {
@@ -23,7 +24,7 @@ export default function Page() {
       .min(6, { message: "invalid email" }),
     password: z
       .string()
-      .min(7, { message: "Password must have at least 7 characters" }),
+      .min(7, { message: "Password must have at least 8 characters" }),
   });
 
   type SignIn = z.infer<typeof signInSchema>;
@@ -43,14 +44,12 @@ export default function Page() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left side of the screen, full width on small screens */}
-      <div className="flex-[9] flex flex-col justify-center items-center w-full lg:w-auto">
-        <h1 className="font-bold text-4xl text-blue-800 text-nowrap pb-10">
-          Sign In
-        </h1>
+    <div className="flex screen">
+      {/* Left side of the screen, full width on small and medium screen */}
+      <div className="left-side-login">
+        <h1>Sign In</h1>
 
-        <div className="w-4/5">
+        <div className="form-container">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
@@ -71,7 +70,7 @@ export default function Page() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
-                    <PasswordInput
+                    <PasswordVisibility
                       {...field}
                       placeholder="Enter your password:"
                     />
@@ -80,33 +79,22 @@ export default function Page() {
                 )}
               />
 
-              <div className="flex items-center justify-between mt-4">
-                {/* Remember Me Checkbox */}
+              {/* Remember Me Checkbox */}
+              <div className="remember-me">
                 <div className="flex items-center">
-                  <input
-                    id="rememberMe"
-                    type="checkbox"
-                    className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
+                  <input id="rememberMe" type="checkbox" className="checkbox" />
                   <label htmlFor="rememberMe" className="text-gray-700">
                     Remember me
                   </label>
                 </div>
 
                 {/* Forgot Password Link */}
-                <div>
-                  <Link href={""}>
-                    <span className="text-blue-500 underline text-sm hover:text-blue-800">
-                      Forgot Password?
-                    </span>
-                  </Link>
+                <div className="forgot-password">
+                  <Link href={""}>Forgot Password?</Link>
                 </div>
               </div>
 
-              <Button
-                className="w-full mt-4 bg-blue-800 mt-10 rounded-lg hover:bg-blue-900"
-                variant={"default"}
-              >
+              <Button className="sign-in-button" variant={"default"}>
                 Sign In
               </Button>
             </form>
@@ -120,11 +108,22 @@ export default function Page() {
           <div className="flex-grow border-t border-gray-300 mr-12"></div>
         </div>
 
-        {/* Add social login buttons here */}
-        <div className="flex flex-col justify-center">
-          <Button className="mx-2 rounded-full " variant={"outline"}>
-            Continue with Google
-          </Button>
+        {/* Social login*/}
+        <div className="flex flex-col justify-center items-center">
+          <Link href={``}>
+            <Button
+              className="mx-2 rounded-full mb-2 w-96 "
+              variant={"outline"}
+            >
+              Continue with Google
+            </Button>
+          </Link>
+
+          <Link href={``}>
+            <Button className="mx-2 rounded-full w-96 mb-2" variant={"outline"}>
+              Continue with Facebook
+            </Button>
+          </Link>
 
           <div className="pt-5">
             <span className="font-light text-sm"> Don't have an account?</span>
@@ -138,13 +137,11 @@ export default function Page() {
       </div>
 
       {/* Right side of the screen, hidden on small screens */}
-      <div className="hidden lg:flex flex-[11] flex-col justify-center items-center bg-blue-600">
-        <div className="relative bg-white flex flex-col justify-center mx-20 rounded-lg w-3/5 min-w-96">
-          <div className="mx-10 mt-10 w-4/5 text-balance pb-20">
-            <h1 className="text-sky-700 font-bold text-3xl">
-              Don't have an account? Create one!
-            </h1>
-            <p className="text-sky-800 pt-3">
+      <div className="right-side-login">
+        <div className="info-box">
+          <div className="info-content">
+            <h1 className="text-blue">Don't have an account? Create one!</h1>
+            <p className="pt-3 text-blue">
               Enter your personal details and start a wonderful journey with us!
             </p>
           </div>
@@ -160,14 +157,14 @@ export default function Page() {
             </Link>
           </div>
 
-          {/* Small rating box */}
-          <div className="flex flex-row relative -bottom-9 left-5 bg-white shadow-all rounded-full px-4 py-4 w-6/12">
+          {/* Rating box */}
+          <div className="rating-box shadow-all">
             <BarChart2Icon
               className="self-center"
               style={{ color: "blue" }}
               strokeWidth={3}
             />
-            <div className="pl-5 text-blue-800">
+            <div className="pl-5 text-blue">
               <span className="block text-sm"> Our rating among farms! </span>
               <span className="block text-xl font-bold"> 0.85 </span>
             </div>

@@ -1,0 +1,56 @@
+
+  /* -------- Right side of the screen -------- */
+  .right-side {
+    flex: 9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  
+  @media (min-width: 1024px) {
+    .right-side {
+      width: auto;
+    }
+  }
+  
+  .right-side h1 {
+    font-weight: bold;
+    font-size: 2.25rem; /* text-4xl */
+    color: #1e3a8a; /* text-blue-800 */
+    white-space: nowrap;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem; /* pb-10 */
+  }
+  
+  
+  .sign-up-button {
+    width: 100%;
+    margin-top: 2.5rem; /* mt-10 */
+    background-color: #1e3a8a; /* bg-blue-800 */
+    border-radius: 0.5rem;
+  }
+  
+  .sign-up-button:hover {
+    background-color: #1c366b; /* hover:bg-blue-900 */
+  }
+
+  /*------ Left side of the screen ------ */
+  .left-side {
+    display: none;
+  }
+  
+  @media (min-width: 1024px) {
+    .left-side {
+      display: flex;
+      flex: 11;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #2563eb; /* bg-blue-600 */
+    }
+  }
+  
+  
+  
