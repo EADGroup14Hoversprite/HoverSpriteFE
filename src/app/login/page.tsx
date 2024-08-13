@@ -15,6 +15,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { BarChart2Icon } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 export default function Page() {
   const signInSchema = z.object({
@@ -81,11 +84,9 @@ export default function Page() {
 
               {/* Remember Me Checkbox */}
               <div className="remember-me">
-                <div className="flex items-center">
-                  <input id="rememberMe" type="checkbox" className="checkbox" />
-                  <label htmlFor="rememberMe" className="text-gray-700">
-                    Remember me
-                  </label>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="remember-me" />
+                  <Label htmlFor="remember-me">Remember me</Label>
                 </div>
 
                 {/* Forgot Password Link */}
@@ -103,9 +104,9 @@ export default function Page() {
 
         {/* Separation Line */}
         <div className="relative my-6 w-full flex items-center">
-          <div className="flex-grow border-t border-gray-300 ml-12"></div>
-          <span className="mx-4 text-gray-500 text-sm">OR</span>
-          <div className="flex-grow border-t border-gray-300 mr-12"></div>
+          <Separator className="ml-12"/> 
+          <span className="text-sm"> OR </span>
+          <Separator className="mr-12"/> 
         </div>
 
         {/* Social login*/}
