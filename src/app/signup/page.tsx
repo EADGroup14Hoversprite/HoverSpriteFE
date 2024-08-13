@@ -263,6 +263,7 @@ export default function Page() {
           <Separator className="mr-12"/> 
         </div>
 
+
         {/* Social login*/}
         <div className="flex flex-col justify-center items-center ">
           <Link href={``}>
