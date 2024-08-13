@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { BarChart2Icon } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export default function Page() {
   const passwordValidation = new RegExp(
@@ -257,10 +258,11 @@ export default function Page() {
 
         {/* Separation Line */}
         <div className="relative my-6 w-full flex items-center">
-          <div className="flex-grow border-t border-gray-300 ml-12"></div>
-          <span className="mx-4 text-gray-500 text-sm">OR</span>
-          <div className="flex-grow border-t border-gray-300 mr-12"></div>
+          <Separator className="ml-12"/> 
+          <span className="text-sm"> OR </span>
+          <Separator className="mr-12"/> 
         </div>
+
 
         {/* Social login*/}
         <div className="flex flex-col justify-center items-center ">
