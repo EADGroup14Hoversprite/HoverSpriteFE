@@ -3,7 +3,7 @@
 import CalendarContext from "@/context/CalendarContext";
 import { useState } from "react";
 import { BookingScheduleProps } from "@/models/BookingScheduleProps";
-import BookingCalendar from "../../../components/booking_calendar";
+import { BookingCalendar } from "@/components/booking-calendar";
 
 export default function Page() {
   const [startDate, setStartDate] = useState<Date>(new Date());

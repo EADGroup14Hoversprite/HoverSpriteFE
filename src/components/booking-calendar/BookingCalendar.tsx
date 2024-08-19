@@ -1,7 +1,6 @@
 import * as React from "react";
 import { PropsWithChildren, useCallback, useContext } from "react";
 import CalendarContext from "@/context/CalendarContext";
-import { Solar } from "lunar-typescript";
 // import {Solar, Lunar, HolidayUtil} from 'lunar-typescript';
 // Import only the methods we need from date-fns in order to keep build size small
 import { useDateMatrix } from "@/hooks/useDateMatrix";
@@ -13,9 +12,8 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import BookingDialog from "@/components/booking_calendar/BookingDialog";
-import LucideIcon from "@/components/lucide_icon";
-import { Button } from "@/components/ui/button";
+import LucideIcon from "../lucide-icon";
+import { BookingDialog, CalendarInput } from "@/components/booking-calendar";
 
 const CalendarDateCell = ({ children }: PropsWithChildren) => {
   return (
@@ -55,14 +53,14 @@ const CalendarBody = ({
         rowGap: `${rowGap}`,
         width: "100%",
       }}
-      className="justify-center items-center m-2"
+      className="justify-center items-center"
     >
       {children}
     </div>
   );
 };
 
-export default function BookingCalendar() {
+export function BookingCalendar() {
   const {
     numDays,
     rowGap,
@@ -221,7 +219,7 @@ export default function BookingCalendar() {
             <BookingDialog date={date.solar} slot={1}>
               <div className="w-full h-full flex relative bg-green-300">
                 <p className="absolute bottom-0 right-0 my-1 mx-2">1/2</p>
-                <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 my-1 mx-2 text-lg font-bold">
+                <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-bold">
                   {date.solar.getDate()}
                 </p>
                 <p className="absolute bottom-0 left-0 my-1 mx-2">
@@ -276,8 +274,8 @@ export default function BookingCalendar() {
   }, [dateMatrix]);
 
   return (
-    <div>
-      <div className="flex gap-2 items-center w-full select-none">
+    <div className="w-full h-full">
+      <div className=" flex flex-col xl:flex-row gap-2 items-center w-full select-none p-4">
         <Calendar
           mode="single"
           selected={startDate}
@@ -286,32 +284,12 @@ export default function BookingCalendar() {
               setStartDate(date);
             }
           }}
-          className="self-start rounded-md border shadow"
+          className="self-start rounded-md border shadow hidden xl:block"
         />
+        <CalendarInput />
         <CalendarBody colGap={"4px"} numCol={numDays} numRow={7} rowGap={"4px"}>
           {renderFullDateGrid()}
         </CalendarBody>
-      </div>
-      <div>
-        <Button
-          onClick={() => {
-            const solar = Solar.fromYmd(
-              startDate.getFullYear(),
-              startDate.getMonth() + 1,
-              startDate.getDate(),
-            );
-            const lunar = solar.getLunar();
-            const lunarDate = new Date(
-              lunar.getYear(),
-              lunar.getMonth() - 1,
-              lunar.getDay(),
-            );
-
-            console.log(solar.getLunar());
-          }}
-        >
-          Convert to Lunar Calendar
-        </Button>
       </div>
     </div>
   );

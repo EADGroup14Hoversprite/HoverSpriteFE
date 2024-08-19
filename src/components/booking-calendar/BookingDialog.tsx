@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { PropsWithChildren } from "react";
 
-export default function BookingDialog({
+export function BookingDialog({
   slot,
   date,
   children,
