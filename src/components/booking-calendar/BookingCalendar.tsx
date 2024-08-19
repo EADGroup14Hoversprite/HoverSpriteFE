@@ -275,7 +275,7 @@ export function BookingCalendar() {
 
   return (
     <div className="w-full h-full">
-      <div className=" flex flex-col xl:flex-row gap-2 items-center w-full select-none p-4">
+      <div className=" flex flex-col xl:flex-row gap-8 items-center w-full select-none p-4">
         <Calendar
           mode="single"
           selected={startDate}
