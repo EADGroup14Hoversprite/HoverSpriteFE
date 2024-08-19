@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CollapseMenuButton } from "@/components/layout/CollapsibleMenuButton";
+import { CollapseMenuButton } from "@/components/layout";
 
 interface MenuProps {
   isOpen: boolean | undefined;

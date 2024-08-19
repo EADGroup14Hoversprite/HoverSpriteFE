@@ -8,7 +8,7 @@ import { SidenavMenu } from "@/components/layout/SidenavMenu";
 import { useSidebarToggle } from "@/store/use-sidebar-toggle";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SidebarToggle } from "@/components/layout/SidebarToggle";
+import { SidebarToggle } from "@/components/layout";
 
 export function Sidebar() {
   const sidebar = useSidebarToggle();

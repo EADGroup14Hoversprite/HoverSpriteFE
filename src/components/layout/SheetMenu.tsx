@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { SidenavMenu } from "@/components/layout/SidenavMenu";
+import { SidenavMenu } from "@/components/layout";
 
 export function SheetMenu() {
   return (

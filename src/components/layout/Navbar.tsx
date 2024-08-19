@@ -1,4 +1,4 @@
-import { SheetMenu } from "@/components/layout/SheetMenu";
+import { SheetMenu } from "@/components/layout";
 
 interface NavbarProps {
   title: string;
