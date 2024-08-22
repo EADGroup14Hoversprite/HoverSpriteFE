@@ -1,9 +1,7 @@
-
+import MapComponent from "@/components/testMap";
 
 export default function App() {
   return (
-    <div>
-      hello
-    </div>
+    <MapComponent/>
   );
 }
