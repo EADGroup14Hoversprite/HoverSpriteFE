@@ -1,10 +1,9 @@
-import Map from "./components/Map";
 
-export default function Home() {
-  
+
+export default function App() {
   return (
-  <>
-  <Map/>
-  </>
+    <div>
+      hello
+    </div>
   );
 }
