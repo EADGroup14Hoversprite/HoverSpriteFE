@@ -21,7 +21,7 @@ const MapRouting: React.FC<MapRoutingProps> = ({ waypoints, startPosition }) => 
     if (!map) return;
 
     // Add routing control
-    const routingControl = L.Routing.control({
+    const routingControl = L.Routing.control({ //This is the direction board on the right side of the map
       router: L.Routing.osrmv1({
         serviceUrl: 'http://router.project-osrm.org/route/v1/',
       }),
@@ -31,7 +31,7 @@ const MapRouting: React.FC<MapRoutingProps> = ({ waypoints, startPosition }) => 
       altLineOptions: { styles: [{ color: '#ed6852', weight: 7 }], extendToWaypoints: true, missingRouteTolerance: 2 },
       show: true,
       routeWhileDragging: false,
-      geocoder: L.Control.Geocoder.nominatim(), //this still works even tho there's an error indicator, i have no idea why
+      geocoder: L.Control.Geocoder.nominatim(), //this is for search function, still works even tho there's an error indicator, i have no idea why
       waypoints: [L.latLng(startPosition), ...waypoints.map(point => L.latLng(point))],
     }).addTo(map);
 
