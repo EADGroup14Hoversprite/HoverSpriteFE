@@ -1,5 +1,4 @@
 "use client";
-import "./login.css";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,10 +48,12 @@ export default function Page() {
   return (
     <div className="flex screen">
       {/* Left side of the screen, full width on small and medium screen */}
-      <div className="left-side-login">
-        <h1>Sign In</h1>
+      <div className="flex-[9] flex flex-col justify-center items-center w-full lg:w-auto">
+        <h1 className="font-bold text-4xl text-blue-800 whitespace-nowrap py-10">
+          Sign In
+        </h1>
 
-        <div className="form-container">
+        <div className="w-4/5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
@@ -82,19 +83,25 @@ export default function Page() {
               />
 
               {/* Remember Me Checkbox */}
-              <div className="remember-me">
+              <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center space-x-2">
-                  <Checkbox id="remember-me" />
+                  <Checkbox
+                    id="remember-me"
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded-sm"
+                  />
                   <Label htmlFor="remember-me">Remember me</Label>
                 </div>
 
                 {/* Forgot Password Link */}
-                <div className="forgot-password">
+                <div className="text-blue-500 underline text-sm hover:text-blue-800">
                   <Link href={""}>Forgot Password?</Link>
                 </div>
               </div>
 
-              <Button className="sign-in-button" variant={"default"}>
+              <Button
+                className="w-full mt-10 bg-blue-800 rounded-md hover:bg-blue-900"
+                variant={"default"}
+              >
                 Sign In
               </Button>
             </form>
@@ -102,10 +109,10 @@ export default function Page() {
         </div>
 
         {/* Separation Line */}
-        <div className="relative my-6 w-full flex items-center">
-          <Separator className="ml-12"/> 
+        <div className="w-2/5 justify-center my-5 flex items-center">
+          <Separator className="ml-12" />
           <span className="text-sm"> OR </span>
-          <Separator className="mr-12"/> 
+          <Separator className="mr-12" />
         </div>
 
         {/* Social login*/}
@@ -137,11 +144,11 @@ export default function Page() {
       </div>
 
       {/* Right side of the screen, hidden on small screens */}
-      <div className="right-side-login">
+      <div className="hidden lg:flex flex-[11] flex-col justify-center items-center bg-blue-600">
         <div className="info-box">
           <div className="info-content">
             <h1 className="text-blue">Don't have an account? Create one!</h1>
-            <p className="pt-3 text-blue">
+            <p className="text-blue pt-3">
               Enter your personal details and start a wonderful journey with us!
             </p>
           </div>
