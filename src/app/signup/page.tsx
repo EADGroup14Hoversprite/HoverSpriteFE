@@ -1,5 +1,5 @@
 "use client";
-import "./signup.css";
+
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -87,8 +87,8 @@ export default function Page() {
 
   return (
     <div className="flex screen">
-      {/* Left side of the screen hidden on small & medium screen */}
-      <div className="left-side">
+      {/* Left side of the screen hidden on small & medium screens */}
+      <div className="hidden lg:flex flex-[11] flex-col justify-center items-center bg-blue-600">
         <div className="info-box">
           <div className="info-content">
             <h1 className="text-blue">Already have an account? Sign in!</h1>
@@ -96,7 +96,7 @@ export default function Page() {
               Enter your personal details and start a wonderful journey with us!
             </p>
           </div>
-
+  
           <div className="absolute bottom-0 right-10 w-3/12">
             <Link href={`/login/`}>
               <Button
@@ -107,7 +107,7 @@ export default function Page() {
               </Button>
             </Link>
           </div>
-
+  
           {/* Rating box */}
           <div className="rating-box shadow-all">
             <BarChart2Icon
@@ -115,13 +115,13 @@ export default function Page() {
               style={{ color: "blue" }}
               strokeWidth={3}
             />
-            <div className="pl-5 text-blue">
+            <div className="pl-5 text-blue-800">
               <span className="block text-sm"> Our rating among farms! </span>
               <span className="block text-xl font-bold"> 0.85 </span>
             </div>
           </div>
         </div>
-
+  
         <div className="text-white text-center w-3/5">
           <h1 className="pt-20 pb-10 text-3xl font-bold">Come Join Us!</h1>
           <p className="text-balance">
@@ -130,11 +130,13 @@ export default function Page() {
           </p>
         </div>
       </div>
-
-      {/* Right side of the screen, full width on big small & medium screen*/}
-      <div className="right-side">
-        <h1>Account Creation</h1>
-
+  
+      {/* Right side of the screen, full width on small & medium screens */}
+      <div className="flex-[9] flex flex-col justify-center items-center w-full lg:w-auto">
+        <h1 className="font-bold text-4xl text-blue whitespace-nowrap py-10">
+          Account Creation
+        </h1>
+  
         <div className="w-4/5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -174,7 +176,7 @@ export default function Page() {
                   )}
                 />
               </div>
-
+  
               {/* Phone Number Field */}
               <FormField
                 name="phone"
@@ -187,7 +189,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-
+  
               {/* Email Address Field */}
               <FormField
                 name="email"
@@ -200,7 +202,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-
+  
               {/* Home Address Field */}
               <FormField
                 name="address"
@@ -213,7 +215,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-
+  
               {/* Password Field */}
               <FormField
                 name="password"
@@ -229,7 +231,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-
+  
               {/* Confirm Password Field */}
               <FormField
                 name="confirmPassword"
@@ -245,7 +247,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-
+  
               <Button
                 className="w-full mt-4 bg-blue-800 rounded-lg hover:bg-blue-900"
                 variant={"default"}
@@ -255,29 +257,28 @@ export default function Page() {
             </form>
           </Form>
         </div>
-
+  
         {/* Separation Line */}
-        <div className="relative my-6 w-full flex items-center">
-          <Separator className="ml-12"/> 
+        <div className="w-2/5 justify-center my-5 flex items-center">
+          <Separator className="ml-12" />
           <span className="text-sm"> OR </span>
-          <Separator className="mr-12"/> 
+          <Separator className="mr-12" />
         </div>
-
-
+  
         {/* Social login*/}
         <div className="flex flex-col justify-center items-center ">
           <Link href={``}>
             <Button
-              className="mx-2 rounded-full mb-2 w-96 "
+              className="mx-2 rounded-full mb-2 w-96"
               variant={"outline"}
             >
               Continue with Google
             </Button>
           </Link>
-
+  
           <Link href={``}>
             <Button
-              className="mx-2 rounded-full w-96 mb-2 "
+              className="mx-2 rounded-full w-96 mb-2"
               variant={"outline"}
             >
               Continue with Facebook
@@ -287,4 +288,5 @@ export default function Page() {
       </div>
     </div>
   );
+  
 }
