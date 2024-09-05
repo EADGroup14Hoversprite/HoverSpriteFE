@@ -3,6 +3,7 @@ import React, { PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar, Sidebar } from "@/components/layout";
 import { useSidebarToggle } from "@/store/use-sidebar-toggle";
+import DynamicBreadcrumb from "@/components/dynamic-breadcrumb/DynamicBreadcrumb";
 
 export default function Layout({ children }: PropsWithChildren) {
   const { isOpen } = useSidebarToggle();
@@ -22,6 +23,7 @@ export default function Layout({ children }: PropsWithChildren) {
         )}
       >
         <Navbar title="Farmer" />
+        <DynamicBreadcrumb />
         {children}
       </main>
     </div>

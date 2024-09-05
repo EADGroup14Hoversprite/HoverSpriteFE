@@ -1,3 +1,5 @@
+import { SlotCell } from "@/hooks/useDateMatrix";
+
 export interface BookingScheduleProps {
   startDate: Date;
   hourChunk: number;
@@ -10,4 +12,5 @@ export interface BookingScheduleProps {
   colGap: string;
   dateFormat: string;
   timeFormat: string;
+  selectedSlot: SlotCell | undefined;
 }

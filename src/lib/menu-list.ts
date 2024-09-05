@@ -1,12 +1,4 @@
-import {
-  Bookmark,
-  LayoutGrid,
-  LucideIcon,
-  Settings,
-  SquarePen,
-  Tag,
-  Users,
-} from "lucide-react";
+import { icons } from "lucide-react";
 
 type Submenu = {
   href: string;
@@ -18,7 +10,7 @@ type Menu = {
   href: string;
   label: string;
   active: boolean;
-  icon: LucideIcon;
+  icon: keyof typeof icons;
   submenus: Submenu[];
 };
 
@@ -36,7 +28,7 @@ export function getMenuList(pathname: string): Group[] {
           href: "/dashboard",
           label: "Dashboard",
           active: pathname.includes("/dashboard"),
-          icon: LayoutGrid,
+          icon: "LayoutGrid",
           submenus: [],
         },
       ],
@@ -48,7 +40,7 @@ export function getMenuList(pathname: string): Group[] {
           href: "",
           label: "Posts",
           active: pathname.includes("/posts"),
-          icon: SquarePen,
+          icon: "SquarePen",
           submenus: [
             {
               href: "/posts",
@@ -66,14 +58,14 @@ export function getMenuList(pathname: string): Group[] {
           href: "/categories",
           label: "Categories",
           active: pathname.includes("/categories"),
-          icon: Bookmark,
+          icon: "Bookmark",
           submenus: [],
         },
         {
           href: "/tags",
           label: "Tags",
           active: pathname.includes("/tags"),
-          icon: Tag,
+          icon: "Tag",
           submenus: [],
         },
       ],
@@ -85,14 +77,14 @@ export function getMenuList(pathname: string): Group[] {
           href: "/users",
           label: "Users",
           active: pathname.includes("/users"),
-          icon: Users,
+          icon: "Users",
           submenus: [],
         },
         {
           href: "/account",
           label: "Account",
           active: pathname.includes("/account"),
-          icon: Settings,
+          icon: "Settings",
           submenus: [],
         },
       ],

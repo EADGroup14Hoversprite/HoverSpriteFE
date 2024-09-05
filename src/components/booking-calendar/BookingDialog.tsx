@@ -6,15 +6,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactNode } from "react";
 
 export function BookingDialog({
   slot,
   date,
   children,
+  form,
 }: PropsWithChildren<{
   slot: number;
   date: Date;
+  form: ReactNode;
 }>) {
   return (
     <Dialog>
@@ -27,6 +29,7 @@ export function BookingDialog({
             form!
           </DialogDescription>
         </DialogHeader>
+        {form}
       </DialogContent>
     </Dialog>
   );

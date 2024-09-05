@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronDown, Dot, LucideIcon } from "lucide-react";
+import { ChevronDown, Dot, icons } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import LucideIcon from "@/components/lucide-icon";
 
 type Submenu = {
   href: string;
@@ -34,7 +35,7 @@ type Submenu = {
 };
 
 interface CollapseMenuButtonProps {
-  icon: LucideIcon;
+  icon: keyof typeof icons;
   label: string;
   active: boolean;
   submenus: Submenu[];
@@ -42,7 +43,7 @@ interface CollapseMenuButtonProps {
 }
 
 export function CollapseMenuButton({
-  icon: Icon,
+  icon,
   label,
   active,
   submenus,
@@ -68,7 +69,7 @@ export function CollapseMenuButton({
           <div className="w-full items-center flex justify-between">
             <div className="flex items-center">
               <span className="mr-4">
-                <Icon size={18} />
+                <LucideIcon name={icon} size={18} />
               </span>
               <p
                 className={cn(
@@ -137,7 +138,7 @@ export function CollapseMenuButton({
                 <div className="w-full items-center flex justify-between">
                   <div className="flex items-center">
                     <span className={cn(isOpen === false ? "" : "mr-4")}>
-                      <Icon size={18} />
+                      <LucideIcon name={icon} size={18} />
                     </span>
                     <p
                       className={cn(
