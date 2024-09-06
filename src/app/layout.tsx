@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
-
+import SessionWrapper from "@/components/session-wrapper/SessionWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,10 +17,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <TooltipProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </TooltipProvider>
+    <SessionWrapper>
+      <TooltipProvider>
+        <html lang="en">
+          <body className={inter.className}>{children}</body>
+        </html>
+      </TooltipProvider>
+    </SessionWrapper>
   );
 }

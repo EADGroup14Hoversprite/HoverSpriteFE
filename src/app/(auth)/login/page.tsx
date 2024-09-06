@@ -1,5 +1,5 @@
 "use client";
-import { z } from "zod";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -8,8 +8,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/form/form";
-import { Input } from "@/components/form/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PasswordVisibility } from "@/utils/passwordVisibility";
@@ -17,6 +17,7 @@ import { BarChart2Icon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { z } from "zod";
 
 export default function Page() {
   const signInSchema = z.object({
