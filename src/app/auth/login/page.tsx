@@ -17,22 +17,17 @@ import { BarChart2Icon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { z } from "zod";
+import { login } from "@/actions/auth";
+import { SignIn, signInSchema } from "@/schema";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const signInSchema = z.object({
-    email: z
-      .string()
-      .email({ message: "invalid email" })
-      .min(6, { message: "invalid email" }),
-    password: z
-      .string()
-      .min(7, { message: "Password must have at least 8 characters" }),
-  });
+  const { toast } = useToast();
+  const router = useRouter();
 
-  type SignIn = z.infer<typeof signInSchema>;
-  const defaultState: Partial<SignIn> = {
-    email: "",
+  const defaultState: SignIn = {
+    emailOrPhone: "",
     password: "",
   };
 
@@ -42,8 +37,19 @@ export default function Page() {
     mode: "onChange",
   });
 
-  const onSubmit = (values: Partial<SignIn>) => {
-    console.log(values);
+  const onSubmit = async (values: SignIn) => {
+    const res = await login({
+      emailOrPhone: values.emailOrPhone,
+      password: values.password,
+    });
+    if (res.error) {
+      toast({
+        title: "Authentication failed!",
+        description: res.error,
+      });
+    } else {
+      router.push("/booking");
+    }
   };
 
   return (
@@ -58,7 +64,7 @@ export default function Page() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
-                name="email"
+                name="emailOrPhone"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -83,7 +89,6 @@ export default function Page() {
                 )}
               />
 
-              {/* Remember Me Checkbox */}
               <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox

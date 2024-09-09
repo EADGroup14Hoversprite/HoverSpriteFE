@@ -4,9 +4,12 @@ import { cn } from "@/lib/utils";
 import { Navbar, Sidebar } from "@/components/layout";
 import { useSidebarToggle } from "@/store/use-sidebar-toggle";
 import DynamicBreadcrumb from "@/components/dynamic-breadcrumb/DynamicBreadcrumb";
+import { useSession } from "next-auth/react";
 
 export default function Layout({ children }: PropsWithChildren) {
   const { isOpen } = useSidebarToggle();
+  const { data: session } = useSession();
+  console.log(session);
   return (
     <div className="flex h-full w-full">
       <Sidebar />

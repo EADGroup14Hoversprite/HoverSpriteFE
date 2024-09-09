@@ -17,3 +17,10 @@ export const orderSchema = z.object({
 });
 
 export type OrderType = z.infer<typeof orderSchema>;
+
+export const signInSchema = z.object({
+  emailOrPhone: z.string(),
+  password: z.string(),
+});
+
+export type SignIn = z.infer<typeof signInSchema>;

@@ -54,7 +54,7 @@ export function Sidebar() {
             </h1>
           </Link>
         </Button>
-        <Separator />
+        <Separator className="flex-grow-0" />
         <SidenavMenu isOpen={sidebar?.isOpen} />
       </div>
     </aside>
