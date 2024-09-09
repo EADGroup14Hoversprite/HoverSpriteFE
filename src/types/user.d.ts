@@ -1,4 +1,5 @@
 import { Expertise } from "@/types/expertise";
+import { AuthRole } from "@/types/role";
 
 export interface IUser {
   id: string;
@@ -22,8 +23,8 @@ export interface ResIUser {
 }
 
 export interface JWTPayload {
-  authRole: "ROLE_USER" | "ROLE_ADMIN";
-  userRole: "ROLE_FARMER" | "ROLE_RECEPTIONIST" | "ROLE_SPRAYER";
+  authRole: AuthRole;
+  userRole: UserRole;
   sub: string;
   iat: number;
   exp: number;
