@@ -1,6 +1,4 @@
 "use client";
-
-import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,73 +14,51 @@ import Link from "next/link";
 import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { BarChart2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { SignUp, SignUpSchema } from "@/schema";
+import { userRegister } from "@/actions/auth";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const passwordValidation = new RegExp(
-    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@$%^&*-]).{8,}$/,
-  );
+  const { toast } = useToast();
+  const router = useRouter();
 
-  const phoneValidation = new RegExp(/^(0|\+84)\s?\d{2,3}\s?\d{3}\s?\d{3,4}$/);
-
-  const nameValidation = new RegExp(/^(?!.*[A-Z]{2}).*$/);
-
-  const signupSchema = z
-    .object({
-      lastName: z
-        .string()
-        .min(2, { message: "Invalid name" })
-        .regex(nameValidation, { message: "Invalid name" }),
-      middleName: z.string().regex(nameValidation, { message: "Invalid name" }),
-      firstName: z
-        .string()
-        .min(2, { message: "Invalid name" })
-        .regex(nameValidation, { message: "Invalid name" }),
-      email: z
-        .string()
-        .email({ message: "invalid email" })
-        .min(6, { message: "invalid email" }),
-      phone: z
-        .string()
-        .min(1, { message: "Please enter your phone number" })
-        .regex(phoneValidation, {
-          message:
-            "Invalid phone number. Phone number must start with 0 or +84, followed by nine or ten digits",
-        }),
-      address: z.string().min(1, { message: "Please enter your address" }),
-      password: z
-        .string()
-        .min(8, { message: "Password must have at least 8 characters" })
-        .regex(passwordValidation, {
-          message:
-            "Your password must contain at least one lowercase, one uppercase and one special character",
-        }),
-      confirmPassword: z.string(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    });
-
-  type Signup = z.infer<typeof signupSchema>;
-  const defaultState: Partial<Signup> = {
+  const defaultState: SignUp  = {
     lastName: "",
     middleName: "",
     firstName: "",
-    email: "",
-    phone: "",
-    address: "",
+    emailAddress: "",
+    phoneNumber: "",
+    homeAddress: "",
     password: "",
     confirmPassword: "",
   };
 
-  const form = useForm<Signup>({
+  const form = useForm<SignUp>({
     defaultValues: defaultState,
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(SignUpSchema),
     mode: "onChange",
   });
 
-  const onSubmit = (values: Partial<Signup>) => {
-    console.log(values);
+  const onSubmit = async (values: SignUp) => {
+    const fullName = `${values.firstName} ${values.middleName} ${values.lastName}`.trim();
+    const res = await userRegister({
+        fullName: fullName,
+        phoneNumber: values.phoneNumber,
+        emailAddress: values.emailAddress,
+        homeAddress: values.homeAddress,
+        userRole: "ROLE_FARMER",
+        username: fullName,
+        password: values.password,
+    });
+    if (res.error) {
+      toast({
+        title: "Authentication failed!",
+        description: res.error,
+      });
+    } else {
+      router.push("/booking");
+    }
   };
 
   return (
@@ -179,7 +155,7 @@ export default function Page() {
 
               {/* Phone Number Field */}
               <FormField
-                name="phone"
+                name="phoneNumber"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -192,7 +168,7 @@ export default function Page() {
 
               {/* Email Address Field */}
               <FormField
-                name="email"
+                name="emailAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -205,7 +181,7 @@ export default function Page() {
 
               {/* Home Address Field */}
               <FormField
-                name="address"
+                name="homeAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">

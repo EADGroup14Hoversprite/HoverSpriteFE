@@ -18,3 +18,7 @@ export class InvalidEmailPasswordError extends AuthError {
 export class NotExistEmail extends AuthError {
   static type = "This email not registered";
 }
+
+export class UserAlreadyExistsError extends AuthError {
+  static type = "User already exists";
+}
