@@ -14,7 +14,7 @@ function getStepContent(step: number, bookingForm: UseFormReturn<OrderType>) {
     case 1:
       return <BookingForm bookingForm={bookingForm} />;
     case 2:
-      return <BookingCalendar bookingForm={<div></div>} />;
+      return <BookingCalendar bookingForm={bookingForm} />;
     case 3:
       return <div />;
 

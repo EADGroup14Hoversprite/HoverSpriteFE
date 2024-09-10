@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/context-menu";
 import LucideIcon from "../lucide-icon";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { UseFormReturn } from "react-hook-form";
+import { OrderType } from "@/schema";
 
 const CalendarDateCell = ({ children }: PropsWithChildren) => {
   return (
@@ -60,11 +62,11 @@ const CalendarBody = ({
   );
 };
 
-// interface BookingCalendarProps {
-//   bookingForm: ReactNode;
-// }
+interface BookingCalendarProps {
+  bookingForm: UseFormReturn<OrderType>;
+}
 
-export function BookingCalendar() {
+export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
   const {
     numDays,
     rowGap,

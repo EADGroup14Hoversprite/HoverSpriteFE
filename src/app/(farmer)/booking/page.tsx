@@ -35,8 +35,7 @@ export default function Page() {
     farmerId: "",
     area: 0,
     cropType: CropType.FRUIT,
-    date: new Date(),
-    session: 1,
+    desireDate: new Date(),
     slot: SpraySlot.SLOT_4,
   };
 

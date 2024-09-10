@@ -1,9 +1,13 @@
+import { CropType } from "@/models/CropType";
+
 export interface IBooking {
   id: string;
   farmerId: string;
-  date: Date;
+  desiredDate: string;
   slot: SpraySlot;
-  session: number;
+  cropType: CropType;
+  farmlandArea: 0;
+  timeSlot: SpraySlot;
 }
 
 export enum SpraySlot {

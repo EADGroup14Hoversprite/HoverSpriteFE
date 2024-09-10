@@ -11,9 +11,8 @@ export const orderSchema = z.object({
     .max(500000, "Area cannot exceed 500,000 hectares")
     .nonnegative()
     .finite(),
-  date: z.date(),
+  desireDate: z.date(),
   slot: z.nativeEnum(SpraySlot),
-  session: z.number(),
 });
 
 export type OrderType = z.infer<typeof orderSchema>;
