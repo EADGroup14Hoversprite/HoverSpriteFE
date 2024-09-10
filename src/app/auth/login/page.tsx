@@ -17,13 +17,14 @@ import { BarChart2Icon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { login } from "@/actions/auth";
 import { SignIn, signInSchema } from "@/schema";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { login } from "@/actions/auth";
 
 export default function Page() {
   const { toast } = useToast();
+  // const { data: session, status } = useSession();
   const router = useRouter();
 
   const defaultState: SignIn = {
@@ -88,7 +89,6 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-
               <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox

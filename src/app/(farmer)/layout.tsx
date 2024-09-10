@@ -1,15 +1,23 @@
 "use client";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar, Sidebar } from "@/components/layout";
 import { useSidebarToggle } from "@/store/use-sidebar-toggle";
 import DynamicBreadcrumb from "@/components/dynamic-breadcrumb/DynamicBreadcrumb";
 import { useSession } from "next-auth/react";
+import { useUserStore } from "@/store/user-store";
 
 export default function Layout({ children }: PropsWithChildren) {
   const { isOpen } = useSidebarToggle();
+  const { login, logout, currentUser } = useUserStore();
   const { data: session } = useSession();
-  console.log(session);
+  useEffect(() => {
+    if (session) {
+      login(session.user);
+    } else {
+      logout();
+    }
+  }, [session?.user]);
   return (
     <div className="flex h-full w-full">
       <Sidebar />
