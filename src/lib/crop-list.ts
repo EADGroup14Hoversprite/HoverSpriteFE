@@ -1,4 +1,4 @@
-import { CropType } from "@/models/CropType";
+import { CropType } from "@/types/crop-type";
 
 export interface Crop {
   label: string;

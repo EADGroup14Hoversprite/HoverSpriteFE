@@ -1,7 +1,7 @@
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Crop } from "@/lib/crop-list";
-import { CropCard } from "@/app/(farmer)/booking/_component/CropCard";
-import { CropType } from "@/models/CropType";
+import { CropCard } from "@/app/(farmer)/booking/_component/crop-area/CropCard";
+import { CropType } from "@/types/crop-type";
 
 interface CropListProps {
   crops: Crop[];

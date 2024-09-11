@@ -20,7 +20,6 @@ export const useUserStore = create<UserStore>(
     logout: () => set({ currentUser: undefined }),
     login: (user: IUser | undefined) =>
       set((state) => {
-        console.log("test");
         return { ...state, currentUser: user };
       }),
   }),

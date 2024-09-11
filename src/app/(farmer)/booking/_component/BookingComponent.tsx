@@ -3,11 +3,30 @@
 import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
-import BookingForm from "@/app/(farmer)/booking/_component/BookingForm";
+import BookingForm from "@/app/(farmer)/booking/_component/crop-area/BookingForm";
 import { BookingCalendar } from "@/components/booking-calendar";
-import StepperIndicator from "@/components/stepper-indicator/index.ts";
+import StepperIndicator from "@/components/stepper-indicator";
 import { Button } from "@/components/ui/button";
 import { OrderType } from "@/schema";
+import { Checkout } from "@/app/(farmer)/booking/_component/checkout/Checkout";
+import { SpraySlot, toSlotNum } from "@/models/Booking";
+import { useUserStore } from "@/store/user-store";
+import axios from "axios";
+
+function isValidSlot(slot: SpraySlot, bookingForm: UseFormReturn<OrderType>) {
+  if (
+    new Date().getDate() === bookingForm.getValues("desiredDate").getDate() &&
+    new Date().getMonth() === bookingForm.getValues("desiredDate").getMonth() &&
+    new Date().getFullYear() ===
+      bookingForm.getValues("desiredDate").getFullYear()
+  )
+    return toSlotNum(slot) > new Date().getHours();
+
+  if (bookingForm.getValues("desiredDate").getTime() > new Date().getTime()) {
+    return true;
+  }
+  return toSlotNum(slot) > new Date().getHours();
+}
 
 function getStepContent(step: number, bookingForm: UseFormReturn<OrderType>) {
   switch (step) {
@@ -16,7 +35,7 @@ function getStepContent(step: number, bookingForm: UseFormReturn<OrderType>) {
     case 2:
       return <BookingCalendar bookingForm={bookingForm} />;
     case 3:
-      return <div />;
+      return <Checkout bookingForm={bookingForm} />;
 
     default:
       return "Unknown step";
@@ -29,6 +48,7 @@ const HookMultiStepForm = ({
   methods: UseFormReturn<OrderType>;
 }) => {
   const [activeStep, setActiveStep] = useState(1);
+  const { currentUser } = useUserStore();
   const [erroredInputName, setErroredInputName] = useState("");
   const {
     trigger,
@@ -47,14 +67,52 @@ const HookMultiStepForm = ({
     }
   }, [erroredInputName]);
 
-  const handleNext = async () => {
-    const isStepValid = await trigger(undefined, { shouldFocus: true });
+  const handleNext = async (activeStep: number) => {
+    let isStepValid = false;
+    switch (activeStep) {
+      case 1:
+        isStepValid = await trigger("farmlandArea", { shouldFocus: true });
+        break;
+      case 2:
+        isStepValid = isValidSlot(methods.getValues("timeSlot"), methods);
+        break;
+      case 3:
+        isStepValid = await trigger(undefined, { shouldFocus: true });
+    }
     if (isStepValid) setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+  async function onSubmit(value: OrderType) {
+    const reqBody = {
+      farmerId: value.farmerId,
+      farmlandArea: value.farmlandArea,
+      location: value.location,
+      address: value.address,
+      cropType: value.cropType,
+      desiredDate: value.desiredDate,
+      timeSlot: value.timeSlot,
+    };
+    const res = await axios.post(
+      "http://localhost:8080/order/create",
+      {
+        ...reqBody,
+        farmerId: currentUser?.id!,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${currentUser?.accessToken}`,
+        },
+      },
+    );
+
+    // await createOrder({ ...value, farmerId: currentUser?.id! });
+    // console.log(currentUser?.accessToken);
+    return res;
+  }
 
   return (
     <div className="w-full h-full space-y-4">
@@ -70,11 +128,22 @@ const HookMultiStepForm = ({
           Back
         </Button>
         {activeStep === 3 ? (
-          <Button className="w-[100px]" type="button" disabled={isSubmitting}>
+          <Button
+            className="w-[100px]"
+            type="button"
+            disabled={isSubmitting}
+            onClick={() => {
+              onSubmit(methods.getValues());
+            }}
+          >
             Checkout
           </Button>
         ) : (
-          <Button type="button" className="w-[100px]" onClick={handleNext}>
+          <Button
+            type="button"
+            className="w-[100px]"
+            onClick={() => handleNext(activeStep)}
+          >
             Next
           </Button>
         )}

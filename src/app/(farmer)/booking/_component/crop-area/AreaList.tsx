@@ -1,6 +1,6 @@
 import { RadioGroup } from "@/components/ui/radio-group";
 import { Area } from "@/lib/area-list";
-import { AreaCard } from "@/app/(farmer)/booking/_component/AreaCard";
+import { AreaCard } from "@/app/(farmer)/booking/_component/crop-area/AreaCard";
 
 interface AreaListProps {
   areaList: Area[];

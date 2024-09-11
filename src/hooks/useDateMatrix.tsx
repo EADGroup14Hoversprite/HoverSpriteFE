@@ -1,4 +1,4 @@
-import { addDays, addHours, addMinutes, startOfDay } from "date-fns";
+import { addDays, addHours, addMinutes, isBefore, startOfDay } from "date-fns";
 import { useMemo } from "react";
 import { Solar } from "lunar-typescript";
 
@@ -18,7 +18,17 @@ export interface SlotCell {
   isAvailable: boolean;
 }
 
-const getSolarLunar = (
+export const getLunarDate = (solar: Date) => {
+  const solarFrom = Solar.fromYmd(
+    solar.getFullYear(),
+    solar.getMonth() + 1,
+    solar.getDate(),
+  );
+  const lunar = solarFrom.getLunar();
+  return new Date(lunar.getYear(), lunar.getMonth() - 1, lunar.getDay());
+};
+
+export const getSolarLunar = (
   startDate: Date,
   hourIdx: number,
   chunkIdx: number,
@@ -46,6 +56,34 @@ const getSolarLunar = (
   };
 };
 
+const createSlotCells = (
+  start: number,
+  end: number,
+  startTime: Date,
+  hourChunk: number,
+  d: number,
+  minutesInChunk: number,
+) => {
+  let currentDay: SlotCell[] = [];
+  for (let h = start; h < end; h += 1) {
+    for (let c = 0; c < hourChunk; c += 1) {
+      const solarLunar = getSolarLunar(startTime, h, c, d, minutesInChunk);
+      if (isBefore(solarLunar.solar, new Date())) {
+        currentDay.push({
+          ...solarLunar,
+          isAvailable: false,
+        });
+      } else {
+        currentDay.push({
+          ...solarLunar,
+          isAvailable: true,
+        });
+      }
+    }
+  }
+  return currentDay;
+};
+
 export const useDateMatrix = ({
   numDays,
   startDate,
@@ -61,22 +99,26 @@ export const useDateMatrix = ({
     const minutesInChunk = Math.floor(60 / hourChunk);
     for (let d = 0; d < numDays; d += 1) {
       const currentDay: SlotCell[] = [];
-      for (let h = startMorning; h < endMorning; h += 1) {
-        for (let c = 0; c < hourChunk; c += 1) {
-          currentDay.push({
-            ...getSolarLunar(startTime, h, c, d, minutesInChunk),
-            isAvailable: true,
-          });
-        }
-      }
-      for (let h = startAfternoon; h < endAfternoon; h += 1) {
-        for (let c = 0; c < hourChunk; c += 1) {
-          currentDay.push({
-            ...getSolarLunar(startTime, h, c, d, minutesInChunk),
-            isAvailable: true,
-          });
-        }
-      }
+      currentDay.push(
+        ...createSlotCells(
+          startMorning,
+          endMorning,
+          startTime,
+          hourChunk,
+          d,
+          minutesInChunk,
+        ),
+      );
+      currentDay.push(
+        ...createSlotCells(
+          startAfternoon,
+          endAfternoon,
+          startTime,
+          hourChunk,
+          d,
+          minutesInChunk,
+        ),
+      );
       dates.push(currentDay);
     }
     return dates;
