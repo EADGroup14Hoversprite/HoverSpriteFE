@@ -25,10 +25,17 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "",
       menus: [
         {
-          href: "/dashboard",
-          label: "Dashboard",
-          active: pathname.includes("/dashboard"),
-          icon: "LayoutGrid",
+          href: "/booking",
+          label: "Booking",
+          active: pathname.includes("/booking"),
+          icon: "Album",
+          submenus: [],
+        },
+        {
+          href: "/orders",
+          label: "All orders",
+          active: pathname.includes("/orders"),
+          icon: "Logs",
           submenus: [],
         },
       ],
