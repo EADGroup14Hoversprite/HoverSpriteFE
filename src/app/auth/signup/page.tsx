@@ -15,15 +15,17 @@ import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { BarChart2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { SignUp, SignUpSchema } from "@/schema";
-import { userRegister } from "@/actions/auth";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import { userRegister } from "@/actions/register";
+import { useUserStore } from "@/store/user-store";
 
 export default function Page() {
   const { toast } = useToast();
   const router = useRouter();
+  const { login } = useUserStore();
 
-  const defaultState: SignUp  = {
+  const defaultState: SignUp = {
     lastName: "",
     middleName: "",
     firstName: "",
@@ -41,8 +43,10 @@ export default function Page() {
   });
 
   const onSubmit = async (values: SignUp) => {
-    const fullName = `${values.firstName} ${values.middleName} ${values.lastName}`.trim();
-    const res = await userRegister({
+    const fullName =
+      `${values.firstName} ${values.middleName} ${values.lastName}`.trim();
+    try {
+      const res = await userRegister({
         fullName: fullName,
         phoneNumber: values.phoneNumber,
         emailAddress: values.emailAddress,
@@ -50,14 +54,14 @@ export default function Page() {
         userRole: "ROLE_FARMER",
         username: fullName,
         password: values.password,
-    });
-    if (res.error) {
+      });
+      if (res) login(res.data.dto);
+      router.push("/booking");
+    } catch (e) {
       toast({
         title: "Authentication failed!",
-        description: res.error,
+        description: "Something wrong",
       });
-    } else {
-      router.push("/booking");
     }
   };
 
@@ -74,7 +78,7 @@ export default function Page() {
           </div>
 
           <div className="absolute bottom-0 right-10 w-3/12">
-            <Link href={`/login/`}>
+            <Link href={`/auth/login/`}>
               <Button
                 className="w-full bg-blue-800 my-5 rounded-full hover:bg-blue-900"
                 variant={"default"}

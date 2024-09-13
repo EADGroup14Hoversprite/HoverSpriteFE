@@ -140,7 +140,7 @@ export default function Page() {
 
           <div className="pt-5">
             <span className="font-light text-sm"> Don't have an account?</span>
-            <Link href={`/signup/`}>
+            <Link href={`/auth/signup/`}>
               <span className="text-blue-500 underline text-sm pl-1 hover:text-blue-800">
                 Create now
               </span>
