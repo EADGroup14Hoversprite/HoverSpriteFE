@@ -11,7 +11,9 @@ import { OrderType } from "@/schema";
 import { Checkout } from "@/app/(farmer)/booking/_component/checkout/Checkout";
 import { SpraySlot, toSlotNum } from "@/models/Booking";
 import { useUserStore } from "@/store/user-store";
-import axios from "axios";
+import { createOrder } from "@/actions/order";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function isValidSlot(slot: SpraySlot, bookingForm: UseFormReturn<OrderType>) {
   if (
@@ -48,6 +50,7 @@ const HookMultiStepForm = ({
   methods: UseFormReturn<OrderType>;
 }) => {
   const [activeStep, setActiveStep] = useState(1);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
   const { currentUser } = useUserStore();
   const [erroredInputName, setErroredInputName] = useState("");
   const {
@@ -56,6 +59,8 @@ const HookMultiStepForm = ({
     setError,
     formState: { isSubmitting, errors },
   } = methods;
+
+  const router = useRouter();
 
   // focus errored input on submit
   useEffect(() => {
@@ -87,8 +92,8 @@ const HookMultiStepForm = ({
   };
 
   async function onSubmit(value: OrderType) {
+    setIsCreating(true);
     const reqBody = {
-      farmerId: value.farmerId,
       farmlandArea: value.farmlandArea,
       location: value.location,
       address: value.address,
@@ -96,22 +101,24 @@ const HookMultiStepForm = ({
       desiredDate: value.desiredDate,
       timeSlot: value.timeSlot,
     };
-    const res = await axios.post(
-      "http://localhost:8080/order/create",
-      {
-        ...reqBody,
-        farmerId: currentUser?.id!,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${currentUser?.accessToken}`,
-        },
-      },
+    const onCreatingOrder = createOrder(
+      reqBody,
+      currentUser?.accessToken!,
+      currentUser?.fullName!,
+      currentUser?.phoneNumber!,
     );
 
-    // await createOrder({ ...value, farmerId: currentUser?.id! });
-    // console.log(currentUser?.accessToken);
-    return res;
+    toast.promise(onCreatingOrder, {
+      loading: "Creating your order...",
+      success: () => {
+        router.push("/orders");
+        return `Order has been created successfully.`;
+      },
+      error: () => {
+        setIsCreating(false);
+        return "Failed to create order";
+      },
+    });
   }
 
   return (

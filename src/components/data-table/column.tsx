@@ -9,6 +9,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { IOrder } from "@/models/Order";
 import { paymentStatuses, statuses } from "@/components/data-table/data/data";
 import { formatDate } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import LucideIcon from "@/components/lucide-icon";
 
 export const columns: ColumnDef<IOrder>[] = [
   {
@@ -59,12 +61,13 @@ export const columns: ColumnDef<IOrder>[] = [
       }
 
       return (
-        <div className="flex w-[100px] items-center">
-          {/*{status.icon && (*/}
-          {/*  <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />*/}
-          {/*)}*/}
-          <span>{status.label}</span>
-        </div>
+        <Badge
+          variant="outline"
+          className={`${status.classes} font-semibold flex items-center gap-1 w-fit`}
+        >
+          <LucideIcon name={status.icon} size={16} />
+          {status.label}
+        </Badge>
       );
     },
     filterFn: (row, id, value) => {
@@ -87,12 +90,13 @@ export const columns: ColumnDef<IOrder>[] = [
       }
 
       return (
-        <div className="flex items-center">
-          {/*{priority.icon && (*/}
-          {/*  <priority.icon className="mr-2 h-4 w-4 text-muted-foreground" />*/}
-          {/*)}*/}
-          <span>{paymentStatus.label}</span>
-        </div>
+        <Badge
+          variant="outline"
+          className={`${paymentStatus.classes} font-semibold flex items-center gap-1 w-fit`}
+        >
+          <LucideIcon name={paymentStatus.icon} size={16} />
+          {paymentStatus.label}
+        </Badge>
       );
     },
     filterFn: (row, id, value) => {

@@ -26,15 +26,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getMyOrders } from "@/actions/order";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  ordersPromise: ReturnType<typeof getMyOrders>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
+  ordersPromise,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -44,8 +45,9 @@ export function DataTable<TData, TValue>({
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
+  const orders = React.use(ordersPromise);
   const table = useReactTable({
-    data,
+    data: orders.orders as unknown as TData[],
     columns,
     state: {
       sorting,
@@ -67,7 +69,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 flex-1">
       <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>

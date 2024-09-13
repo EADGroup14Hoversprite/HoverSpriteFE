@@ -18,22 +18,24 @@ import { z } from "zod";
 // }
 
 export const IOrderSchema = z.object({
-  id: z.number(),
-  farmerId: z.number(),
-  cropType: z.string(),
-  address: z.string(),
   location: z.object({
     latitude: z.number(),
     longitude: z.number(),
   }),
+  id: z.number(),
+  address: z.string(),
+  cropType: z.string(),
+  farmerName: z.string(),
+  farmerPhoneNumber: z.string(),
   farmlandArea: z.number(),
   desiredDate: z.number(),
-  totalCost: z.number(),
   timeSlot: z.string(),
-  status: z.string(),
-  paymentStatus: z.boolean(),
   assignedSprayerIds: z.array(z.number()),
+  paymentStatus: z.boolean(),
+  bookerId: z.number(),
+  totalCost: z.number(),
   createdAt: z.number(),
+  status: z.string(),
   updatedAt: z.number(),
 });
 

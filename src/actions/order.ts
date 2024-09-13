@@ -4,19 +4,33 @@ import axios from "axios";
 
 const backendUrl = "http://localhost:8080";
 
-export async function createOrder(value: OrderType) {
+export async function createOrder(
+  value: Partial<OrderType>,
+  accessToken: string,
+  farmerName: string,
+  farmerPhoneNumber: string,
+) {
   try {
     const res = await axios.post<{
       message: string;
       order: IOrder;
       error?: boolean;
-    }>(`${backendUrl}/order/create`, { ...value });
+    }>(
+      "http://localhost:8080/order",
+      {
+        ...value,
+        farmerName: farmerName,
+        farmerPhoneNumber: farmerPhoneNumber,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
     return res.data;
   } catch (e) {
-    return {
-      error: true,
-      message: "Unable to create order",
-    };
+    throw new Error("Unable to create order");
   }
 }
 

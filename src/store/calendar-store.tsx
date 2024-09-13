@@ -34,8 +34,8 @@ type CalendarStore = CalendarState & CalendarStateAction;
 export const useCalendarStore = create<CalendarStore>(
   (set): CalendarStore => ({
     initialState: {
-      endAfternoon: 19,
-      endMorning: 9,
+      endAfternoon: 18,
+      endMorning: 8,
       hourChunk: 1,
       startAfternoon: 16,
       startMorning: 4,

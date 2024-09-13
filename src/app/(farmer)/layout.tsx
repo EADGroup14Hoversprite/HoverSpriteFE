@@ -6,6 +6,7 @@ import { useSidebarToggle } from "@/store/use-sidebar-toggle";
 import DynamicBreadcrumb from "@/components/dynamic-breadcrumb/DynamicBreadcrumb";
 import { useSession } from "next-auth/react";
 import { useUserStore } from "@/store/user-store";
+import { Toaster } from "sonner";
 
 export default function Layout({ children }: PropsWithChildren) {
   const { isOpen } = useSidebarToggle();
@@ -37,6 +38,7 @@ export default function Layout({ children }: PropsWithChildren) {
         <DynamicBreadcrumb />
         {children}
       </main>
+      <Toaster />
     </div>
   );
 }
