@@ -160,7 +160,7 @@ export default function Page() {
           </div>
 
           <div className="absolute bottom-0 right-10 w-3/12  ">
-            <Link href={`/signup/`}>
+            <Link href={`/auth/signup/`}>
               <Button
                 className="w-full bg-blue-800 my-5 rounded-full hover:bg-blue-900"
                 variant={"default"}
