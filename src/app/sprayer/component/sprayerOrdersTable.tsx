@@ -24,8 +24,8 @@ interface Order {
 
 const SprayerOrderTable: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null); 
-  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,18 +66,75 @@ const SprayerOrderTable: React.FC = () => {
 
   const closeOrderModal = () => {
     setSelectedOrder(null);
-    setIsModalOpen(false); 
+    setIsModalOpen(false);
   };
+
+  const assignedOrders = orders.filter(order => order.status !== "COMPLETED");
+  const completedOrders = orders.filter(order => order.status === "COMPLETED");
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-semibold mb-4">Assigned Orders</h1>
-
+  
       {loading && <p>Loading orders...</p>}
       {error && <p className="text-red-500">{error}</p>}
-
+  
       {!loading && !error && (
         <div className="overflow-x-auto">
+          {/* First table: Assigned Orders */}
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md mb-8">
+            <thead>
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  Order ID
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  Order Status
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  Total cost
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  Payment status
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {assignedOrders.map((order) => (
+                <tr key={order.id} className="border-b">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {order.id}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {order.status}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {order.totalCost} VND
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {order.paymentStatus ? "Payment accepted" : "Ongoing"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <Button
+                      className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
+                      onClick={() => openOrderModal(order)}
+                      text="View details"
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+  
+          {isModalOpen && selectedOrder && (
+            <OrderModal order={selectedOrder} onClose={closeOrderModal} />
+          )}
+  
+          {/* Second table: Order History */}
+          <h2 className="text-2xl font-semibold mb-4">Order History</h2>
           <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
             <thead>
               <tr>
@@ -91,12 +148,15 @@ const SprayerOrderTable: React.FC = () => {
                   Total cost
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  Payment status
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
                   Action
                 </th>
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {completedOrders.map((order) => (
                 <tr key={order.id} className="border-b">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {order.id}
@@ -108,9 +168,12 @@ const SprayerOrderTable: React.FC = () => {
                     {order.totalCost} VND
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {order.paymentStatus ? "Payment accepted" : "Ongoing"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     <Button
                       className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-                      onClick={() => openOrderModal(order)} 
+                      onClick={() => openOrderModal(order)}
                       text="View details"
                     />
                   </td>
@@ -118,14 +181,11 @@ const SprayerOrderTable: React.FC = () => {
               ))}
             </tbody>
           </table>
-
-          {isModalOpen && selectedOrder && (
-            <OrderModal order={selectedOrder} onClose={closeOrderModal} />
-          )}
         </div>
       )}
     </div>
   );
+  
 };
 
 export default SprayerOrderTable;
