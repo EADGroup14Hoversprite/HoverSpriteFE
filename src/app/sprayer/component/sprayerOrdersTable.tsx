@@ -69,12 +69,6 @@ const SprayerOrderTable: React.FC = () => {
     setIsModalOpen(false); 
   };
 
-  const updateOrderInState = (updatedOrder: Order) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) => (order.id === updatedOrder.id ? updatedOrder : order))
-    );
-  };
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-semibold mb-4">Assigned Orders</h1>
