@@ -2,6 +2,7 @@ import { z } from "zod";
 import { CropType } from "@/types/crop-type";
 import { SpraySlot, toSlotNum } from "@/models/Booking";
 import { PaymentType } from "@/types/payment";
+import { FeedbackType } from "@/types/feedback-type";
 
 export const orderSchema = z
   .object({
@@ -65,6 +66,12 @@ export const searchParamsSchema = z.object({
   operator: z.enum(["and", "or"]).optional(),
 });
 
-export const getOrdersSchema = searchParamsSchema;
+export const feedbackCreateSchema = z.object({
+  content: z.string().min(1, "Content is required"),
+  satisfactionRating: z.nativeEnum(FeedbackType),
+  attentive: z.number().min(1).max(5),
+  friendly: z.number().min(1).max(5),
+  professional: z.number().min(1).max(5),
+});
 
-export type GetOrdersSchema = z.infer<typeof getOrdersSchema>;
+export type FeedbackCreateType = z.infer<typeof feedbackCreateSchema>;

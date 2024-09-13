@@ -138,7 +138,7 @@ const HookMultiStepForm = ({
           <Button
             className="w-[100px]"
             type="button"
-            disabled={isSubmitting}
+            disabled={isCreating}
             onClick={() => {
               onSubmit(methods.getValues());
             }}

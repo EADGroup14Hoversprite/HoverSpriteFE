@@ -4,7 +4,7 @@ import { Row } from "@tanstack/react-table";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { IOrderSchema } from "@/models/Order";
-import { Pencil } from "lucide-react";
+import { ListCollapse, Pencil, SquarePen } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -20,13 +20,24 @@ import { getLunarDate } from "@/hooks/useDateMatrix";
 import { paymentStatuses, statuses } from "@/components/data-table/data/data";
 import { Badge } from "@/components/ui/badge";
 import LucideIcon from "@/components/lucide-icon";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
+  feedbackForm: React.ReactNode;
 }
 
 export function DataTableRowActions<TData>({
   row,
+  feedbackForm,
 }: DataTableRowActionsProps<TData>) {
   const order = IOrderSchema.parse(row.original);
   const paymentStatus = paymentStatuses.find(
@@ -45,7 +56,7 @@ export function DataTableRowActions<TData>({
             variant="outline"
             className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
           >
-            <Pencil className="h-4 w-4" />
+            <ListCollapse className="h-4 w-4" />
             <span>View Detail</span>
           </Button>
         </SheetTrigger>
@@ -173,7 +184,44 @@ export function DataTableRowActions<TData>({
           </SheetFooter>
         </SheetContent>
       </Sheet>
-      <Button variant="outline">Edit</Button>
+      <Button
+        variant="outline"
+        className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
+      >
+        <Pencil className="h-4 w-4" />
+        <span>Edit</span>
+      </Button>
+      {/*<Tooltip delayDuration={0.5}>*/}
+      {/*  <TooltipTrigger>*/}
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            disabled={status?.value !== "completed"}
+            className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
+          >
+            <SquarePen className="h-4 w-4" />
+            <span>Feedback</span>
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Give feedback to #{order.id}</DialogTitle>
+            <DialogDescription>
+              Your feedback is valuable for our future improvement!
+            </DialogDescription>
+          </DialogHeader>
+          {feedbackForm}
+        </DialogContent>
+        <DialogFooter></DialogFooter>
+      </Dialog>
+      {/*  </TooltipTrigger>*/}
+      {/*  <TooltipContent align="start" side="bottom">*/}
+      {/*    {status?.value !== "completed"*/}
+      {/*      ? "You can only give feedback to completed order!"*/}
+      {/*      : ""}*/}
+      {/*  </TooltipContent>*/}
+      {/*</Tooltip>*/}
     </div>
   );
 }

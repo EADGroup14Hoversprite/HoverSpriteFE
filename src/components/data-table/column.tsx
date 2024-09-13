@@ -11,6 +11,7 @@ import { paymentStatuses, statuses } from "@/components/data-table/data/data";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import LucideIcon from "@/components/lucide-icon";
+import FeedbackForm from "@/app/(farmer)/orders/_component/feedback/FeedbackForm";
 
 export const columns: ColumnDef<IOrder>[] = [
   {
@@ -115,6 +116,11 @@ export const columns: ColumnDef<IOrder>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <DataTableRowActions
+        row={row}
+        feedbackForm={<FeedbackForm order={row.original} />}
+      />
+    ),
   },
 ];

@@ -49,7 +49,7 @@ export default function Page() {
         description: res.error,
       });
     } else {
-      router.push("/booking");
+      router.push("/orders");
     }
   };
 
