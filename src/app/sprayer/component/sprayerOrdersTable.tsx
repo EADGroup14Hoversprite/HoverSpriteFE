@@ -24,8 +24,8 @@ interface Order {
 
 const SprayerOrderTable: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null); // State for the selected order
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +33,7 @@ const SprayerOrderTable: React.FC = () => {
     try {
       //Token just for testing
       const token =
-        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMyIsImlhdCI6MTcyNjIxMjU1NiwiZXhwIjoxNzI2MjE2MTU2fQ.PHCXZXq4LOi1WKWWr9kQbTibddbJRCzoxeKEZYJnGnEsDcFkBlLRFKbSFf2OhX7R";
+        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
       const response = await fetch("http://localhost:8080/order/assigned", {
         method: "GET",
         headers: {
@@ -61,12 +61,18 @@ const SprayerOrderTable: React.FC = () => {
 
   const openOrderModal = (order: Order) => {
     setSelectedOrder(order);
-    setIsModalOpen(true); // Open the modal
+    setIsModalOpen(true);
   };
 
   const closeOrderModal = () => {
     setSelectedOrder(null);
-    setIsModalOpen(false); // Close the modal
+    setIsModalOpen(false); 
+  };
+
+  const updateOrderInState = (updatedOrder: Order) => {
+    setOrders((prevOrders) =>
+      prevOrders.map((order) => (order.id === updatedOrder.id ? updatedOrder : order))
+    );
   };
 
   return (
@@ -88,7 +94,10 @@ const SprayerOrderTable: React.FC = () => {
                   Order Status
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Actions
+                  Total cost
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  Action
                 </th>
               </tr>
             </thead>
@@ -102,9 +111,12 @@ const SprayerOrderTable: React.FC = () => {
                     {order.status}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    {order.totalCost} VND
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     <Button
                       className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-                      onClick={() => openOrderModal(order)} // Open modal with selected order
+                      onClick={() => openOrderModal(order)} 
                       text="View details"
                     />
                   </td>
@@ -113,7 +125,6 @@ const SprayerOrderTable: React.FC = () => {
             </tbody>
           </table>
 
-          {/* Modal to display selected order details */}
           {isModalOpen && selectedOrder && (
             <OrderModal order={selectedOrder} onClose={closeOrderModal} />
           )}

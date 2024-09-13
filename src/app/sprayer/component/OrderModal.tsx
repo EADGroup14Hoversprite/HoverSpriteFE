@@ -27,6 +27,54 @@ interface OrderModalProps {
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
+  const confirmPayment = async () => {
+    try {
+      //Token just for testing
+      const token =
+        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
+      const response = await fetch(`http://localhost:8080/order/${order.id}/confirm-cash-payment`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to confirm payment");
+      }
+      onClose();
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error comfirming payment:", error);
+    }
+  };
+
+  const updateOrderStatus = async (status: string) => {
+    try {
+      const token =
+        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
+      const response = await fetch(`http://localhost:8080/order/${order.id}/update-status`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update order status");
+      }
+      onClose();
+      const data = await response.json();
+      console.log("Order status updated:", data);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
+
   return (
     <div
       id="order-modal"
@@ -105,8 +153,13 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
         </div>
         <Button
           className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-          onClick={() => ""} 
+          onClick={() => updateOrderStatus("IN_PROGRESS")}
           text="Accept order"
+        />
+        <Button
+          className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
+          onClick={() => confirmPayment()}
+          text="Confirm payment"
         />
       </div>
     </div>
