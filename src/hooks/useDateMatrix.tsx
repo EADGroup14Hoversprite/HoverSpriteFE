@@ -12,6 +12,12 @@ interface DateMatrixProps {
   endAfternoon: number;
 }
 
+export interface SlotCell {
+  lunar: Date;
+  solar: Date;
+  isAvailable: boolean;
+}
+
 const getSolarLunar = (
   startDate: Date,
   hourIdx: number,
@@ -51,18 +57,24 @@ export const useDateMatrix = ({
 }: DateMatrixProps) => {
   return useMemo(() => {
     const startTime = startOfDay(startDate);
-    const dates: Array<Array<{ solar: Date; lunar: Date }>> = [];
+    const dates: Array<Array<SlotCell>> = [];
     const minutesInChunk = Math.floor(60 / hourChunk);
     for (let d = 0; d < numDays; d += 1) {
-      const currentDay: { solar: Date; lunar: Date }[] = [];
+      const currentDay: SlotCell[] = [];
       for (let h = startMorning; h < endMorning; h += 1) {
         for (let c = 0; c < hourChunk; c += 1) {
-          currentDay.push(getSolarLunar(startTime, h, c, d, minutesInChunk));
+          currentDay.push({
+            ...getSolarLunar(startTime, h, c, d, minutesInChunk),
+            isAvailable: true,
+          });
         }
       }
       for (let h = startAfternoon; h < endAfternoon; h += 1) {
         for (let c = 0; c < hourChunk; c += 1) {
-          currentDay.push(getSolarLunar(startTime, h, c, d, minutesInChunk));
+          currentDay.push({
+            ...getSolarLunar(startTime, h, c, d, minutesInChunk),
+            isAvailable: true,
+          });
         }
       }
       dates.push(currentDay);

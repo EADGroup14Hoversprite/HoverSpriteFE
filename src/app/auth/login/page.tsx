@@ -1,5 +1,5 @@
 "use client";
-import { z } from "zod";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -8,8 +8,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/form/form";
-import { Input } from "@/components/form/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PasswordVisibility } from "@/utils/passwordVisibility";
@@ -17,21 +17,18 @@ import { BarChart2Icon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { SignIn, signInSchema } from "@/schema";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { login } from "@/actions/auth";
 
 export default function Page() {
-  const signInSchema = z.object({
-    email: z
-      .string()
-      .email({ message: "invalid email" })
-      .min(6, { message: "invalid email" }),
-    password: z
-      .string()
-      .min(7, { message: "Password must have at least 8 characters" }),
-  });
+  const { toast } = useToast();
+  // const { data: session, status } = useSession();
+  const router = useRouter();
 
-  type SignIn = z.infer<typeof signInSchema>;
-  const defaultState: Partial<SignIn> = {
-    email: "",
+  const defaultState: SignIn = {
+    emailOrPhone: "",
     password: "",
   };
 
@@ -41,8 +38,19 @@ export default function Page() {
     mode: "onChange",
   });
 
-  const onSubmit = (values: Partial<SignIn>) => {
-    console.log(values);
+  const onSubmit = async (values: SignIn) => {
+    const res = await login({
+      emailOrPhone: values.emailOrPhone,
+      password: values.password,
+    });
+    if (res.error) {
+      toast({
+        title: "Authentication failed!",
+        description: res.error,
+      });
+    } else {
+      router.push("/booking");
+    }
   };
 
   return (
@@ -57,7 +65,7 @@ export default function Page() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <FormField
-                name="email"
+                name="emailOrPhone"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -81,8 +89,6 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-
-              {/* Remember Me Checkbox */}
               <div className="flex items-center justify-between mt-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox
@@ -134,7 +140,7 @@ export default function Page() {
 
           <div className="pt-5">
             <span className="font-light text-sm"> Don't have an account?</span>
-            <Link href={`/signup/`}>
+            <Link href={`/auth/signup/`}>
               <span className="text-blue-500 underline text-sm pl-1 hover:text-blue-800">
                 Create now
               </span>

@@ -1,6 +1,4 @@
 "use client";
-
-import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -9,80 +7,62 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/form/form";
-import { Input } from "@/components/form/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { BarChart2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { SignUp, SignUpSchema } from "@/schema";
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
+import { userRegister } from "@/actions/register";
+import { useUserStore } from "@/store/user-store";
 
 export default function Page() {
-  const passwordValidation = new RegExp(
-    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@$%^&*-]).{8,}$/
-  );
+  const { toast } = useToast();
+  const router = useRouter();
+  const { login } = useUserStore();
 
-  const phoneValidation = new RegExp(/^(0|\+84)\s?\d{2,3}\s?\d{3}\s?\d{3,4}$/);
-
-  const nameValidation = new RegExp(/^(?!.*[A-Z]{2}).*$/);
-
-  const signupSchema = z
-    .object({
-      lastName: z
-        .string()
-        .min(2, { message: "Invalid name" })
-        .regex(nameValidation, { message: "Invalid name" }),
-      middleName: z.string().regex(nameValidation, { message: "Invalid name" }),
-      firstName: z
-        .string()
-        .min(2, { message: "Invalid name" })
-        .regex(nameValidation, { message: "Invalid name" }),
-      email: z
-        .string()
-        .email({ message: "invalid email" })
-        .min(6, { message: "invalid email" }),
-      phone: z
-        .string()
-        .min(1, { message: "Please enter your phone number" })
-        .regex(phoneValidation, {
-          message:
-            "Invalid phone number. Phone number must start with 0 or +84, followed by nine or ten digits",
-        }),
-      address: z.string().min(1, { message: "Please enter your address" }),
-      password: z
-        .string()
-        .min(8, { message: "Password must have at least 8 characters" })
-        .regex(passwordValidation, {
-          message:
-            "Your password must contain at least one lowercase, one uppercase and one special character",
-        }),
-      confirmPassword: z.string(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    });
-
-  type Signup = z.infer<typeof signupSchema>;
-  const defaultState: Partial<Signup> = {
+  const defaultState: SignUp = {
     lastName: "",
     middleName: "",
     firstName: "",
-    email: "",
-    phone: "",
-    address: "",
+    emailAddress: "",
+    phoneNumber: "",
+    homeAddress: "",
     password: "",
     confirmPassword: "",
   };
 
-  const form = useForm<Signup>({
+  const form = useForm<SignUp>({
     defaultValues: defaultState,
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(SignUpSchema),
     mode: "onChange",
   });
 
-  const onSubmit = (values: Partial<Signup>) => {
-    console.log(values);
+  const onSubmit = async (values: SignUp) => {
+    const fullName =
+      `${values.firstName} ${values.middleName} ${values.lastName}`.trim();
+    try {
+      const res = await userRegister({
+        fullName: fullName,
+        phoneNumber: values.phoneNumber,
+        emailAddress: values.emailAddress,
+        homeAddress: values.homeAddress,
+        userRole: "ROLE_FARMER",
+        username: fullName,
+        password: values.password,
+      });
+      if (res) login(res.data.dto);
+      router.push("/booking");
+    } catch (e) {
+      toast({
+        title: "Authentication failed!",
+        description: "Something wrong",
+      });
+    }
   };
 
   return (
@@ -96,9 +76,9 @@ export default function Page() {
               Enter your personal details and start a wonderful journey with us!
             </p>
           </div>
-  
+
           <div className="absolute bottom-0 right-10 w-3/12">
-            <Link href={`/login/`}>
+            <Link href={`/auth/login/`}>
               <Button
                 className="w-full bg-blue-800 my-5 rounded-full hover:bg-blue-900"
                 variant={"default"}
@@ -107,7 +87,7 @@ export default function Page() {
               </Button>
             </Link>
           </div>
-  
+
           {/* Rating box */}
           <div className="rating-box shadow-all">
             <BarChart2Icon
@@ -121,7 +101,7 @@ export default function Page() {
             </div>
           </div>
         </div>
-  
+
         <div className="text-white text-center w-3/5">
           <h1 className="pt-20 pb-10 text-3xl font-bold">Come Join Us!</h1>
           <p className="text-balance">
@@ -130,13 +110,13 @@ export default function Page() {
           </p>
         </div>
       </div>
-  
+
       {/* Right side of the screen, full width on small & medium screens */}
       <div className="flex-[9] flex flex-col justify-center items-center w-full lg:w-auto">
         <h1 className="font-bold text-4xl text-blue whitespace-nowrap py-10">
           Account Creation
         </h1>
-  
+
         <div className="w-4/5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -176,10 +156,10 @@ export default function Page() {
                   )}
                 />
               </div>
-  
+
               {/* Phone Number Field */}
               <FormField
-                name="phone"
+                name="phoneNumber"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -189,10 +169,10 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-  
+
               {/* Email Address Field */}
               <FormField
-                name="email"
+                name="emailAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -202,10 +182,10 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-  
+
               {/* Home Address Field */}
               <FormField
-                name="address"
+                name="homeAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -215,7 +195,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-  
+
               {/* Password Field */}
               <FormField
                 name="password"
@@ -231,7 +211,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-  
+
               {/* Confirm Password Field */}
               <FormField
                 name="confirmPassword"
@@ -247,7 +227,7 @@ export default function Page() {
                   </FormItem>
                 )}
               />
-  
+
               <Button
                 className="w-full mt-4 bg-blue-800 rounded-lg hover:bg-blue-900"
                 variant={"default"}
@@ -257,30 +237,24 @@ export default function Page() {
             </form>
           </Form>
         </div>
-  
+
         {/* Separation Line */}
         <div className="w-2/5 justify-center my-5 flex items-center">
           <Separator className="ml-12" />
           <span className="text-sm"> OR </span>
           <Separator className="mr-12" />
         </div>
-  
+
         {/* Social login*/}
         <div className="flex flex-col justify-center items-center ">
           <Link href={``}>
-            <Button
-              className="mx-2 rounded-full mb-2 w-96"
-              variant={"outline"}
-            >
+            <Button className="mx-2 rounded-full mb-2 w-96" variant={"outline"}>
               Continue with Google
             </Button>
           </Link>
-  
+
           <Link href={``}>
-            <Button
-              className="mx-2 rounded-full w-96 mb-2"
-              variant={"outline"}
-            >
+            <Button className="mx-2 rounded-full w-96 mb-2" variant={"outline"}>
               Continue with Facebook
             </Button>
           </Link>
@@ -288,5 +262,4 @@ export default function Page() {
       </div>
     </div>
   );
-  
 }

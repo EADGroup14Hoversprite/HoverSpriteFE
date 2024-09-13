@@ -1,9 +1,11 @@
 import { createContext, Dispatch, SetStateAction } from "react";
 import { BookingScheduleProps } from "@/models/BookingScheduleProps";
+import { SlotCell } from "@/hooks/useDateMatrix";
 
 export type CalendarContextProps = {
   setScheduleProps: Dispatch<SetStateAction<BookingScheduleProps>>;
   setStartDate: Dispatch<SetStateAction<Date>>;
+  setSelectedSlot: Dispatch<SetStateAction<SlotCell | undefined>>;
 } & BookingScheduleProps;
 
 const CalendarContext = createContext<CalendarContextProps>({
@@ -18,8 +20,10 @@ const CalendarContext = createContext<CalendarContextProps>({
   rowGap: "4px",
   dateFormat: "EEEE",
   timeFormat: "ha",
+  selectedSlot: undefined,
   setStartDate: () => null,
   setScheduleProps: () => null,
+  setSelectedSlot: () => null,
 });
 
 export default CalendarContext;
