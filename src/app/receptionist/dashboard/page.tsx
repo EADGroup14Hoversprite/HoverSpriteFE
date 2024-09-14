@@ -2,20 +2,16 @@ import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "@/components/data-table/column";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+// import { getAllOrders } from "@/actions/order"; // Update with the receptionist order fetching logic
 import { cookies } from "next/headers";
-
-// Placeholder
-// import { getAllOrders } from "@/actions/order"; 
-// import AssignSprayerDropdown from "@/components/assign-sprayer-dropdown"; 
+// import AssignSprayerDropdown from "@/components/assign-sprayer-dropdown"; // Example component for assigning sprayers
 
 export default async function ReceptionistPage() {
   const cookieStore = cookies();
   const session = cookieStore.get("sessionToken")?.value;
 
   if (session) {
-
-    // Placeholder
-    // const getOrders = getAllOrders(session, 0, 10, "status", "ASC"); 
+    // const getOrders = getAllOrders(session, 0, 10, "status", "ASC"); // Fetch all orders instead of only farmer's
 
     return (
       <div>
@@ -42,7 +38,7 @@ export default async function ReceptionistPage() {
                 />
               }
             >
-              {/* AssignSprayer component */}
+              {/* <DataTable ordersPromise={getOrders} columns={columns} extraColumn={AssignSprayerDropdown} /> Add the AssignSprayer component */}
             </Suspense>
           </div>
         </div>
