@@ -1,8 +1,6 @@
 import { OrderType } from "@/schema";
 import { IOrder } from "@/models/Order";
-import axios from "axios";
-
-const backendUrl = "http://localhost:8080";
+import API from "@/utils/axiosClient";
 
 export async function createOrder(
   value: Partial<OrderType>,
@@ -11,40 +9,66 @@ export async function createOrder(
   farmerPhoneNumber: string,
 ) {
   try {
-    const res = await axios.post<{
+    const res = await API.post<{
       message: string;
       order: IOrder;
       error?: boolean;
-    }>(
-      "http://localhost:8080/order",
-      {
-        ...value,
-        farmerName: farmerName,
-        farmerPhoneNumber: farmerPhoneNumber,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-    );
+    }>("/order", {
+      ...value,
+      farmerName: farmerName,
+      farmerPhoneNumber: farmerPhoneNumber,
+    });
     return res.data;
   } catch (e) {
     throw new Error("Unable to create order");
   }
 }
 
-export async function getMyOrders(accessToken: string) {
+export async function getOrderRange(
+  start: number,
+  end: number,
+  sessionToken: string,
+) {
   try {
-    const res = await axios.get<{
+    const res = await API.get<{
       message: string;
       orders: IOrder[];
       error?: boolean;
-    }>(`http://localhost:8080/order/my-orders`, {
+    }>(`/order/by-date-range?startDate=${start}&endDate=${end}`, {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${sessionToken}`,
       },
     });
+    return res.data;
+  } catch (e) {
+    return {
+      message: "Cannot get order in the range",
+      error: true,
+      orders: [],
+    };
+  }
+}
+
+export async function getMyOrders(
+  accessToken: string,
+  page: number,
+  pageSize: number,
+  sortBy: "status",
+  sortDirection: "ASC",
+) {
+  try {
+    const res = await API.get<{
+      message: string;
+      orders: IOrder[];
+      error?: boolean;
+    }>(
+      `/order/my-orders?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
     return res.data;
   } catch (e) {
     return {

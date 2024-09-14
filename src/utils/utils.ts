@@ -1,9 +1,19 @@
-import axios from "axios";
+import { AuthRole, UserRole } from "@/types/role";
 
-const backendUrl =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080";
-
-export const API = axios.create({
-  baseURL: backendUrl,
-  // proxy: false,
-});
+export function getUserImg(authRole: AuthRole, userRole: UserRole) {
+  switch (authRole) {
+    case AuthRole.ROLE_USER:
+      switch (userRole) {
+        case UserRole.ROLE_FARMER:
+          return "/avatar/farmer.png";
+        case UserRole.ROLE_RECEPTIONIST:
+          return "/avatar/receptionist.png";
+        case UserRole.ROLE_SPRAYER:
+          return "/avatar/sprayer.png";
+        default:
+          return "/avatar/farmer.png";
+      }
+    case AuthRole.ROLE_ADMIN:
+      return "/avatar/admin.png";
+  }
+}

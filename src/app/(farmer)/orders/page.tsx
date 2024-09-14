@@ -1,18 +1,17 @@
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "@/components/data-table/column";
-import { getMyOrders } from "@/actions/order";
 import { Suspense } from "react";
-import { auth } from "@/auth";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import { getMyOrders } from "@/actions/order";
+import { cookies } from "next/headers";
 
 export default async function Page() {
-  // const { currentUser } = useUserStore();
   // const [orders, setOrders] = useState<IOrder[]>([]);
-
-  const session = await auth();
+  const cookieStore = cookies();
+  const session = cookieStore.get("sessionToken")?.value;
 
   if (session) {
-    const getOrders = getMyOrders(session.user.accessToken);
+    const getOrders = getMyOrders(session, 0, 10, "status", "ASC");
     return (
       <div>
         <div className="hidden h-full flex-1 flex-col space-y-8 p-4 md:flex">

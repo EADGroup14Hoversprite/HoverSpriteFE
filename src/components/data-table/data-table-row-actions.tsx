@@ -29,6 +29,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { SpraySlot, toSlotString } from "@/models/Booking";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -94,6 +95,12 @@ export function DataTableRowActions<TData>({
                 <div className="flex items-center justify-between">
                   <p className="text-sm">Spray area:</p>
                   <p className="text-sm">{order.farmlandArea} declare</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm">Spray slot:</p>
+                  <p className="text-sm">
+                    {toSlotString(order.timeSlot as SpraySlot)}
+                  </p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-sm">Gregorian date:</p>

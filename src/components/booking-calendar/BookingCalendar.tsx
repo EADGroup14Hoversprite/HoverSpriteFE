@@ -1,8 +1,14 @@
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect } from "react";
+import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 
 import { SlotCell, useDateMatrix } from "@/hooks/useDateMatrix";
-import { addMonths, formatDate, startOfWeek, subMonths } from "date-fns";
+import {
+  addDays,
+  addMonths,
+  formatDate,
+  startOfWeek,
+  subMonths,
+} from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import LucideIcon from "../lucide-icon";
 import { UseFormReturn } from "react-hook-form";
@@ -13,6 +19,9 @@ import { SpraySlot, toSlot, toSlotNum } from "@/models/Booking";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Form, FormField } from "@/components/ui/form";
+import { getOrderRange } from "@/actions/order";
+import { useUserStore } from "@/store/user-store";
+import { IOrder } from "@/models/Order";
 
 function compareDateSlot(first: SlotCell, second: SlotCell) {
   return (
@@ -90,6 +99,23 @@ export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
   } = useCalendarStore.getState().initialState;
 
   const { setStartDate, setSelectedSlot, setSelectedDate } = useCalendarStore();
+  const { currentUser } = useUserStore();
+  const [ordersRange, setOrdersRange] = useState<IOrder[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const endDate = addDays(startDate, 7);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getOrderRange(
+      startDate.getTime() / 1000,
+      endDate.getTime() / 1000,
+      currentUser?.accessToken!,
+    ).then((res) => {
+      setOrdersRange(res.orders);
+      setIsLoading(false);
+    });
+  }, [startDate]);
 
   // const matchesMin568 = useMediaQuery("max-width: 568px");
 
@@ -101,6 +127,7 @@ export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
     endMorning,
     startAfternoon,
     endAfternoon,
+    ordersRange,
   });
 
   const renderTimeLabel = (time: Date) => {
@@ -173,22 +200,28 @@ export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
         // Inject the time label at the start of every row
         dateGridElements.splice(index + i, 0, renderTimeLabel(time.solar));
       }
-      return [
-        // Empty top left corner
-        <div key="topleft" />,
-        // Top row of dates
-        ...dateMatrix.map((dayOfTimes, index) =>
-          React.cloneElement(renderDateLabel(dayOfTimes[0]), {
-            key: `date-${index}`,
-          }),
-        ),
-        // Every row after that
-        ...dateGridElements.map((element, index) =>
-          React.cloneElement(element, { key: `time-${index}` }),
-        ),
-      ];
+      return !isLoading
+        ? [
+            // Empty top left corner
+            <div key="topleft" />,
+            // Top row of dates
+            ...dateMatrix.map((dayOfTimes, index) =>
+              React.cloneElement(renderDateLabel(dayOfTimes[0]), {
+                key: `date-${index}`,
+              }),
+            ),
+            // Every row after that
+            ...dateGridElements.map((element, index) =>
+              React.cloneElement(element, { key: `time-${index}` }),
+            ),
+          ]
+        : new Array(49).fill(
+            <CalendarDateCell>
+              <div className="bg-muted animate-pulse"></div>
+            </CalendarDateCell>,
+          );
     },
-    [dateMatrix, selectedSlot],
+    [dateMatrix, selectedSlot, isLoading],
   );
 
   useEffect(() => {

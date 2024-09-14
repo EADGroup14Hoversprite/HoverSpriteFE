@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import LucideIcon from "@/components/lucide-icon";
 import { useUserStore } from "@/store/user-store";
-import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { signOut } from "@/actions/auth";
 
 interface UserButtonProps {
   currentUser: IUser;
@@ -14,9 +14,8 @@ export function UserButton({ currentUser }: UserButtonProps) {
   const { logout } = useUserStore();
   const router = useRouter();
   const userSignOut = async () => {
-    const res = await signOut({ redirect: false });
+    await signOut();
     logout();
-    return res;
   };
   return (
     <div className="h-full flex items-center gap-2">

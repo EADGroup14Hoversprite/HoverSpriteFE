@@ -1,6 +1,8 @@
 import { addDays, addHours, addMinutes, isBefore, startOfDay } from "date-fns";
 import { useMemo } from "react";
 import { Solar } from "lunar-typescript";
+import { IOrder } from "@/models/Order";
+import { SpraySlot, toSlotNum } from "@/models/Booking";
 
 interface DateMatrixProps {
   numDays: number;
@@ -10,6 +12,7 @@ interface DateMatrixProps {
   endMorning: number;
   startAfternoon: number;
   endAfternoon: number;
+  ordersRange: IOrder[];
 }
 
 export interface SlotCell {
@@ -63,6 +66,7 @@ const createSlotCells = (
   hourChunk: number,
   d: number,
   minutesInChunk: number,
+  slots: Map<number, number>,
 ) => {
   let currentDay: SlotCell[] = [];
   for (let h = start; h < end; h += 1) {
@@ -74,16 +78,68 @@ const createSlotCells = (
           isAvailable: false,
         });
       } else {
-        currentDay.push({
-          ...solarLunar,
-          isAvailable: true,
-        });
+        const date = addHours(addDays(startTime, d), h).getTime();
+        if (slots.get(date) == 2) {
+          currentDay.push({
+            ...solarLunar,
+            isAvailable: false,
+          });
+        } else {
+          currentDay.push({
+            ...solarLunar,
+            isAvailable: true,
+          });
+        }
       }
     }
   }
   return currentDay;
 };
 
+function transformBookings(bookings: IOrder[]) {
+  let slotsMap: Map<number, number> = new Map();
+  bookings.forEach((booking) => {
+    const date = addHours(
+      new Date(booking.desiredDate * 1000),
+      toSlotNum(booking.timeSlot as SpraySlot) - 7,
+    );
+    if (slotsMap.has(date.getTime())) {
+      slotsMap.set(date.getTime(), slotsMap.get(date.getTime())! + 1);
+    } else {
+      slotsMap.set(date.getTime(), 1);
+    }
+  });
+  console.log(slotsMap);
+  return slotsMap;
+  // bookings.forEach((booking) => {
+  //   console.log(bookings);
+  //   const { desiredDate, timeSlot } = booking;
+  //
+  //   // Extract the slot number from the timeSlot string
+  //   const slotNumber = toSlotNum(timeSlot as SpraySlot);
+  //
+  //   // If the desiredDate doesn't exist in the transformedData, create it
+  //   if (!transformedData[desiredDate]) {
+  //     transformedData[desiredDate] = {};
+  //   }
+  //
+  //   // Add or increment the count for this timeSlot
+  //   if (transformedData[desiredDate][slotNumber]) {
+  //     transformedData[desiredDate][slotNumber]++;
+  //   } else {
+  //     transformedData[desiredDate][slotNumber] = 1;
+  //   }
+  // });
+  //
+  // // Convert the transformedData object to the desired array format
+  // const result: TransformedBooking[] = Object.entries(transformedData).map(
+  //   ([desireDate, timeSlots]) => ({
+  //     [desireDate]: timeSlots,
+  //   }),
+  // );
+
+  // return res;
+}
 export const useDateMatrix = ({
   numDays,
   startDate,
@@ -92,7 +148,9 @@ export const useDateMatrix = ({
   endMorning,
   startAfternoon,
   endAfternoon,
+  ordersRange,
 }: DateMatrixProps) => {
+  const occupiedSlots = transformBookings(ordersRange);
   return useMemo(() => {
     const startTime = startOfDay(startDate);
     const dates: Array<Array<SlotCell>> = [];
@@ -107,6 +165,7 @@ export const useDateMatrix = ({
           hourChunk,
           d,
           minutesInChunk,
+          occupiedSlots,
         ),
       );
       currentDay.push(
@@ -117,6 +176,7 @@ export const useDateMatrix = ({
           hourChunk,
           d,
           minutesInChunk,
+          occupiedSlots,
         ),
       );
       dates.push(currentDay);
@@ -130,5 +190,6 @@ export const useDateMatrix = ({
     hourChunk,
     startMorning,
     endMorning,
+    ordersRange,
   ]);
 };

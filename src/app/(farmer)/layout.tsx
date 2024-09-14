@@ -1,24 +1,15 @@
 "use client";
-import React, { PropsWithChildren, useEffect } from "react";
+import React, { PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar, Sidebar } from "@/components/layout";
 import { useSidebarToggle } from "@/store/use-sidebar-toggle";
 import DynamicBreadcrumb from "@/components/dynamic-breadcrumb/DynamicBreadcrumb";
-import { useSession } from "next-auth/react";
-import { useUserStore } from "@/store/user-store";
 import { Toaster } from "sonner";
+import { useUserStore } from "@/store/user-store";
 
 export default function Layout({ children }: PropsWithChildren) {
   const { isOpen } = useSidebarToggle();
-  const { login, logout, currentUser } = useUserStore();
-  const { data: session } = useSession();
-  useEffect(() => {
-    if (session) {
-      login(session.user);
-    } else {
-      logout();
-    }
-  }, [session?.user]);
+  const { currentUser } = useUserStore();
   return (
     <div className="flex h-full w-full">
       <Sidebar />
@@ -41,4 +32,20 @@ export default function Layout({ children }: PropsWithChildren) {
       <Toaster />
     </div>
   );
+  // : (
+  //     <div className={"bg-black/50 h-screen flex items-center justify-center"}>
+  //         <div className="flex flex-col gap-6 rounded-md p-4 border border-solid border-black w-[500px] bg-white">
+  //             <div className="flex flex-col gap-2">
+  //                 <p className="font-semibold text-lg">Session expired!</p>
+  //                 <p className="text-sm">
+  //                     It looks like your session has been expired! Please login again
+  //                 </p>
+  //             </div>
+  //             <Link href={"/auth/login"}>
+  //                 <Button>Login</Button>
+  //             </Link>
+  //         </div>
+  //         <Toaster />
+  //     </div>
+  // )
 }

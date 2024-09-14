@@ -22,7 +22,7 @@ export async function giveFeedback(
         },
       },
     );
-    return res;
+    return res.data;
   } catch (e) {
     throw new Error("Unable to create feedback");
   }
