@@ -7,14 +7,16 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 
 export default function LandingPage() {
-  return (
-    <main className="bg-gray-50 scroll-smooth scroll-snap-y scroll-snap-mandatory">
-      <Header />
-      <Hero />
-      <Features />
-      <Testimonials />
-      <Contact />
-      <Footer />
-    </main>
-  );
-}
+    return (
+      <main className="bg-gray-50 overflow-y-auto h-screen scroll-snap-y scroll-snap-mandatory">
+        <Header />
+        <div className="snap-container">
+          <Hero />
+          <Features />
+          <Testimonials />
+          <Contact />
+          <Footer />
+        </div>
+      </main>
+    );
+  }
