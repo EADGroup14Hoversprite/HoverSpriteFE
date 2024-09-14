@@ -11,8 +11,6 @@ export async function userRegister(values: {
 }) {
   try {
     const res = await axios.post<{message: string; dto: IUser}>("http://localhost:8080/auth/register", {
-
-  
         fullName: values.fullName,
         phoneNumber: values.phoneNumber,
         emailAddress: values.emailAddress,

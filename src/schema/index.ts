@@ -54,27 +54,25 @@ export const signInSchema = z.object({
 
 export type SignIn = z.infer<typeof signInSchema>;
 
-const passwordValidation = new RegExp(
-  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@$%^&*-]).{8,}$/
-);
-const phoneValidation = new RegExp(/^(0|\+84)\s?\d{2,3}\s?\d{3}\s?\d{3,4}$/);
-const nameValidation = new RegExp(/^(?!.*[A-Z]{2}).*$/);
+const passwordValidation = new RegExp(/^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/);
+const phoneValidation = new RegExp(/^((\+84\s\d{3}\s\d{3}\s\d{3})|(0\d{3}\s\d{3}\s\d{3})|((\+84|0)\d{9}))$/);
+const nameValidation = new RegExp(/^(?=\b[A-Za-z]*[A-Z][a-z]*[A-Z]?[a-z]*\b)[A-Za-z ]+$/);
+const emailValidation = new RegExp(/^[\w.-]+@(hoversprite\.(com|vn)|gmail\.com)$/);
 
 export const SignUpSchema = z
   .object({
-    lastName: z
+    fullName: z
       .string()
-      .min(2, { message: "Invalid name" })
-      .regex(nameValidation, { message: "Invalid name" }),
-    middleName: z.string().regex(nameValidation, { message: "Invalid name" }),
-    firstName: z
-      .string()
-      .min(2, { message: "Invalid name" })
-      .regex(nameValidation, { message: "Invalid name" }),
+      .min(2, { message: "Name is too short" })
+      .regex(nameValidation, { message: "Full name cannot have more than 2 capitalized letters in a word and must contain only letters and spaces" }),
     emailAddress: z
       .string()
-      .email({ message: "invalid email" })
-      .min(6, { message: "invalid email" }),
+      .email({ message: "Email must follow the format with a domain of @hoversprite.com, @hoversprite.vn, or @gmail.com." })
+      .min(10, { message: "Invalid email format" })
+      .regex(emailValidation, {
+        message:
+          "Email must follow the format with a domain of @hoversprite.com, @hoversprite.vn, or @gmail.com.",
+      }),
     phoneNumber: z
       .string()
       .min(1, { message: "Please enter your phone number" })
@@ -85,10 +83,10 @@ export const SignUpSchema = z
     homeAddress: z.string().min(1, { message: "Please enter your address" }),
     password: z
       .string()
-      .min(8, { message: "Password must have at least 8 characters" })
+      .min(6, { message: "Password must have at least 6 characters" })
       .regex(passwordValidation, {
         message:
-          "Your password must contain at least one lowercase, one uppercase and one special character",
+          "Password must be at least 6 characters long, contain at least 1 number, and 1 special character",
       }),
     confirmPassword: z.string(),
   })

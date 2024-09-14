@@ -26,9 +26,7 @@ export default function Page() {
   const { login } = useUserStore();
 
   const defaultState: SignUp = {
-    lastName: "",
-    middleName: "",
-    firstName: "",
+    fullName: "",
     emailAddress: "",
     phoneNumber: "",
     homeAddress: "",
@@ -43,11 +41,9 @@ export default function Page() {
   });
 
   const onSubmit = async (values: SignUp) => {
-    const fullName =
-      `${values.firstName} ${values.middleName} ${values.lastName}`.trim();
     try {
       const res = await userRegister({
-        fullName: fullName,
+        fullName: values.fullName,
         phoneNumber: values.phoneNumber,
         emailAddress: values.emailAddress,
         homeAddress: values.homeAddress,
@@ -119,42 +115,17 @@ export default function Page() {
         <div className="w-4/5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              {/* Name Fields: Last Name, Middle Name, First Name */}
-              <div className="flex gap-4 mb-3">
-                <FormField
-                  name="lastName"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem className="flex-1 basis-1/3">
-                      <FormLabel>Last Name</FormLabel>
-                      <Input {...field} placeholder="Your last name:" />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="middleName"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem className="flex-1 basis-1/2">
-                      <FormLabel>Middle Name</FormLabel>
-                      <Input {...field} placeholder="Your middle name:" />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="firstName"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem className="flex-1 basis-1/3">
-                      <FormLabel>First Name</FormLabel>
-                      <Input {...field} placeholder="Your first name:" />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+              <FormField
+                name="fullName"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="mb-3">
+                    <FormLabel>Full Name</FormLabel>
+                    <Input {...field} placeholder="Enter your full name:" />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               {/* Phone Number Field */}
               <FormField
