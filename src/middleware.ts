@@ -1,4 +1,30 @@
-export { auth as middleware } from "@/auth";
+import { jwtDecode } from "jwt-decode";
+import { JWTPayload } from "@/types/user";
+import { UserRole } from "@/types/role";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+
+const protectedPath = ["/booking", "/orders"];
+const authPath = ["/auth/login", "auth/signup"];
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  const sessionToken = req.cookies.get("sessionToken");
+  if (
+    protectedPath.some((path) => pathname.startsWith(path)) &&
+    !sessionToken
+  ) {
+    return NextResponse.redirect(new URL("auth/login", req.url));
+  }
+  if (authPath.some((path) => pathname.startsWith(path)) && sessionToken) {
+    const decodeData = jwtDecode<JWTPayload>(sessionToken.value);
+    if (decodeData.userRole === UserRole.ROLE_FARMER) {
+      return NextResponse.redirect(new URL("/orders", req.url));
+    }
+  }
+  return NextResponse.next();
+}
+
 export const config = {
   matcher: [
     /*
@@ -6,8 +32,8 @@ export const config = {
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     * - favicon.ico (favicon file)
      */
-    "/((?!api|auth|sprayer|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
 };

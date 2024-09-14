@@ -1,18 +1,26 @@
-import { SessionProvider } from "next-auth/react";
-import { PropsWithChildren, useMemo } from "react";
-import { Session } from "next-auth";
+"use client";
+import { Fragment, PropsWithChildren, useEffect, useState } from "react";
+import { useUserStore } from "@/store/user-store";
+import { getMe } from "@/actions/auth";
+import { clientSessionToken } from "@/utils/axiosClient";
 
 export default function SessionWrapper({
   children,
   session,
-  sessionKey,
-}: PropsWithChildren<{ session: Session | null; sessionKey: number }>) {
-  const memoizedSessionKey = useMemo(() => {
-    return sessionKey;
+}: PropsWithChildren<{ session: string }>) {
+  const { login } = useUserStore();
+  if (typeof window !== "undefined") {
+    useState(() => {
+      clientSessionToken.value = session;
+    });
+  }
+  useEffect(() => {
+    (async () => {
+      const res = await getMe(session);
+      if (!res.error) {
+        login(res.dto!);
+      }
+    })();
   }, [session]);
-  return (
-    <SessionProvider key={memoizedSessionKey} session={session}>
-      {children}
-    </SessionProvider>
-  );
+  return <Fragment>{children}</Fragment>;
 }

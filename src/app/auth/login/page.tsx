@@ -18,15 +18,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { SignIn, signInSchema } from "@/schema";
-import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { login } from "@/actions/auth";
+import { auth, login, loginWithGoogle } from "@/actions/auth";
+import { toast } from "sonner";
+import { useUserStore } from "@/store/user-store";
 
 export default function Page() {
-  const { toast } = useToast();
-  // const { data: session, status } = useSession();
   const router = useRouter();
 
+  const { setCurrentUser } = useUserStore();
   const defaultState: SignIn = {
     emailOrPhone: "",
     password: "",
@@ -39,17 +39,38 @@ export default function Page() {
   });
 
   const onSubmit = async (values: SignIn) => {
-    const res = await login({
+    const userLogin = login({
       emailOrPhone: values.emailOrPhone,
       password: values.password,
     });
+
+    toast.promise(userLogin, {
+      loading: "Authenticating user...",
+      success: async (data) => {
+        setCurrentUser(data);
+        await auth(data);
+        router.push("/orders");
+        return `Login successfully!`;
+      },
+      error: (e) => {
+        switch (e.response.status) {
+          case 401:
+            return e.response.data.message as string;
+          case 404:
+            return e.response.data.message as string;
+          default:
+            return "Internal Server Error";
+        }
+      },
+    });
+  };
+
+  const loginGoogle = async () => {
+    const res = await loginWithGoogle();
     if (res.error) {
-      toast({
-        title: "Authentication failed!",
-        description: res.error,
-      });
+      toast.error("Something went wrong");
     } else {
-      router.push("/booking");
+      router.push(res.redirectUrl);
     }
   };
 
@@ -123,14 +144,15 @@ export default function Page() {
 
         {/* Social login*/}
         <div className="flex flex-col justify-center items-center">
-          <Link href={``}>
-            <Button
-              className="mx-2 rounded-full mb-2 w-96 "
-              variant={"outline"}
-            >
-              Continue with Google
-            </Button>
-          </Link>
+          {/*<Link href={``}>*/}
+          <Button
+            className="mx-2 rounded-full mb-2 w-96 "
+            variant={"outline"}
+            onClick={() => loginGoogle()}
+          >
+            Continue with Google
+          </Button>
+          {/*</Link>*/}
 
           <Link href={``}>
             <Button className="mx-2 rounded-full w-96 mb-2" variant={"outline"}>

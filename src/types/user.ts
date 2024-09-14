@@ -1,5 +1,5 @@
 import { Expertise } from "@/types/expertise";
-import { AuthRole } from "@/types/role";
+import { AuthRole, UserRole } from "@/types/role";
 
 export interface IUser {
   id: string;
