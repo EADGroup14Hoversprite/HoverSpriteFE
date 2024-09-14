@@ -7,7 +7,6 @@ export async function userRegister(values: {
   emailAddress: string;
   homeAddress: string;
   userRole: string;
-  username: string;
   password: string;
 }) {
   try {
@@ -19,7 +18,6 @@ export async function userRegister(values: {
         emailAddress: values.emailAddress,
         homeAddress: values.homeAddress,
         userRole: values.userRole,
-        username: values.username,
         password: values.password,
 
     });

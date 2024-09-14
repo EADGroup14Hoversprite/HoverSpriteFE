@@ -52,7 +52,6 @@ export default function Page() {
         emailAddress: values.emailAddress,
         homeAddress: values.homeAddress,
         userRole: "ROLE_FARMER",
-        username: fullName,
         password: values.password,
       });
       if (res) login(res.data.dto);
