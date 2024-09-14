@@ -12,7 +12,7 @@ export default function Header() {
         <div className="flex justify-between items-center py-4">
           <a href="/" className="flex items-center space-x-3">
             <Image
-              src="/hoversprite-logo.svg"
+              src="/hoversprite-logo.png"
               alt="HoverSprite Logo"
               width={40}
               height={40}
