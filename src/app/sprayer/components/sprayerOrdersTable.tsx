@@ -31,31 +31,64 @@ const SprayerOrderTable: React.FC = () => {
 
 
   // Could not fetch orders from the server, so I'm using a dummy data
+  // const fetchOrders = async () => {
+  //   try {
+  //     //Token just for testing
+  //     const token =
+  //       "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
+  //     const response = await fetch("http://localhost:8080/order/assigned", {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch orders");
+  //     }
+
+  //     const data = await response.json();
+  //     setOrders(data.orders);
+  //     setLoading(false);
+  //   } catch (err) {
+  //     setError("Failed to load orders.");
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchOrders = async () => {
     try {
-      //Token just for testing
-      const token =
-        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
-      const response = await fetch("http://localhost:8080/order/assigned", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      // Temporarily bypassing the fetch and returning a dummy order for testing
+      const dummyOrders: Order[] = [
+        {
+          id: "12345",
+          status: "ASSIGNED",
+          bookerId: 1,
+          cropType: "Rice",
+          farmerName: "John Doe",
+          farmerPhoneNumber: "1234567890",
+          address: "123 Main Street",
+          location: "Somewhere, Country",
+          farmlandArea: 5,
+          desiredDate: "2024-09-16",
+          totalCost: 500000,
+          timeSlot: "Morning",
+          paymentMethod: "Credit Card",
+          paymentStatus: "Payment accepted",
+          createdAt: "2024-09-10",
+          updatedAt: "2024-09-12",
         },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch orders");
-      }
-
-      const data = await response.json();
-      setOrders(data.orders);
-      setLoading(false);
+      ];
+  
+      setOrders(dummyOrders); // Set the dummy order data
+      setLoading(false); // Update loading state
     } catch (err) {
       setError("Failed to load orders.");
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchOrders();
