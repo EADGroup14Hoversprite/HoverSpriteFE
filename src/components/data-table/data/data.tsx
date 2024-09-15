@@ -1,41 +1,50 @@
-import { icons } from "lucide-react";
+import {
+  Ban,
+  Check,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Loader,
+  UserCheck,
+  X,
+} from "lucide-react";
 
 export const statuses = [
   {
     value: "pending",
     label: "Pending",
     classes: "border-yellow-400 text-yellow-700 bg-yellow-100",
-    icon: "Clock" as keyof typeof icons,
+    icon: Clock,
   },
   {
     value: "cancelled",
     label: "Cancelled",
     classes: "border-red-400 text-red-700 bg-red-100",
-    icon: "X" as keyof typeof icons,
+    icon: X,
   },
   {
     value: "confirmed",
     label: "Confirmed",
     classes: "border-green-400 text-green-700 bg-green-100",
-    icon: "Check" as keyof typeof icons,
+    icon: Check,
   },
   {
     value: "assigned",
     label: "Assigned",
     classes: "border-blue-400 text-blue-700 bg-blue-100",
-    icon: "UserCheck" as keyof typeof icons,
+    icon: UserCheck,
   },
   {
     value: "in-progressed",
     label: "In Progress",
     classes: "border-purple-400 text-purple-700 bg-purple-100",
-    icon: "Loader" as keyof typeof icons,
+    icon: Loader,
   },
   {
     value: "completed",
     label: "Completed",
     classes: "border-teal-400 text-teal-700 bg-teal-100",
-    icon: "CheckCircle" as keyof typeof icons,
+    icon: CheckCircle,
   },
 ];
 
@@ -44,13 +53,13 @@ export const paymentStatuses = [
     value: true,
     label: "Paid",
     classes: "border-green-400 text-green-700 bg-green-100",
-    icon: "DollarSign" as keyof typeof icons,
+    icon: DollarSign,
   },
   {
     value: false,
     label: "Unpaid",
     classes: "border-red-400 text-red-700 bg-red-100",
-    icon: "Ban" as keyof typeof icons,
+    icon: Ban,
   },
 ];
 // export const statuses = [

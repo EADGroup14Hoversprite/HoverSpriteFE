@@ -69,16 +69,18 @@ const SprayerOrderTable: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const assignedOrders = orders.filter(order => order.status !== "COMPLETED");
-  const completedOrders = orders.filter(order => order.status === "COMPLETED");
+  const assignedOrders = orders.filter((order) => order.status !== "COMPLETED");
+  const completedOrders = orders.filter(
+    (order) => order.status === "COMPLETED",
+  );
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-semibold mb-4">Assigned Orders</h1>
-  
+
       {loading && <p>Loading orders...</p>}
       {error && <p className="text-red-500">{error}</p>}
-  
+
       {!loading && !error && (
         <div className="overflow-x-auto">
           {/* First table: Assigned Orders */}
@@ -128,11 +130,11 @@ const SprayerOrderTable: React.FC = () => {
               ))}
             </tbody>
           </table>
-  
+
           {isModalOpen && selectedOrder && (
             <OrderModal order={selectedOrder} onClose={closeOrderModal} />
           )}
-  
+
           {/* Second table: Order History */}
           <h2 className="text-2xl font-semibold mb-4">Order History</h2>
           <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
@@ -185,7 +187,6 @@ const SprayerOrderTable: React.FC = () => {
       )}
     </div>
   );
-  
 };
 
 export default SprayerOrderTable;

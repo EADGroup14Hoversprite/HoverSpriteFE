@@ -79,7 +79,8 @@ const createSlotCells = (
         });
       } else {
         const date = addHours(addDays(startTime, d), h).getTime();
-        if (slots.get(date) == 2) {
+
+        if (slots.get(date) === 2) {
           currentDay.push({
             ...solarLunar,
             isAvailable: false,
@@ -96,7 +97,7 @@ const createSlotCells = (
   return currentDay;
 };
 
-function transformBookings(bookings: IOrder[]) {
+export function transformBookings(bookings: IOrder[]) {
   let slotsMap: Map<number, number> = new Map();
   bookings.forEach((booking) => {
     const date = addHours(
@@ -109,36 +110,7 @@ function transformBookings(bookings: IOrder[]) {
       slotsMap.set(date.getTime(), 1);
     }
   });
-  console.log(slotsMap);
   return slotsMap;
-  // bookings.forEach((booking) => {
-  //   console.log(bookings);
-  //   const { desiredDate, timeSlot } = booking;
-  //
-  //   // Extract the slot number from the timeSlot string
-  //   const slotNumber = toSlotNum(timeSlot as SpraySlot);
-  //
-  //   // If the desiredDate doesn't exist in the transformedData, create it
-  //   if (!transformedData[desiredDate]) {
-  //     transformedData[desiredDate] = {};
-  //   }
-  //
-  //   // Add or increment the count for this timeSlot
-  //   if (transformedData[desiredDate][slotNumber]) {
-  //     transformedData[desiredDate][slotNumber]++;
-  //   } else {
-  //     transformedData[desiredDate][slotNumber] = 1;
-  //   }
-  // });
-  //
-  // // Convert the transformedData object to the desired array format
-  // const result: TransformedBooking[] = Object.entries(transformedData).map(
-  //   ([desireDate, timeSlots]) => ({
-  //     [desireDate]: timeSlots,
-  //   }),
-  // );
-
-  // return res;
 }
 export const useDateMatrix = ({
   numDays,

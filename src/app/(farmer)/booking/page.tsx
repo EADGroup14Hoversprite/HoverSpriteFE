@@ -7,13 +7,15 @@ import { SpraySlot } from "@/models/Booking";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BookingComponent from "@/app/(farmer)/booking/_component/BookingComponent";
 import { PaymentType } from "@/types/payment";
+import { useCalendarStore } from "@/store/calendar-store";
 
 export default function Page() {
+  const { initialState } = useCalendarStore();
   const defaultValues: OrderType = {
     farmerId: "",
     farmlandArea: 0,
     cropType: CropType.FRUIT,
-    desiredDate: new Date(),
+    desiredDate: initialState.startDate,
     timeSlot: SpraySlot.SLOT_4,
     location: {
       latitude: 0,

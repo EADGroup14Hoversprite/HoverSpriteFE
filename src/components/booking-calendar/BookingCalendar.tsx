@@ -1,26 +1,18 @@
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect, useState } from "react";
+import { PropsWithChildren, useCallback } from "react";
 
 import { SlotCell, useDateMatrix } from "@/hooks/useDateMatrix";
-import {
-  addDays,
-  addMonths,
-  formatDate,
-  startOfWeek,
-  subMonths,
-} from "date-fns";
+import { addMonths, formatDate, startOfWeek, subMonths } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import LucideIcon from "../lucide-icon";
 import { UseFormReturn } from "react-hook-form";
 import { OrderType } from "@/schema";
 import { DateInput } from "@/app/(farmer)/booking/_component/FormField";
 import { useCalendarStore } from "@/store/calendar-store";
-import { SpraySlot, toSlot, toSlotNum } from "@/models/Booking";
+import { SpraySlot, toSlot } from "@/models/Booking";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Form, FormField } from "@/components/ui/form";
-import { getOrderRange } from "@/actions/order";
-import { useUserStore } from "@/store/user-store";
 import { IOrder } from "@/models/Order";
 
 function compareDateSlot(first: SlotCell, second: SlotCell) {
@@ -79,9 +71,15 @@ const CalendarBody = ({
 
 interface BookingCalendarProps {
   bookingForm: UseFormReturn<OrderType>;
+  orders: IOrder[];
+  isLoading: boolean;
 }
 
-export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
+export function BookingCalendar({
+  bookingForm,
+  orders,
+  isLoading,
+}: BookingCalendarProps) {
   const {
     numDays,
     rowGap,
@@ -99,24 +97,6 @@ export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
   } = useCalendarStore.getState().initialState;
 
   const { setStartDate, setSelectedSlot, setSelectedDate } = useCalendarStore();
-  const { currentUser } = useUserStore();
-  const [ordersRange, setOrdersRange] = useState<IOrder[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const endDate = addDays(startDate, 7);
-
-  useEffect(() => {
-    setIsLoading(true);
-    getOrderRange(
-      startDate.getTime() / 1000,
-      endDate.getTime() / 1000,
-      currentUser?.accessToken!,
-    ).then((res) => {
-      setOrdersRange(res.orders);
-      setIsLoading(false);
-    });
-  }, [startDate]);
-
   // const matchesMin568 = useMediaQuery("max-width: 568px");
 
   const dateMatrix = useDateMatrix({
@@ -127,8 +107,12 @@ export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
     endMorning,
     startAfternoon,
     endAfternoon,
-    ordersRange,
+    ordersRange: orders,
   });
+
+  // useEffect(() => {
+  //   console.log(bookingForm.getValues("desiredDate"));
+  // }, []);
 
   const renderTimeLabel = (time: Date) => {
     return <div>{formatDate(time, timeFormat)}</div>;
@@ -175,6 +159,7 @@ export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
             role="button"
             onClick={() => {
               if (slot.isAvailable) {
+                console.log(slot.solar);
                 bookingForm.setValue("desiredDate", slot.solar);
                 onSlotUpdate(toSlot(slot.solar.getHours()));
                 setSelectedSlot(slot);
@@ -215,27 +200,17 @@ export function BookingCalendar({ bookingForm }: BookingCalendarProps) {
               React.cloneElement(element, { key: `time-${index}` }),
             ),
           ]
-        : new Array(49).fill(
-            <CalendarDateCell>
-              <div className="bg-muted animate-pulse"></div>
-            </CalendarDateCell>,
-          );
+        : [
+            <div key="topleft" />,
+            ...new Array(48).fill(null).map((_, index) => (
+              <CalendarDateCell key={`cell-${index}`}>
+                <div className="bg-muted animate-pulse"></div>
+              </CalendarDateCell>
+            )),
+          ];
     },
     [dateMatrix, selectedSlot, isLoading],
   );
-
-  useEffect(() => {
-    const desireDates = bookingForm.getValues("desiredDate");
-    const slot = bookingForm.getValues("timeSlot");
-    if (selectedSlot) {
-      if (desireDates.getHours() > toSlotNum(slot)) {
-        bookingForm.setValue(
-          "timeSlot",
-          toSlot(selectedSlot?.solar.getHours()),
-        );
-      }
-    }
-  });
 
   return (
     <div className="w-full">

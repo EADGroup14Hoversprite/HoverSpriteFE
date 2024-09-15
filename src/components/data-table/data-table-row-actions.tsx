@@ -1,10 +1,10 @@
 "use client";
 
 import { Row } from "@tanstack/react-table";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IOrderSchema } from "@/models/Order";
-import { ListCollapse, Pencil, SquarePen } from "lucide-react";
+import { ListCollapse, ScanEye, SquarePen } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -19,27 +19,24 @@ import { Separator } from "@/components/ui/separator";
 import { getLunarDate } from "@/hooks/useDateMatrix";
 import { paymentStatuses, statuses } from "@/components/data-table/data/data";
 import { Badge } from "@/components/ui/badge";
-import LucideIcon from "@/components/lucide-icon";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SpraySlot, toSlotString } from "@/models/Booking";
 import { PaymentType, toPaymentString } from "@/types/payment";
+import FeedbackForm from "@/app/(farmer)/orders/_component/feedback/FeedbackForm";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
-  feedbackForm: React.ReactNode;
 }
 
 export function DataTableRowActions<TData>({
   row,
-  feedbackForm,
 }: DataTableRowActionsProps<TData>) {
   const order = IOrderSchema.parse(row.original);
   const paymentStatus = paymentStatuses.find(
@@ -49,6 +46,8 @@ export function DataTableRowActions<TData>({
   const status = statuses.find(
     (status) => status.value === order.status.toLowerCase(),
   );
+
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <div className="flex items-center gap-2">
@@ -75,7 +74,7 @@ export function DataTableRowActions<TData>({
                   variant="outline"
                   className={`${status?.classes} font-semibold flex items-center gap-1 w-fit`}
                 >
-                  <LucideIcon name={status?.icon!} size={16} />
+                  {status && <status.icon size={16} />}
                   {status?.label}
                 </Badge>
               </div>
@@ -136,7 +135,7 @@ export function DataTableRowActions<TData>({
                     variant="outline"
                     className={`${paymentStatus?.classes} font-semibold flex items-center gap-1 w-fit`}
                   >
-                    <LucideIcon name={paymentStatus?.icon!} size={16} />
+                    {paymentStatus && <paymentStatus.icon size={16} />}
                     {paymentStatus?.label}
                   </Badge>
                 </div>
@@ -172,7 +171,7 @@ export function DataTableRowActions<TData>({
                         variant="outline"
                         className={`${paymentStatus?.classes} font-semibold flex items-center gap-1 w-fit`}
                       >
-                        <LucideIcon name={paymentStatus?.icon!} size={16} />
+                        {paymentStatus && <paymentStatus.icon size={16} />}
                         {paymentStatus?.label}
                       </Badge>
                     </div>
@@ -198,24 +197,24 @@ export function DataTableRowActions<TData>({
           </SheetFooter>
         </SheetContent>
       </Sheet>
-      <Button
-        variant="outline"
-        className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
-      >
-        <Pencil className="h-4 w-4" />
-        <span>Edit</span>
-      </Button>
-      {/*<Tooltip delayDuration={0.5}>*/}
-      {/*  <TooltipTrigger>*/}
-      <Dialog>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
           <Button
             variant="outline"
             disabled={status?.value !== "completed"}
             className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
           >
-            <SquarePen className="h-4 w-4" />
-            <span>Feedback</span>
+            {order.hasFeedback ? (
+              <>
+                <ScanEye className="h-4 w-4" />
+                <span>View Feedback</span>
+              </>
+            ) : (
+              <>
+                <SquarePen className="h-4 w-4" />
+                <span>Feedback</span>
+              </>
+            )}
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -225,9 +224,8 @@ export function DataTableRowActions<TData>({
               Your feedback is valuable for our future improvement!
             </DialogDescription>
           </DialogHeader>
-          {feedbackForm}
+          <FeedbackForm order={order} setDialogOpen={setDialogOpen} />
         </DialogContent>
-        <DialogFooter></DialogFooter>
       </Dialog>
       {/*  </TooltipTrigger>*/}
       {/*  <TooltipContent align="start" side="bottom">*/}

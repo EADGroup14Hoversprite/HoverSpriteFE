@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -28,16 +28,17 @@ import { IOrder } from "@/models/Order";
 import { useUserStore } from "@/store/user-store";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 const MAX_CHARACTERS = 500;
 
 interface FeedbackFormProps {
   order: IOrder;
+  setDialogOpen: (open: boolean) => void;
 }
 
-const FeedbackForm = ({ order }: FeedbackFormProps) => {
+const FeedbackForm = ({ order, setDialogOpen }: FeedbackFormProps) => {
   const { currentUser } = useUserStore();
-  const [isCreating, setIsCreating] = useState<boolean>(false);
   const router = useRouter();
   const form = useForm<FeedbackCreateType>({
     resolver: zodResolver(feedbackCreateSchema),
@@ -47,25 +48,26 @@ const FeedbackForm = ({ order }: FeedbackFormProps) => {
       attentive: 3,
       friendly: 3,
       professional: 3,
+      images: [],
     },
   });
 
   const onSubmit = (data: FeedbackCreateType) => {
-    setIsCreating(true);
     const createFeedback = giveFeedback(
       { ...data },
       order.id,
       currentUser?.accessToken!,
     );
     toast.promise(createFeedback, {
-      loading: "Creating your order...",
+      loading: "Creating your feedback...",
       success: () => {
-        router.push("/orders");
-        return `Order has been created successfully.`;
+        router.refresh();
+        // revalidatePath("/orders");
+        setDialogOpen(false);
+        return `Feedback has been created successfully.`;
       },
       error: () => {
-        setIsCreating(false);
-        return "Failed to create order";
+        return "Failed to create feedback";
       },
     });
   };
@@ -205,7 +207,35 @@ const FeedbackForm = ({ order }: FeedbackFormProps) => {
           )}
         />
 
-        <Button type="submit" disabled={isCreating}>
+        <FormField
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Upload Images</FormLabel>
+              <FormControl>
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    field.onChange(files);
+                  }}
+                />
+              </FormControl>
+              <FormDescription>
+                Upload images related to your feedback (optional).
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button
+          type="submit"
+          disabled={form.formState.isSubmitting || !form.formState.isValid}
+        >
           Submit Feedback
         </Button>
       </form>
