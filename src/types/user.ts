@@ -14,6 +14,8 @@ export interface IUser {
   authRole: "ROLE_USER" | "ROLE_ADMIN";
   userRole: "ROLE_FARMER" | "ROLE_RECEPTIONIST" | "ROLE_SPRAYER";
   accessToken: string;
+  googleId: string | null;
+  facebookId: string | null;
 }
 
 export interface ResIUser {

@@ -1,4 +1,4 @@
-import RedirectRegisterForm from "@/app/auth/signup/_component/RedirectRegisterForm";
+import RedirectRegisterForm from "@/app/auth/_component/RedirectRegisterForm";
 import { cookies } from "next/headers";
 
 export default function Page() {

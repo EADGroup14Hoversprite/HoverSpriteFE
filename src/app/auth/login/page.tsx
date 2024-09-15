@@ -19,9 +19,10 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { SignIn, signInSchema } from "@/schema";
 import { useRouter } from "next/navigation";
-import { auth, login, loginWithGoogle } from "@/actions/auth";
+import { auth, login, loginWithFb, loginWithGoogle } from "@/actions/auth";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/user-store";
+import { clientSessionToken } from "@/utils/axiosClient";
 
 export default function Page() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function Page() {
       loading: "Authenticating user...",
       success: async (data) => {
         setCurrentUser(data);
+        clientSessionToken.value = data.accessToken;
         await auth(data);
         router.push("/orders");
         return `Login successfully!`;
@@ -67,6 +69,15 @@ export default function Page() {
 
   const loginGoogle = async () => {
     const res = await loginWithGoogle();
+    if (res.error) {
+      toast.error("Something went wrong");
+    } else {
+      router.push(res.redirectUrl);
+    }
+  };
+
+  const loginFb = async () => {
+    const res = await loginWithFb();
     if (res.error) {
       toast.error("Something went wrong");
     } else {
@@ -154,11 +165,13 @@ export default function Page() {
           </Button>
           {/*</Link>*/}
 
-          <Link href={``}>
-            <Button className="mx-2 rounded-full w-96 mb-2" variant={"outline"}>
-              Continue with Facebook
-            </Button>
-          </Link>
+          <Button
+            className="mx-2 rounded-full mb-2 w-96 "
+            variant={"outline"}
+            onClick={() => loginFb()}
+          >
+            Continue with Facebook
+          </Button>
 
           <div className="pt-5">
             <span className="font-light text-sm"> Don't have an account?</span>

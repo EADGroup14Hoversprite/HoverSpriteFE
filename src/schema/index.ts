@@ -54,20 +54,36 @@ export const signInSchema = z.object({
 
 export type SignIn = z.infer<typeof signInSchema>;
 
-const passwordValidation = new RegExp(/^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/);
-const phoneValidation = new RegExp(/^((\+84\s\d{3}\s\d{3}\s\d{3})|(0\d{3}\s\d{3}\s\d{3})|((\+84|0)\d{9}))$/);
-const nameValidation = new RegExp(/^(?=\b[A-Za-z]*[A-Z][a-z]*[A-Z]?[a-z]*\b)[A-Za-z ]+$/);
-const emailValidation = new RegExp(/^[\w.-]+@(hoversprite\.(com|vn)|gmail\.com)$/);
+const passwordValidation = new RegExp(
+  /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/,
+);
+const phoneValidation = new RegExp(
+  /^((\+84\s\d{3}\s\d{3}\s\d{3})|(0\d{3}\s\d{3}\s\d{3})|((\+84|0)\d{9}))$/,
+);
+const nameValidation = new RegExp(
+  /^(?=\b[A-Za-z]*[A-Z][a-z]*[A-Z]?[a-z]*\b)[A-Za-z ]+$/,
+);
+const emailValidation = new RegExp(
+  /^[\w.-]+@(hoversprite\.(com|vn)|gmail\.com)$/,
+);
 
 export const SignUpSchema = z
   .object({
+    googleId: z.string().nullable(),
+    facebookId: z.string().nullable(),
     fullName: z
       .string()
       .min(2, { message: "Name is too short" })
-      .regex(nameValidation, { message: "Full name cannot have more than 2 capitalized letters in a word and must contain only letters and spaces" }),
+      .regex(nameValidation, {
+        message:
+          "Full name cannot have more than 2 capitalized letters in a word and must contain only letters and spaces",
+      }),
     emailAddress: z
       .string()
-      .email({ message: "Email must follow the format with a domain of @hoversprite.com, @hoversprite.vn, or @gmail.com." })
+      .email({
+        message:
+          "Email must follow the format with a domain of @hoversprite.com, @hoversprite.vn, or @gmail.com.",
+      })
       .min(10, { message: "Invalid email format" })
       .regex(emailValidation, {
         message:
@@ -96,17 +112,6 @@ export const SignUpSchema = z
   });
 
 export type SignUp = z.infer<typeof SignUpSchema>;
-export const searchParamsSchema = z.object({
-  page: z.coerce.number().default(1),
-  per_page: z.coerce.number().default(10),
-  sort: z.string().optional(),
-  title: z.string().optional(),
-  status: z.string().optional(),
-  priority: z.string().optional(),
-  from: z.string().optional(),
-  to: z.string().optional(),
-  operator: z.enum(["and", "or"]).optional(),
-});
 
 export const feedbackCreateSchema = z.object({
   content: z.string().min(1, "Content is required"),
@@ -114,6 +119,9 @@ export const feedbackCreateSchema = z.object({
   attentive: z.number().min(1).max(5),
   friendly: z.number().min(1).max(5),
   professional: z.number().min(1).max(5),
+  images: z
+    .array(z.any())
+    .refine((images) => images.length <= 5, { message: "Maximum 5 images" }),
 });
 
 export type FeedbackCreateType = z.infer<typeof feedbackCreateSchema>;

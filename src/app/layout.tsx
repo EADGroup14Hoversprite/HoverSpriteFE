@@ -21,10 +21,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = cookies();
-  const sessionToken = (cookieStore.get("sessionToken")?.value ?? "") as string;
-
+  const sessionToken = cookieStore.get("sessionToken")?.value;
   return (
-    <SessionWrapper session={sessionToken}>
+    <SessionWrapper session={sessionToken!}>
       <CookiesProvider>
         <TooltipProvider>
           <html lang="en">
