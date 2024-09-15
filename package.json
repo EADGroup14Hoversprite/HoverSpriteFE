@@ -24,6 +24,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "hover-prite-fe": "file:",
     "lucide-react": "^0.424.0",
     "lunar-typescript": "^1.7.5",
     "next": "14.2.5",
