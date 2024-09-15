@@ -6,18 +6,17 @@ export default function Footer() {
   return (
     <footer className="bg-gray-100 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Footer content is divided into 3 sections */}
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo and Contact Info */}
           <div className="flex flex-col space-y-4">
             <Image
-              src="/logo/hoversprite-logo.png"  // Replace with actual logo path
+              src="/logo/hoversprite-logo.png"  
               alt="HoverSprite Logo"
               width={120}
               height={120}
               className="object-contain"
             />
-            <p className="text-gray-700">HoverSprite</p>
             <p className="text-gray-500">
               1234 Sprayer Ave,<br /> Farming City, FC 56789
             </p>
