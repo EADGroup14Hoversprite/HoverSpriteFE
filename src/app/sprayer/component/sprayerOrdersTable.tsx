@@ -29,6 +29,8 @@ const SprayerOrderTable: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+
+  // Could not fetch orders from the server, so I'm using a dummy data
   const fetchOrders = async () => {
     try {
       //Token just for testing
@@ -77,33 +79,32 @@ const SprayerOrderTable: React.FC = () => {
       <h1 className="text-2xl font-semibold mb-4">Assigned Orders</h1>
   
       {loading && <p>Loading orders...</p>}
-      {error && <p className="text-red-500">{error}</p>}
   
-      {!loading && !error && (
-        <div className="overflow-x-auto">
-          {/* First table: Assigned Orders */}
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md mb-8">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Order ID
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Order Status
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Total cost
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Payment status
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignedOrders.map((order) => (
+      <div className="overflow-x-auto">
+        {/* First table: Assigned Orders */}
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md mb-8">
+          <thead>
+            <tr>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Order ID
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Order Status
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Total cost
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Payment status
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {!loading && !error && assignedOrders.length > 0 ? (
+              assignedOrders.map((order) => (
                 <tr key={order.id} className="border-b">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {order.id}
@@ -125,38 +126,46 @@ const SprayerOrderTable: React.FC = () => {
                     />
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-  
-          {isModalOpen && selectedOrder && (
-            <OrderModal order={selectedOrder} onClose={closeOrderModal} />
-          )}
-  
-          {/* Second table: Order History */}
-          <h2 className="text-2xl font-semibold mb-4">Order History</h2>
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-            <thead>
+              ))
+            ) : (
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Order ID
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Order Status
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Total cost
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Payment status
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Action
-                </th>
+                <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                  {error ? "Could not retrieve orders..." : "No orders available."}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {completedOrders.map((order) => (
+            )}
+          </tbody>
+        </table>
+
+        {isModalOpen && selectedOrder && (
+          <OrderModal order={selectedOrder} onClose={closeOrderModal} />
+        )}
+
+        {/* Second table: Order History */}
+        <h2 className="text-2xl font-semibold mb-4">Order History</h2>
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+          <thead>
+            <tr>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Order ID
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Order Status
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Total cost
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Payment status
+              </th>
+              <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {!loading && !error && completedOrders.length > 0 ? (
+              completedOrders.map((order) => (
                 <tr key={order.id} className="border-b">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {order.id}
@@ -178,14 +187,19 @@ const SprayerOrderTable: React.FC = () => {
                     />
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              ))
+            ) : (
+              <tr> 
+                <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                  {error ? "Could not retrieve orders..." : "No orders available."} 
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
-  
 };
 
 export default SprayerOrderTable;
