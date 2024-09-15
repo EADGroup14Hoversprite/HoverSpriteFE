@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export default function Contact() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,10 +56,10 @@ export default function Contact() {
               href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-600 transition"
+              className="text-black hover:text-gray-600 transition"
               aria-label="Twitter"
             >
-              <FaTwitter size={30} />
+              <FaXTwitter size={30} />
             </a>
             <a
               href="https://instagram.com"
