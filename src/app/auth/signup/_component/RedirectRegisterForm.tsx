@@ -1,5 +1,4 @@
 "use client";
-import { Signup, signupSchema } from "@/app/auth/signup/_schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -14,42 +13,65 @@ import { Input } from "@/components/ui/input";
 import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { useEffect } from "react";
 import { IUser } from "@/types/user";
+import { SignUp, SignUpSchema } from "@/schema";
+import { userRegister } from "@/actions/register";
+import { toast } from "sonner";
+import { auth } from "@/actions/auth";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/user-store";
 
 export default function RedirectRegisterForm({
   authInfo,
 }: {
   authInfo: string | undefined;
 }) {
-  const defaultState: Partial<Signup> = {
-    lastName: "",
-    middleName: "",
-    firstName: "",
-    email: "",
-    phone: "",
-    address: "",
+  const router = useRouter();
+  const { login } = useUserStore();
+  const defaultState: SignUp = {
+    fullName: "",
+    emailAddress: "",
+    phoneNumber: "",
+    homeAddress: "",
     password: "",
     confirmPassword: "",
   };
 
-  const form = useForm<Signup>({
+  const form = useForm<SignUp>({
     defaultValues: defaultState,
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(SignUpSchema),
     mode: "onChange",
   });
 
-  const onSubmit = (values: Partial<Signup>) => {
-    console.log(values);
+  const onSubmit = async (values: SignUp) => {
+    const onRegister = userRegister({
+      fullName: values.fullName,
+      phoneNumber: values.phoneNumber,
+      emailAddress: values.emailAddress,
+      homeAddress: values.homeAddress,
+      userRole: "ROLE_FARMER",
+      password: values.password,
+    });
+    toast.promise(onRegister, {
+      loading: "Creating your account...",
+      success: async (res) => {
+        await auth(res.data.dto);
+        login(res.data.dto);
+        router.push("/orders");
+        return "Register successfully!";
+      },
+      error: (e) => {
+        return e.response?.error?.message;
+      },
+    });
   };
-
   useEffect(() => {
     if (authInfo) {
       const user = JSON.parse(authInfo) as IUser;
-      console.log(user);
       form.reset({
         ...defaultState,
-        firstName: user.fullName ?? "",
-        email: user.emailAddress ?? "",
-        phone: user.phoneNumber ?? "",
+        fullName: user.fullName ?? "",
+        emailAddress: user.emailAddress ?? "",
+        phoneNumber: user.phoneNumber ?? "",
       });
     }
   }, [authInfo]);
@@ -67,7 +89,7 @@ export default function RedirectRegisterForm({
               {/* Name Fields: Last Name, Middle Name, First Name */}
               <div className="flex gap-4 mb-3">
                 <FormField
-                  name="firstName"
+                  name="fullName"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem className="flex-1 basis-1/3">
@@ -81,7 +103,7 @@ export default function RedirectRegisterForm({
 
               {/* Phone Number Field */}
               <FormField
-                name="phone"
+                name="phoneNumber"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -94,7 +116,7 @@ export default function RedirectRegisterForm({
 
               {/* Email Address Field */}
               <FormField
-                name="email"
+                name="emailAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -107,7 +129,7 @@ export default function RedirectRegisterForm({
 
               {/* Home Address Field */}
               <FormField
-                name="address"
+                name="homeAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">

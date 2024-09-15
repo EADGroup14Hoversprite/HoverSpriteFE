@@ -13,28 +13,52 @@ import {
 import { Input } from "@/components/ui/input";
 import { PasswordVisibility } from "@/utils/passwordVisibility";
 import { Separator } from "@/components/ui/separator";
-import { Signup, signupSchema } from "@/app/auth/signup/_schema";
+import { SignUp, SignUpSchema } from "@/schema";
+import { userRegister } from "@/actions/register";
+import { toast } from "sonner";
+import { useUserStore } from "@/store/user-store";
+import { useRouter } from "next/navigation";
+import { auth } from "@/actions/auth";
 
 export default function DefaultRegisterForm() {
-  const defaultState: Partial<Signup> = {
-    lastName: "",
-    middleName: "",
-    firstName: "",
-    email: "",
-    phone: "",
-    address: "",
+  const { login } = useUserStore();
+  const router = useRouter();
+  const defaultState: SignUp = {
+    fullName: "",
+    emailAddress: "",
+    phoneNumber: "",
+    homeAddress: "",
     password: "",
     confirmPassword: "",
   };
 
-  const form = useForm<Signup>({
+  const form = useForm<SignUp>({
     defaultValues: defaultState,
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(SignUpSchema),
     mode: "onChange",
   });
 
-  const onSubmit = (values: Partial<Signup>) => {
-    console.log(values);
+  const onSubmit = async (values: SignUp) => {
+    const onRegister = userRegister({
+      fullName: values.fullName,
+      phoneNumber: values.phoneNumber,
+      emailAddress: values.emailAddress,
+      homeAddress: values.homeAddress,
+      userRole: "ROLE_FARMER",
+      password: values.password,
+    });
+    toast.promise(onRegister, {
+      loading: "Creating your account...",
+      success: async (res) => {
+        await auth(res.data.dto);
+        login(res.data.dto);
+        router.push("/orders");
+        return "Register successfully!";
+      },
+      error: (e) => {
+        return e.response?.error?.message;
+      },
+    });
   };
 
   return (
@@ -95,7 +119,7 @@ export default function DefaultRegisterForm() {
               {/* Name Fields: Last Name, Middle Name, First Name */}
               <div className="flex gap-4 mb-3">
                 <FormField
-                  name="lastName"
+                  name="fullName"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem className="flex-1 basis-1/3">
@@ -105,33 +129,11 @@ export default function DefaultRegisterForm() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  name="middleName"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem className="flex-1 basis-1/2">
-                      <FormLabel>Middle Name</FormLabel>
-                      <Input {...field} placeholder="Your middle name:" />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  name="firstName"
-                  control={form.control}
-                  render={({ field }) => (
-                    <FormItem className="flex-1 basis-1/3">
-                      <FormLabel>First Name</FormLabel>
-                      <Input {...field} placeholder="Your first name:" />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
               </div>
 
               {/* Phone Number Field */}
               <FormField
-                name="phone"
+                name="phoneNumber"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -144,7 +146,7 @@ export default function DefaultRegisterForm() {
 
               {/* Email Address Field */}
               <FormField
-                name="email"
+                name="emailAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
@@ -157,7 +159,7 @@ export default function DefaultRegisterForm() {
 
               {/* Home Address Field */}
               <FormField
-                name="address"
+                name="homeAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
