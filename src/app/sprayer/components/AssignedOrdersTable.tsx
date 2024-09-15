@@ -105,7 +105,6 @@ const AssignedOrdersTable: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-semibold mb-4">Assigned Orders</h1>
       {loading && <p>Loading orders...</p>}
       <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
         <thead>
