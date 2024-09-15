@@ -162,7 +162,7 @@ export default function Page() {
 
           <div className="pt-5">
             <span className="font-light text-sm"> Don't have an account?</span>
-            <Link href={`/signup/`}>
+            <Link href={`/auth/signup/`}>
               <span className="text-blue-500 underline text-sm pl-1 hover:text-blue-800">
                 Create now
               </span>
@@ -182,7 +182,7 @@ export default function Page() {
           </div>
 
           <div className="absolute bottom-0 right-10 w-3/12  ">
-            <Link href={`/signup/`}>
+            <Link href={`/auth/signup/`}>
               <Button
                 className="w-full bg-blue-800 my-5 rounded-full hover:bg-blue-900"
                 variant={"default"}

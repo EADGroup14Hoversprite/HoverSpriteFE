@@ -1,5 +1,5 @@
 "use client";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar, Sidebar } from "@/components/layout";
 import { useSidebarToggle } from "@/store/use-sidebar-toggle";
