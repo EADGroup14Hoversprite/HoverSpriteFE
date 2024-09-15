@@ -137,15 +137,4 @@
   flex-direction: row;
 }
 
-/* Add this in your global CSS file */
-html {
-  scroll-behavior: smooth;
-}
 
-main {
-  scroll-snap-type: y mandatory;
-}
-
-section {
-  scroll-snap-align: start;
-}
