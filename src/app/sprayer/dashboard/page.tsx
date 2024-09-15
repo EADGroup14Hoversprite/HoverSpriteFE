@@ -32,7 +32,7 @@ export default function Page() {
 
         {activeTab === "route" && (
           <section className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Route</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Route Planning</h2>
             <RoutePlanner />
           </section>
         )}

@@ -5,6 +5,7 @@ import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa"; // Import for th
 
 export default function Header({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage mobile menu toggle
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false); // State to manage profile dropdown
 
   return (
     <header className="bg-white shadow-md fixed top-0 w-full z-50 h-20">
@@ -39,14 +40,40 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
               Route
             </button>
 
-            {/* Profile Button */}
-            <a
-              href="/login"
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-            >
-              <FaUserCircle size={18} />
-              <span>Your Profile</span>
-            </a>
+            {/* Profile Button with Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+              >
+                <FaUserCircle size={18} />
+                <span>Your Profile</span>
+              </button>
+
+              {/* Dropdown Menu */}
+              {isProfileDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
+                  <a
+                    href="/profile/edit"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Edit Profile
+                  </a>
+                  <a
+                    href="/settings"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Settings
+                  </a>
+                  <button
+                    onClick={() => alert('Logged Out')}
+                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Log Out
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Hamburger Menu Icon for Mobile */}
