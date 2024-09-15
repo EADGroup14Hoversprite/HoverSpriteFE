@@ -30,6 +30,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SpraySlot, toSlotString } from "@/models/Booking";
+import { PaymentType, toPaymentString } from "@/types/payment";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -138,6 +139,12 @@ export function DataTableRowActions<TData>({
                     <LucideIcon name={paymentStatus?.icon!} size={16} />
                     {paymentStatus?.label}
                   </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm">Payment Method:</p>
+                  <p className="text-sm">
+                    {toPaymentString(order.paymentMethod as PaymentType)}
+                  </p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-lg font-semibold">Total cost:</p>

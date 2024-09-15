@@ -69,21 +69,19 @@ export async function login(values: {
   };
 }
 
-// export async function loginWithGoogle() {
-//   try {
-//     const res = await axios.get<{ redirectUrl: string }>(
-//       "localhost:8080/auth/redirect",
-//     );
-//     return {
-//       redirectUrl: res.data.redirectUrl,
-//       error: false,
-//       message: "redirect ok!",
-//     };
-//   } catch (err) {
-//     return {
-//       redirectUrl: "",
-//       error: true,
-//       message: "redirect not oke!",
-//     };
-//   }
-// }
+export async function loginWithGoogle() {
+  try {
+    const res = await API.get<{ redirectUri: string }>("/auth/google/redirect");
+    return {
+      redirectUrl: res.data.redirectUri,
+      error: false,
+      message: "redirect ok!",
+    };
+  } catch (err) {
+    return {
+      redirectUrl: "",
+      error: true,
+      message: "redirect not oke!",
+    };
+  }
+}

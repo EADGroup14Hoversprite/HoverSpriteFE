@@ -6,6 +6,7 @@ import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import SessionWrapper from "@/components/session-wrapper/SessionWrapper";
 import { cookies } from "next/headers";
+import { CookiesProvider } from "next-client-cookies/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,14 +25,16 @@ export default async function RootLayout({
 
   return (
     <SessionWrapper session={sessionToken}>
-      <TooltipProvider>
-        <html lang="en">
-          <body className={`${inter.className}`}>
-            {children}
-            <Toaster />
-          </body>
-        </html>
-      </TooltipProvider>
+      <CookiesProvider>
+        <TooltipProvider>
+          <html lang="en">
+            <body className={`${inter.className}`}>
+              {children}
+              <Toaster />
+            </body>
+          </html>
+        </TooltipProvider>
+      </CookiesProvider>
     </SessionWrapper>
   );
 }
