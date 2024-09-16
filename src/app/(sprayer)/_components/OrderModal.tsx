@@ -1,79 +1,66 @@
 //COULD ALSO ADD THE MAP HERE
 import React from "react";
 import Button from "./Button";
-
-interface Order {
-  id: string;
-  status: string;
-  bookerId: number;
-  cropType: string;
-  farmerName: string;
-  farmerPhoneNumber: string;
-  address: string;
-  location: string;
-  farmlandArea: number;
-  desiredDate: string;
-  totalCost: number;
-  timeSlot: string;
-  paymentMethod: string;
-  paymentStatus: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { IOrder } from "@/models/Order";
+import API from "@/utils/axiosClient";
 
 interface OrderModalProps {
-  order: Order;
+  order: IOrder;
   onClose: () => void;
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
+  // const confirmPayment = async () => {
+  //   try {
+  //     //Token just for testing
+  //     const token =
+  //       "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
+  //     const response = await fetch(`http://localhost:8080/order/${order.id}/confirm-cash-payment`, {
+  //       method: "POST",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error("Failed to confirm payment");
+  //     }
+  //     onClose();
+  //     const data = await response.json();
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error comfirming payment:", error);
+  //   }
+  // };
+
   const confirmPayment = async () => {
     try {
-      //Token just for testing
-      const token =
-        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
-      const response = await fetch(`http://localhost:8080/order/${order.id}/confirm-cash-payment`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to confirm payment");
-      }
-      onClose();
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("Error comfirming payment:", error);
+      await API.post<{ message: string }>(
+        `/order/${order.id}/confirm-cash-payment`
+      );
+    } catch (e) {
+      return {
+        message: "Failed to confirm cash payment",
+      };
     }
   };
 
   const updateOrderStatus = async (status: string) => {
     try {
-      const token =
-        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
-      const response = await fetch(`http://localhost:8080/order/${order.id}/update-status`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update order status");
-      }
+      const response =  await API.post<{ message: string, order: IOrder }>(
+        `/order/${order.id}/update-status`,
+        JSON.stringify({ status })
+      );
+        } catch (e) {
+          return {
+            message: "Failed to update order status",
+          };
+        }
       onClose();
-      const data = await response.json();
-      console.log("Order status updated:", data);
-    } catch (error) {
-      console.error("Error updating order status:", error);
-    }
-  };
+      console.log("Order status updated:", order.status);
+    } 
+  
 
   return (
     <div

@@ -2,90 +2,84 @@
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import OrderModal from "./OrderModal";
+import { IOrder } from "@/models/Order";
+import API from "@/utils/axiosClient";
 
-interface Order {
-  id: string;
-  status: string;
-  bookerId: number;
-  cropType: string;
-  farmerName: string;
-  farmerPhoneNumber: string;
-  address: string;
-  location: string;
-  farmlandArea: number;
-  desiredDate: string;
-  totalCost: number;
-  timeSlot: string;
-  paymentMethod: string;
-  paymentStatus: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// interface Order {
+//   id: string;
+//   status: string;
+//   bookerId: number;
+//   cropType: string;
+//   farmerName: string;
+//   farmerPhoneNumber: string;
+//   address: string;
+//   location: string;
+//   farmlandArea: number;
+//   desiredDate: string;
+//   totalCost: number;
+//   timeSlot: string;
+//   paymentMethod: string;
+//   paymentStatus: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
-const OrderHistoryTable: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+const AssignedOrdersTable: React.FC = () => {
+  const [orders, setOrders] = useState<IOrder[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 5;
 
-  const fetchOrders = async () => {
-    try {
-      const dummyOrders: Order[] = [
-        {
-          id: "12345",
-          status: "COMPLETED",
-          bookerId: 1,
-          cropType: "Rice",
-          farmerName: "John Doe",
-          farmerPhoneNumber: "1234567890",
-          address: "123 Main Street",
-          location: "Somewhere, Country",
-          farmlandArea: 5,
-          desiredDate: "2024-09-16",
-          totalCost: 500000,
-          timeSlot: "Morning",
-          paymentMethod: "Credit Card",
-          paymentStatus: "Payment accepted",
-          createdAt: "2024-09-10",
-          updatedAt: "2024-09-12",
-        },
-        {
-          id: "12346",
-          status: "COMPLETED",
-          bookerId: 2,
-          cropType: "Corn",
-          farmerName: "Jane Smith",
-          farmerPhoneNumber: "9876543210",
-          address: "456 Another St",
-          location: "Elsewhere, Country",
-          farmlandArea: 10,
-          desiredDate: "2024-09-14",
-          totalCost: 600000,
-          timeSlot: "Afternoon",
-          paymentMethod: "Bank Transfer",
-          paymentStatus: "Payment pending",
-          createdAt: "2024-09-10",
-          updatedAt: "2024-09-15",
-        },
-        // Add more dummy data for testing
-      ];
+  // Could not fetch orders from the server, so I'm using a dummy data
+  // const fetchOrders = async () => {
+  //   try {
+  //     //Token just for testing
+  //     const token =
+  //       "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
+  //     const response = await fetch("http://localhost:8080/order/assigned", {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
 
-      setOrders(dummyOrders);
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch orders");
+  //     }
+
+  //     const data = await response.json();
+  //     setOrders(data.orders);
+  //     setLoading(false);
+  //   } catch (err) {
+  //     setError("Failed to load orders.");
+  //     setLoading(false);
+  //   }
+  // };
+
+  async function fetchOrders() {
+    try {
+      const res = await API.get<{ message: string; orders: IOrder[] }>(
+        "/order/assigned",
+      );
+      setOrders(res.data.orders);
       setLoading(false);
-    } catch (err) {
-      setError("Failed to load orders.");
-      setLoading(false);
+    } catch (e) {
+      return {
+        message: "Failed to retrieve order",
+        order : null
+      };
     }
-  };
+  }
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  const openOrderModal = (order: Order) => {
+  const openOrderModal = (order: IOrder) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
@@ -95,13 +89,16 @@ const OrderHistoryTable: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const completedOrders = orders.filter((order) => order.status === "COMPLETED");
+  const assignedOrders = orders.filter((order) => order.status !== "COMPLETED");
 
   // Pagination logic
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = completedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(completedOrders.length / ordersPerPage);
+  const currentOrders = assignedOrders.slice(
+    indexOfFirstOrder,
+    indexOfLastOrder
+  );
+  const totalPages = Math.ceil(assignedOrders.length / ordersPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -111,15 +108,12 @@ const OrderHistoryTable: React.FC = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  // Function to apply conditional styling based on status
-  const getPaymentStatusClass = (paymentStatus: string) => {
+  const getPaymentStatusClass = (paymentStatus: boolean) => {
     switch (paymentStatus) {
-      case "Payment accepted":
+      case true:
         return "text-green-600 font-bold";
-      case "Payment pending":
+      case false:
         return "text-yellow-600 font-bold";
-      case "Payment failed":
-        return "text-red-600 font-bold";
       default:
         return "";
     }
@@ -130,7 +124,7 @@ const OrderHistoryTable: React.FC = () => {
       case "COMPLETED":
         return "text-green-600 font-bold";
       case "ASSIGNED":
-        return "text-blue-600 font-bold";
+        return "text-red-600 font-bold";
       case "PENDING":
         return "text-yellow-600 font-bold";
       default:
@@ -140,14 +134,16 @@ const OrderHistoryTable: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {loading && <p className="text-center text-gray-500">Loading orders...</p>}
+      {loading && (
+        <p className="text-center text-gray-500">Loading orders...</p>
+      )}
 
-      {!loading && !error && completedOrders.length === 0 && (
+      {!loading && !error && assignedOrders.length === 0 && (
         <p className="text-center text-gray-500">No orders available.</p>
       )}
 
       {/* Responsive table container */}
-      {!loading && !error && completedOrders.length > 0 && (
+      {!loading && !error && assignedOrders.length > 0 && (
         <div className="overflow-hidden">
           <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
             <thead>
@@ -156,7 +152,7 @@ const OrderHistoryTable: React.FC = () => {
                   Order ID
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Order Status
+                  Status
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
                   Total Cost
@@ -183,14 +179,18 @@ const OrderHistoryTable: React.FC = () => {
                   <td className="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">
                     {order.id}
                   </td>
-                  <td className={`px-6 py-4 whitespace-normal text-sm ${getOrderStatusClass(order.status)}`}>
+                  <td
+                    className={`px-6 py-4 whitespace-normal text-sm ${getOrderStatusClass(order.status)}`}
+                  >
                     {order.status}
                   </td>
                   <td className="px-6 py-4 whitespace-normal text-sm text-gray-700">
                     {order.totalCost} VND
                   </td>
                   {/* Payment Status, visible only on desktop */}
-                  <td className={`hidden md:table-cell px-6 py-4 whitespace-normal text-sm ${getPaymentStatusClass(order.paymentStatus)}`}>
+                  <td
+                    className={`hidden md:table-cell px-6 py-4 whitespace-normal text-sm ${getPaymentStatusClass(order.paymentStatus)}`}
+                  >
                     {order.paymentStatus}
                   </td>
                   {/* Show the action button only on desktop */}
@@ -211,7 +211,9 @@ const OrderHistoryTable: React.FC = () => {
             <button
               onClick={handlePreviousPage}
               className={`px-4 py-2 bg-gray-300 rounded-md text-sm font-medium ${
-                currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-400"
+                currentPage === 1
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-400"
               }`}
               disabled={currentPage === 1}
             >
@@ -223,7 +225,9 @@ const OrderHistoryTable: React.FC = () => {
             <button
               onClick={handleNextPage}
               className={`px-4 py-2 bg-gray-300 rounded-md text-sm font-medium ${
-                currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-400"
+                currentPage === totalPages
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-400"
               }`}
               disabled={currentPage === totalPages}
             >
@@ -241,4 +245,4 @@ const OrderHistoryTable: React.FC = () => {
   );
 };
 
-export default OrderHistoryTable;
+export default AssignedOrdersTable;

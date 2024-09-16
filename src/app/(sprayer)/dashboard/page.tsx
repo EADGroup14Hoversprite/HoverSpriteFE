@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import Header from "../components/Header";
-import AssignedOrdersTable from "../components/AssignedOrdersTable";
-import OrderHistoryTable from "../components/OrderHistoryTable";
-import RoutePlanner from "../components/RoutePlanner"; // Import the route component
+import Header from "../_components/Header";
+import AssignedOrdersTable from "../_components/AssignedOrdersTable";
+import OrderHistoryTable from "../_components/OrderHistoryTable";
+import RoutePlanner from "../_components/RoutePlanner"; // Import the route component
 
 export default function Page() {
   // State to manage the active tab

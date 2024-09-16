@@ -2,116 +2,38 @@
 import React, { useEffect, useState } from "react";
 import Button from "./Button";
 import OrderModal from "./OrderModal";
+import { IOrder } from "@/models/Order";
+import API from "@/utils/axiosClient";
 
-interface Order {
-  id: string;
-  status: string;
-  bookerId: number;
-  cropType: string;
-  farmerName: string;
-  farmerPhoneNumber: string;
-  address: string;
-  location: string;
-  farmlandArea: number;
-  desiredDate: string;
-  totalCost: number;
-  timeSlot: string;
-  paymentMethod: string;
-  paymentStatus: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-const AssignedOrdersTable: React.FC = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+const OrderHistoryTable: React.FC = () => {
+  const [orders, setOrders] = useState<IOrder[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 5;
 
-  // Could not fetch orders from the server, so I'm using a dummy data
-  // const fetchOrders = async () => {
-  //   try {
-  //     //Token just for testing
-  //     const token =
-  //       "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
-  //     const response = await fetch("http://localhost:8080/order/assigned", {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch orders");
-  //     }
-
-  //     const data = await response.json();
-  //     setOrders(data.orders);
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setError("Failed to load orders.");
-  //     setLoading(false);
-  //   }
-  // };
-
-    const fetchOrders = async () => {
-      try {
-        const dummyOrders: Order[] = [
-          {
-            id: "12345",
-            status: "ASSIGNED",
-            bookerId: 1,
-            cropType: "Rice",
-            farmerName: "John Doe",
-            farmerPhoneNumber: "1234567890",
-            address: "123 Main Street",
-            location: "Somewhere, Country",
-            farmlandArea: 5,
-            desiredDate: "2024-09-16",
-            totalCost: 500000,
-            timeSlot: "Morning",
-            paymentMethod: "Credit Card",
-            paymentStatus: "Payment accepted",
-            createdAt: "2024-09-10",
-            updatedAt: "2024-09-12",
-          },
-          {
-            id: "12346",
-            status: "PENDING",
-            bookerId: 1,
-            cropType: "Corn",
-            farmerName: "Jane Smith",
-            farmerPhoneNumber: "0987654321",
-            address: "456 Another St",
-            location: "Elsewhere, Country",
-            farmlandArea: 7,
-            desiredDate: "2024-09-18",
-            totalCost: 700000,
-            timeSlot: "Afternoon",
-            paymentMethod: "Bank Transfer",
-            paymentStatus: "Payment pending",
-            createdAt: "2024-09-12",
-            updatedAt: "2024-09-14",
-          },
-        ];
-  
-        setOrders(dummyOrders);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to load orders.");
-        setLoading(false);
-      }
-    };
+  async function fetchOrders() {
+    try {
+      const res = await API.get<{ message: string; orders: IOrder[] }>(
+        "/order/assigned"
+      );
+      setOrders(res.data.orders);
+      setLoading(false);
+    } catch (e) {
+      return {
+        message: "Failed to retrieve order",
+        order : null
+      };
+    }
+  }
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
-  const openOrderModal = (order: Order) => {
+  const openOrderModal = (order: IOrder) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
@@ -121,14 +43,13 @@ const AssignedOrdersTable: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const assignedOrders = orders.filter((order) => order.status !== "COMPLETED");
+  const completedOrders = orders.filter((order) => order.status === "COMPLETED");
 
-  
   // Pagination logic
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = assignedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-  const totalPages = Math.ceil(assignedOrders.length / ordersPerPage);
+  const currentOrders = completedOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const totalPages = Math.ceil(completedOrders.length / ordersPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -138,14 +59,13 @@ const AssignedOrdersTable: React.FC = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
 
-  const getPaymentStatusClass = (paymentStatus: string) => {
+  // Function to apply conditional styling based on status
+  const getPaymentStatusClass = (paymentStatus: boolean) => {
     switch (paymentStatus) {
-      case "Payment accepted":
+      case true:
         return "text-green-600 font-bold";
-      case "Payment pending":
+      case false:
         return "text-yellow-600 font-bold";
-      case "Payment failed":
-        return "text-red-600 font-bold";
       default:
         return "";
     }
@@ -156,7 +76,7 @@ const AssignedOrdersTable: React.FC = () => {
       case "COMPLETED":
         return "text-green-600 font-bold";
       case "ASSIGNED":
-        return "text-red-600 font-bold";
+        return "text-blue-600 font-bold";
       case "PENDING":
         return "text-yellow-600 font-bold";
       default:
@@ -168,12 +88,12 @@ const AssignedOrdersTable: React.FC = () => {
     <div className="container mx-auto p-4">
       {loading && <p className="text-center text-gray-500">Loading orders...</p>}
 
-      {!loading && !error && assignedOrders.length === 0 && (
+      {!loading && !error && completedOrders.length === 0 && (
         <p className="text-center text-gray-500">No orders available.</p>
       )}
 
       {/* Responsive table container */}
-      {!loading && !error && assignedOrders.length > 0 && (
+      {!loading && !error && completedOrders.length > 0 && (
         <div className="overflow-hidden">
           <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
             <thead>
@@ -182,7 +102,7 @@ const AssignedOrdersTable: React.FC = () => {
                   Order ID
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Status
+                  Order Status
                 </th>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
                   Total Cost
@@ -267,4 +187,4 @@ const AssignedOrdersTable: React.FC = () => {
   );
 };
 
-export default AssignedOrdersTable;
+export default OrderHistoryTable;
