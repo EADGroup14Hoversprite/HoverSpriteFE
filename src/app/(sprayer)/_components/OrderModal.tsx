@@ -11,29 +11,6 @@ interface OrderModalProps {
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
-  // const confirmPayment = async () => {
-  //   try {
-  //     //Token just for testing
-  //     const token =
-  //       "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
-  //     const response = await fetch(`http://localhost:8080/order/${order.id}/confirm-cash-payment`, {
-  //       method: "POST",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to confirm payment");
-  //     }
-  //     onClose();
-  //     const data = await response.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("Error comfirming payment:", error);
-  //   }
-  // };
 
   const confirmPayment = async () => {
     try {
@@ -158,7 +135,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
                 </p>
                 <p className="text-sm">
                   <strong>Payment Status:</strong>{" "}
-                  <span className={order.paymentStatus === "Payment accepted" ? "text-green-600" : "text-red-600"}>
+                  <span className={order.paymentStatus === true ? "text-green-600" : "text-red-600"}>
                     {order.paymentStatus}
                   </span>
                 </p>

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Header from "../_components/Header";
 import AssignedOrdersTable from "../_components/AssignedOrdersTable";
 import OrderHistoryTable from "../_components/OrderHistoryTable";
-import RoutePlanner from "../_components/RoutePlanner"; // Import the route component
+import RoutePlanner from "../_components/RoutePlanner";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<string>("assigned");
