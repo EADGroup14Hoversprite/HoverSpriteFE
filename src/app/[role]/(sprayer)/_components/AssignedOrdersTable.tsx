@@ -5,25 +5,6 @@ import OrderModal from "./OrderModal";
 import { IOrder } from "@/models/Order";
 import API from "@/utils/axiosClient";
 
-// interface Order {
-//   id: string;
-//   status: string;
-//   bookerId: number;
-//   cropType: string;
-//   farmerName: string;
-//   farmerPhoneNumber: string;
-//   address: string;
-//   location: string;
-//   farmlandArea: number;
-//   desiredDate: string;
-//   totalCost: number;
-//   timeSlot: string;
-//   paymentMethod: string;
-//   paymentStatus: string;
-//   createdAt: string;
-//   updatedAt: string;
-// }
-
 const AssignedOrdersTable: React.FC = () => {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
