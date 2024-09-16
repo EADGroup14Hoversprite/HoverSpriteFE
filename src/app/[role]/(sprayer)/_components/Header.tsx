@@ -1,9 +1,13 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 
-export default function Header({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
+export default function Header({
+  setActiveTab,
+}: {
+  setActiveTab: (tab: string) => void;
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
@@ -11,7 +15,7 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
       <div className="py-3 px-4 sm:px-6 lg:px-8 shadow-md h-full">
         <div className="max-w-7xl mx-auto flex justify-between items-center h-full">
           {/* Left side: Logo and Dashboard title */}
-          <a href="/" className="flex items-center space-x-3">
+          <a href="/public" className="flex items-center space-x-3">
             {/* Logo */}
             <Image
               src="/logo/hoversprite-logo.png"
@@ -29,13 +33,22 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex space-x-8 items-center">
-            <button onClick={() => setActiveTab("assigned")} className="text-gray-700 hover:underline">
+            <button
+              onClick={() => setActiveTab("assigned")}
+              className="text-gray-700 hover:underline"
+            >
               Assigned Orders
             </button>
-            <button onClick={() => setActiveTab("history")} className="text-gray-700 hover:underline">
+            <button
+              onClick={() => setActiveTab("history")}
+              className="text-gray-700 hover:underline"
+            >
               Order History
             </button>
-            <button onClick={() => setActiveTab("route")} className="text-gray-700 hover:underline">
+            <button
+              onClick={() => setActiveTab("route")}
+              className="text-gray-700 hover:underline"
+            >
               Route
             </button>
 
@@ -64,13 +77,31 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
         {isMenuOpen && (
           <div className="md:hidden bg-white shadow-lg py-4">
             <nav className="flex flex-col space-y-4">
-              <button onClick={() => { setIsMenuOpen(false); setActiveTab("assigned"); }} className="text-gray-700 px-4 hover:underline">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setActiveTab("assigned");
+                }}
+                className="text-gray-700 px-4 hover:underline"
+              >
                 Assigned Orders
               </button>
-              <button onClick={() => { setIsMenuOpen(false); setActiveTab("history"); }} className="text-gray-700 px-4 hover:underline">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setActiveTab("history");
+                }}
+                className="text-gray-700 px-4 hover:underline"
+              >
                 Order History
               </button>
-              <button onClick={() => { setIsMenuOpen(false); setActiveTab("route"); }} className="text-gray-700 px-4 hover:underline">
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setActiveTab("route");
+                }}
+                className="text-gray-700 px-4 hover:underline"
+              >
                 Route
               </button>
 

@@ -21,6 +21,7 @@ export function middleware(req: NextRequest) {
   ) {
     return NextResponse.redirect(new URL("/auth/login", req.url));
   }
+
   if (authPath.some((path) => pathname.startsWith(path)) && sessionToken) {
     const decodeData = jwtDecode<JWTPayload>(sessionToken.value);
     if (decodeData.userRole === UserRole.ROLE_FARMER) {
@@ -33,6 +34,7 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("sprayer/dashboard", req.url));
     }
   }
+
   return NextResponse.next();
 }
 

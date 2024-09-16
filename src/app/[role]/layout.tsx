@@ -6,7 +6,7 @@ import { useSidebarToggle } from "@/store/use-sidebar-toggle";
 import DynamicBreadcrumb from "@/components/dynamic-breadcrumb/DynamicBreadcrumb";
 import { Toaster } from "sonner";
 import { useUserStore } from "@/store/user-store";
-import { useRouter } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 
 export default function Layout({
   children,
@@ -14,7 +14,6 @@ export default function Layout({
 }: PropsWithChildren<{ params: { role: string } }>) {
   const { isOpen } = useSidebarToggle();
   const { currentUser } = useUserStore();
-  console.log(params);
 
   const router = useRouter();
   // if (currentUser?.userRole === UserRole.ROLE_FARMER) {
@@ -24,6 +23,11 @@ export default function Layout({
   // } else if (currentUser?.userRole === UserRole.ROLE_SPRAYER) {
   //   router.push("/sprayer/dashboard");
   // }
+
+  const roles = ["farmer", "sprayer", "receptionist"];
+  if (!roles.includes(params.role)) {
+    notFound();
+  }
 
   return (
     <div className="flex h-full w-full">
