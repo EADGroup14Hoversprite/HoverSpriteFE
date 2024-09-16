@@ -37,6 +37,7 @@ export const IOrderSchema = z.object({
   createdAt: z.number(),
   status: z.string(),
   updatedAt: z.number(),
+  paymentMethod: z.string(),
 });
 
 export type IOrder = z.infer<typeof IOrderSchema>;

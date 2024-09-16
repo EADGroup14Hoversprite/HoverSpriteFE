@@ -29,7 +29,7 @@ export default function Layout({ children }: PropsWithChildren) {
         <DynamicBreadcrumb />
         {children}
       </main>
-      <Toaster />
+      <Toaster position="top-center" />
     </div>
   );
   // : (
