@@ -58,36 +58,54 @@ const AssignedOrdersTable: React.FC = () => {
   //   }
   // };
 
-  const fetchOrders = async () => {
-    try {
-      const dummyOrders: Order[] = [
-        {
-          id: "12345",
-          status: "ASSIGNED",
-          bookerId: 1,
-          cropType: "Rice",
-          farmerName: "John Doe",
-          farmerPhoneNumber: "1234567890",
-          address: "123 Main Street",
-          location: "Somewhere, Country",
-          farmlandArea: 5,
-          desiredDate: "2024-09-16",
-          totalCost: 500000,
-          timeSlot: "Morning",
-          paymentMethod: "Credit Card",
-          paymentStatus: "Payment accepted",
-          createdAt: "2024-09-10",
-          updatedAt: "2024-09-12",
-        },
-      ];
-
-      setOrders(dummyOrders);
-      setLoading(false);
-    } catch (err) {
-      setError("Failed to load orders.");
-      setLoading(false);
-    }
-  };
+    const fetchOrders = async () => {
+      try {
+        const dummyOrders: Order[] = [
+          {
+            id: "12345",
+            status: "ASSIGNED",
+            bookerId: 1,
+            cropType: "Rice",
+            farmerName: "John Doe",
+            farmerPhoneNumber: "1234567890",
+            address: "123 Main Street",
+            location: "Somewhere, Country",
+            farmlandArea: 5,
+            desiredDate: "2024-09-16",
+            totalCost: 500000,
+            timeSlot: "Morning",
+            paymentMethod: "Credit Card",
+            paymentStatus: "Payment accepted",
+            createdAt: "2024-09-10",
+            updatedAt: "2024-09-12",
+          },
+          {
+            id: "12346",
+            status: "PENDING",
+            bookerId: 1,
+            cropType: "Corn",
+            farmerName: "Jane Smith",
+            farmerPhoneNumber: "0987654321",
+            address: "456 Another St",
+            location: "Elsewhere, Country",
+            farmlandArea: 7,
+            desiredDate: "2024-09-18",
+            totalCost: 700000,
+            timeSlot: "Afternoon",
+            paymentMethod: "Bank Transfer",
+            paymentStatus: "Payment pending",
+            createdAt: "2024-09-12",
+            updatedAt: "2024-09-14",
+          },
+        ];
+  
+        setOrders(dummyOrders);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load orders.");
+        setLoading(false);
+      }
+    };
 
   useEffect(() => {
     fetchOrders();
@@ -118,6 +136,32 @@ const AssignedOrdersTable: React.FC = () => {
 
   const handlePreviousPage = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const getPaymentStatusClass = (paymentStatus: string) => {
+    switch (paymentStatus) {
+      case "Payment accepted":
+        return "text-green-600 font-bold";
+      case "Payment pending":
+        return "text-yellow-600 font-bold";
+      case "Payment failed":
+        return "text-red-600 font-bold";
+      default:
+        return "";
+    }
+  };
+
+  const getOrderStatusClass = (orderStatus: string) => {
+    switch (orderStatus) {
+      case "COMPLETED":
+        return "text-green-600 font-bold";
+      case "ASSIGNED":
+        return "text-red-600 font-bold";
+      case "PENDING":
+        return "text-yellow-600 font-bold";
+      default:
+        return "";
+    }
   };
 
   return (
@@ -165,14 +209,14 @@ const AssignedOrdersTable: React.FC = () => {
                   <td className="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">
                     {order.id}
                   </td>
-                  <td className="px-6 py-4 whitespace-normal text-sm text-gray-700">
+                  <td className={`px-6 py-4 whitespace-normal text-sm ${getOrderStatusClass(order.status)}`}>
                     {order.status}
                   </td>
                   <td className="px-6 py-4 whitespace-normal text-sm text-gray-700">
                     {order.totalCost} VND
                   </td>
                   {/* Payment Status, visible only on desktop */}
-                  <td className="hidden md:table-cell px-6 py-4 whitespace-normal text-sm text-gray-700">
+                  <td className={`hidden md:table-cell px-6 py-4 whitespace-normal text-sm ${getPaymentStatusClass(order.paymentStatus)}`}>
                     {order.paymentStatus}
                   </td>
                   {/* Show the action button only on desktop */}
