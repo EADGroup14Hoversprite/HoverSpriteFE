@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Button from "./Button";
-import MapComponent from "@/components/map/mapComponent"; // Assuming your MapComponent is reusable here.
+import RoutingMap from "@/components/map/RoutingMap"; // Assuming your RoutingMap is reusable here.
 
 interface Order {
   id: string;
@@ -148,7 +148,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
           {/* Map Section - Slightly Taller */}
           <div className="md:col-span-2 w-full h-auto bg-gray-200 rounded-lg overflow-hidden shadow-inner">
             <div className="h-72"> {/* Slightly increased height */}
-              <MapComponent />
+              <RoutingMap />
             </div>
           </div>
         </div>
