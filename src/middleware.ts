@@ -11,6 +11,7 @@ const protectedPath = [
   "/sprayer/dashboard",
 ];
 const authPath = ["/auth/login", "auth/signup"];
+
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
@@ -25,13 +26,13 @@ export function middleware(req: NextRequest) {
   if (authPath.some((path) => pathname.startsWith(path)) && sessionToken) {
     const decodeData = jwtDecode<JWTPayload>(sessionToken.value);
     if (decodeData.userRole === UserRole.ROLE_FARMER) {
-      return NextResponse.redirect(new URL("farmer/orders", req.url));
+      return NextResponse.redirect(new URL("/farmer/orders", req.url));
     }
     if (decodeData.userRole === UserRole.ROLE_RECEPTIONIST) {
-      return NextResponse.redirect(new URL("receptionist/dashboard", req.url));
+      return NextResponse.redirect(new URL("/receptionist/dashboard", req.url));
     }
     if (decodeData.userRole === UserRole.ROLE_SPRAYER) {
-      return NextResponse.redirect(new URL("sprayer/dashboard", req.url));
+      return NextResponse.redirect(new URL("/sprayer/dashboard", req.url));
     }
   }
 

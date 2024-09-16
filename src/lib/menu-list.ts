@@ -25,23 +25,23 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: "Dashboard",
       menus: [
         {
-          href: "/booking",
+          href: "/farmer/booking",
           label: "Booking",
-          active: pathname.includes("/booking"),
+          active: pathname.includes("/farmer/booking"),
           icon: "Album",
           submenus: [],
         },
         {
           href: "/orders",
           label: "All orders",
-          active: pathname.includes("/orders"),
+          active: pathname.includes("/farmer/orders"),
           icon: "Logs",
           submenus: [],
         },
         {
           href: "/receptionist/dashboard",
           label: "Dashboard",
-          active: pathname.includes("/dashboard"),
+          active: pathname.includes("/receptionist/dashboard"),
           icon: "Book",
           submenus: [],
         },

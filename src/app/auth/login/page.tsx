@@ -23,6 +23,7 @@ import { auth, login, loginWithFb, loginWithGoogle } from "@/actions/auth";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/user-store";
 import { clientSessionToken } from "@/utils/axiosClient";
+import { UserRole } from "@/types/role";
 
 export default function Page() {
   const router = useRouter();
@@ -51,7 +52,13 @@ export default function Page() {
         setCurrentUser(data);
         clientSessionToken.value = data.accessToken;
         await auth(data);
-        router.push("/orders");
+        if (data.userRole === UserRole.ROLE_FARMER) {
+          router.push("/farmer/orders");
+        } else if (data.userRole === UserRole.ROLE_SPRAYER) {
+          router.push("/sprayer/dashboard");
+        } else if (data.userRole === UserRole.ROLE_RECEPTIONIST) {
+          router.push("/receptionist/dashboard");
+        }
         return `Login successfully!`;
       },
       error: (e) => {
