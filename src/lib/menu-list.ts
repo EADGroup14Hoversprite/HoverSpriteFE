@@ -38,6 +38,13 @@ export function getMenuList(pathname: string): Group[] {
           icon: "Logs",
           submenus: [],
         },
+        {
+          href: "/receptionist/dashboard",
+          label: "Dashboard",
+          active: pathname.includes("/dashboard"),
+          icon: "Book",
+          submenus: [],
+        },
       ],
     },
     // {
