@@ -1,13 +1,14 @@
 "use client";
+// This is the map with routing function
 
 import React, { useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import MapRouting from "./mapRouting"; 
+import RoutingMachine from "./routingMachine"; 
 import LocationMarker from "./locationMarker"; 
 
 //The main map component
-const MapComponent: React.FC = () => {
+const RoutingMap: React.FC = () => {
   const [userPosition, setUserPosition] = useState<[number, number] | null>(null);
 
   const waypoints: [number, number][] = []; //can set predetermined way points here to display on map loads
@@ -23,7 +24,7 @@ const MapComponent: React.FC = () => {
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <MapRouting 
+      <RoutingMachine 
         waypoints={waypoints}
         startPosition={userPosition || [14.0583, 108.2772]} // Default to center of Viet Nam if user position is not available
       />
@@ -32,4 +33,4 @@ const MapComponent: React.FC = () => {
   );
 };
 
-export default MapComponent;
+export default RoutingMap;

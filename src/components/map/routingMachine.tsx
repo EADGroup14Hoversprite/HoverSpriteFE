@@ -14,13 +14,12 @@ interface MapRoutingProps {
   startPosition: [number, number];
 }
 
-const MapRouting: React.FC<MapRoutingProps> = ({ waypoints, startPosition }) => {
+const RoutingMachine: React.FC<MapRoutingProps> = ({ waypoints, startPosition }) => {
   const map = useMap();
 
   useEffect(() => {
     if (!map) return;
 
-    // Add routing control
     const routingControl = L.Routing.control({ //This is the direction board on the right side of the map
       router: L.Routing.osrmv1({
         serviceUrl: 'http://router.project-osrm.org/route/v1/',
@@ -35,7 +34,6 @@ const MapRouting: React.FC<MapRoutingProps> = ({ waypoints, startPosition }) => 
       waypoints: [L.latLng(startPosition), ...waypoints.map(point => L.latLng(point))],
     }).addTo(map);
 
-    // Clean up routing control on component unmount
     return () => {
       map.removeControl(routingControl);
     };
@@ -44,4 +42,4 @@ const MapRouting: React.FC<MapRoutingProps> = ({ waypoints, startPosition }) => 
   return null;
 };
 
-export default MapRouting;
+export default RoutingMachine;
