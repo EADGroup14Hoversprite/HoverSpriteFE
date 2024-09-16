@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { useUserStore } from "@/store/user-store";
 import { useRouter } from "next/navigation";
 import { auth } from "@/actions/auth";
+import GeoSearchForm from "@/components/map/geoSearchForm";
 
 export default function DefaultRegisterForm() {
   const { login } = useUserStore();
@@ -65,6 +66,11 @@ export default function DefaultRegisterForm() {
     });
   };
 
+  // Handle address selection from GeoSearchForm
+  const handleAddressSelect = (address: string) => {
+    form.setValue("homeAddress", address); // Update the home address field in the form
+  };
+
   return (
     <div className="flex screen">
       {/* Left side of the screen hidden on small & medium screens */}
@@ -78,7 +84,7 @@ export default function DefaultRegisterForm() {
           </div>
 
           <div className="absolute bottom-0 right-10 w-3/12">
-            <Link href={`/login/`}>
+            <Link href={`/auth/login/`}>
               <Button
                 className="w-full bg-blue-800 my-5 rounded-full hover:bg-blue-900"
                 variant={"default"}
@@ -120,15 +126,14 @@ export default function DefaultRegisterForm() {
         <div className="w-4/5">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              {/* Name Fields: Last Name, Middle Name, First Name */}
               <div className="flex gap-4 mb-3">
                 <FormField
                   name="fullName"
                   control={form.control}
                   render={({ field }) => (
                     <FormItem className="flex-1 basis-1/3">
-                      <FormLabel>Last Name</FormLabel>
-                      <Input {...field} placeholder="Your last name:" />
+                      <FormLabel>Full Name</FormLabel>
+                      <Input {...field} placeholder="Your full name:" />
                       <FormMessage />
                     </FormItem>
                   )}
@@ -161,14 +166,15 @@ export default function DefaultRegisterForm() {
                 )}
               />
 
-              {/* Home Address Field */}
-              <FormField
+             {/* Home Address Field with GeoSearch */}
+             <FormField
                 name="homeAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
                     <FormLabel>Home Address</FormLabel>
-                    <Input {...field} placeholder="Enter your home address:" />
+                    <GeoSearchForm onSelect={handleAddressSelect} />
+                    <Input {...field} placeholder="Enter your address" />
                     <FormMessage />
                   </FormItem>
                 )}
