@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa"; // Import for the profile and menu icons
+import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa"; 
 
 export default function Header({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage mobile menu toggle
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false); // State to manage profile dropdown
+  const [isMenuOpen, setIsMenuOpen] = useState(false); 
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false); 
 
   return (
     <header className="bg-white shadow-md fixed top-0 w-full z-50 h-20">
@@ -24,7 +24,7 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
             {/* Dashboard Title and Description */}
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Manage your assigned and completed orders</p>
+              <p className="text-gray-600">Manage your orders</p>
             </div>
           </a>
 
@@ -75,8 +75,6 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
               )}
             </div>
           </div>
-
-          {/* Hamburger Menu Icon for Mobile */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -86,8 +84,6 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
             </button>
           </div>
         </div>
-
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden bg-white shadow-lg py-4">
             <nav className="flex flex-col space-y-4">
