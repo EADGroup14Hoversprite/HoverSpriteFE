@@ -1,6 +1,7 @@
-//COULD ALSO ADD THE MAP HERE
+"use client";
 import React from "react";
 import Button from "./Button";
+import MapComponent from "@/components/map/mapComponent"; // Assuming your MapComponent is reusable here.
 
 interface Order {
   id: string;
@@ -27,54 +28,6 @@ interface OrderModalProps {
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
-  const confirmPayment = async () => {
-    try {
-      //Token just for testing
-      const token =
-        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
-      const response = await fetch(`http://localhost:8080/order/${order.id}/confirm-cash-payment`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to confirm payment");
-      }
-      onClose();
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("Error comfirming payment:", error);
-    }
-  };
-
-  const updateOrderStatus = async (status: string) => {
-    try {
-      const token =
-        "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
-      const response = await fetch(`http://localhost:8080/order/${order.id}/update-status`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update order status");
-      }
-      onClose();
-      const data = await response.json();
-      console.log("Order status updated:", data);
-    } catch (error) {
-      console.error("Error updating order status:", error);
-    }
-  };
-
   return (
     <div
       id="order-modal"
@@ -82,7 +35,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
       aria-hidden="true"
       className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
     >
-      <div className="relative p-4 w-full max-w-4xl bg-white rounded-lg shadow-md">
+      <div className="relative w-full max-w-6xl h-auto bg-white rounded-lg shadow-lg">
+        {/* Close Button */}
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-gray-900">Order Details</h3>
           <button
@@ -106,61 +60,98 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
             </svg>
           </button>
         </div>
-        <div className="p-4">
-          <p>
-            <strong>Order ID:</strong> {order.id}
-          </p>
-          <p>
-            <strong>Booker ID:</strong> {order.bookerId}
-          </p>
-          <p>
-            <strong>Crop Type:</strong> {order.cropType}
-          </p>
-          <p>
-            <strong>Farmer Name:</strong> {order.farmerName}
-          </p>
-          <p>
-            <strong>Farmer Phone Number:</strong> {order.farmerPhoneNumber}
-          </p>
-          <p>
-            <strong>Address:</strong> {order.address}
-          </p>
-          {/* <p><strong>Location:</strong> {order.location}</p> */}
-          <p>
-            <strong>Farmland Area:</strong> {order.farmlandArea} acres
-          </p>
-          <p>
-            <strong>Desired Date:</strong> {order.desiredDate}
-          </p>
-          <p>
-            <strong>Total Cost:</strong> ${order.totalCost}
-          </p>
-          <p>
-            <strong>Time Slot:</strong> {order.timeSlot}
-          </p>
-          <p>
-            <strong>Payment Method:</strong> {order.paymentMethod}
-          </p>
-          <p>
-            <strong>Payment Status:</strong> {order.paymentStatus}
-          </p>
-          <p>
-            <strong>Created At:</strong> {order.createdAt}
-          </p>
-          <p>
-            <strong>Updated At:</strong> {order.updatedAt}
-          </p>
+
+        {/* Modal Body with Grid Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+          {/* Order Details Section */}
+          <div className="md:col-span-1 bg-gray-50 p-4 rounded-lg shadow-inner">
+            <div className="space-y-4">
+              <div className="pb-2 border-b">
+                <h4 className="text-lg font-semibold text-gray-700 flex items-center">
+                  <span className="material-icons mr-2">Farmer Details</span>
+                  Farmer Details
+                </h4>
+                <p className="text-sm">
+                  <strong>Farmer Name:</strong> {order.farmerName}
+                </p>
+                <p className="text-sm">
+                  <strong>Phone Number:</strong> {order.farmerPhoneNumber}
+                </p>
+                <p className="text-sm">
+                  <strong>Address:</strong> {order.address}
+                </p>
+              </div>
+
+              <div className="pb-2 border-b">
+                <h4 className="text-lg font-semibold text-gray-700 flex items-center">
+                  <span className="material-icons mr-2">Order Info</span>
+                  
+                </h4>
+                <p className="text-sm">
+                  <strong>Order ID:</strong> {order.id}
+                </p>
+                <p className="text-sm">
+                  <strong>Crop Type:</strong> {order.cropType}
+                </p>
+                <p className="text-sm">
+                  <strong>Farmland Area:</strong> {order.farmlandArea} acres
+                </p>
+                <p className="text-sm">
+                  <strong>Desired Date:</strong> {order.desiredDate}
+                </p>
+                <p className="text-sm">
+                  <strong>Time Slot:</strong> {order.timeSlot}
+                </p>
+                <p className="text-sm">
+                  <strong>Status:</strong>{" "}
+                  <span className={order.status === "ASSIGNED" ? "text-red-600" : "text-green-600"}>
+                    {order.status}
+                  </span>
+                </p>
+              </div>
+
+              <div className="pb-2">
+                <h4 className="text-lg font-semibold text-gray-700 flex items-center">
+                  <span className="material-icons mr-2">Payment Info</span>
+                  
+                </h4>
+                <p className="text-sm">
+                  <strong>Total Cost:</strong> ${order.totalCost}
+                </p>
+                <p className="text-sm">
+                  <strong>Payment Method:</strong> {order.paymentMethod}
+                </p>
+                <p className="text-sm">
+                  <strong>Payment Status:</strong>{" "}
+                  <span className={order.paymentStatus === "Payment accepted" ? "text-green-600" : "text-red-600"}>
+                    {order.paymentStatus}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex space-x-4 mt-4">
+              <Button
+                className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
+                onClick={() => console.log("Order accepted")}
+                text="Accept order"
+              />
+              <Button
+                className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
+                onClick={() => console.log("Payment confirmed")}
+                text="Confirm payment"
+              />
+            </div>
+          </div>
+
+          {/* Map Section - Slightly Taller */}
+          <div className="md:col-span-2 w-full h-auto bg-gray-200 rounded-lg overflow-hidden shadow-inner">
+            <div className="h-72"> {/* Slightly increased height */}
+              <MapComponent />
+            </div>
+          </div>
         </div>
-        <Button
-          className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-          onClick={() => updateOrderStatus("IN_PROGRESS")}
-          text="Accept order"
-        />
-        <Button
-          className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
-          onClick={() => confirmPayment()}
-          text="Confirm payment"
-        />
       </div>
     </div>
   );

@@ -82,7 +82,7 @@ const SprayerOrderTable: React.FC = () => {
       ];
   
       setOrders(dummyOrders); // Set the dummy order data
-      setLoading(false); // Update loading state
+      setLoading(false); 
     } catch (err) {
       setError("Failed to load orders.");
       setLoading(false);
