@@ -33,33 +33,6 @@ const AssignedOrdersTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 5;
 
-  // Could not fetch orders from the server, so I'm using a dummy data
-  // const fetchOrders = async () => {
-  //   try {
-  //     //Token just for testing
-  //     const token =
-  //       "eyJhbGciOiJIUzM4NCJ9.eyJhdXRoUm9sZSI6IlJPTEVfVVNFUiIsInVzZXJSb2xlIjoiUk9MRV9TUFJBWUVSIiwic3ViIjoiMiIsImlhdCI6MTcyNjIyMDA5MywiZXhwIjoxNzI2MjIzNjkzfQ.3Ij3o-amwRA0UHueUaVM9KsJWFx5BgWew14SdYAXlJda3uWhGusv2xzFaA4GIMq5";
-  //     const response = await fetch("http://localhost:8080/order/assigned", {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to fetch orders");
-  //     }
-
-  //     const data = await response.json();
-  //     setOrders(data.orders);
-  //     setLoading(false);
-  //   } catch (err) {
-  //     setError("Failed to load orders.");
-  //     setLoading(false);
-  //   }
-  // };
-
   async function fetchOrders() {
     try {
       const res = await API.get<{ message: string; orders: IOrder[] }>(
@@ -125,7 +98,7 @@ const AssignedOrdersTable: React.FC = () => {
         return "text-green-600 font-bold";
       case "ASSIGNED":
         return "text-red-600 font-bold";
-      case "PENDING":
+      case "IN_PROGRESS":
         return "text-yellow-600 font-bold";
       default:
         return "";
@@ -191,7 +164,7 @@ const AssignedOrdersTable: React.FC = () => {
                   <td
                     className={`hidden md:table-cell px-6 py-4 whitespace-normal text-sm ${getPaymentStatusClass(order.paymentStatus)}`}
                   >
-                    {order.paymentStatus}
+                     {order.paymentStatus ? "Payment accepted" : "Ongoing"}
                   </td>
                   {/* Show the action button only on desktop */}
                   <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-700">

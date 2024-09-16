@@ -22,13 +22,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
         message: "Failed to confirm cash payment",
       };
     }
+    onClose();
   };
 
   const updateOrderStatus = async (status: string) => {
     try {
-      const response =  await API.post<{ message: string, order: IOrder }>(
+      await API.post<{ message: string, order: IOrder }>(
         `/order/${order.id}/update-status`,
-        JSON.stringify({ status })
+        {status}
       );
         } catch (e) {
           return {
@@ -36,7 +37,6 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
           };
         }
       onClose();
-      console.log("Order status updated:", order.status);
     } 
   
 
@@ -146,12 +146,12 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
             <div className="flex space-x-4 mt-4">
               <Button
                 className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-                onClick={() => console.log("Order accepted")}
+                onClick={() => updateOrderStatus("IN_PROGRESS")}
                 text="Accept order"
               />
               <Button
                 className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
-                onClick={() => console.log("Payment confirmed")}
+                onClick={() => confirmPayment()}
                 text="Confirm payment"
               />
             </div>
