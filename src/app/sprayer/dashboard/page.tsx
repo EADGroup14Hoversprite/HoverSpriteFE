@@ -3,18 +3,17 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import AssignedOrdersTable from "../components/AssignedOrdersTable";
 import OrderHistoryTable from "../components/OrderHistoryTable";
-import RoutePlanner from "../components/RoutePlanner"; 
+import RoutePlanner from "../components/RoutePlanner";
 
 export default function Page() {
   const [activeTab, setActiveTab] = useState<string>("assigned");
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header with prop to set the active tab */}
+    <div className="min-h-screen bg-gray-100 overflow-hidden relative">
       <Header setActiveTab={setActiveTab} />
 
-      {/* Main Content with padding to account for fixed header */}
-      <main className="container mx-auto px-4 py-8 pt-20"> {/* Add pt-20 to offset header */}
+      {/* Main Content */}
+      <main className="container mx-auto px-4 pt-24">
         {activeTab === "assigned" && (
           <section className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Assigned Orders</h2>
@@ -30,9 +29,11 @@ export default function Page() {
         )}
 
         {activeTab === "route" && (
-          <section className="bg-white rounded-lg shadow-lg p-6">
+          <section className="bg-white rounded-lg shadow-lg p-6" style={{ height: 'calc(100vh - 6rem)' }}> 
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Route Planning</h2>
-            <RoutePlanner />
+            <div className="h-full pb-6"> 
+              <RoutePlanner />
+            </div>
           </section>
         )}
       </main>

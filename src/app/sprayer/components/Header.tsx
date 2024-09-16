@@ -1,15 +1,14 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa"; 
+import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 
 export default function Header({ setActiveTab }: { setActiveTab: (tab: string) => void }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); 
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false); 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white shadow-md fixed top-0 w-full z-50 h-20">
-      <div className="bg-white py-3 px-4 sm:px-6 lg:px-8 shadow-md h-full">
+    <header className="bg-white shadow-md fixed top-0 w-full z-50">
+      <div className="py-3 px-4 sm:px-6 lg:px-8 shadow-md h-full">
         <div className="max-w-7xl mx-auto flex justify-between items-center h-full">
           {/* Left side: Logo and Dashboard title */}
           <a href="/" className="flex items-center space-x-3">
@@ -40,41 +39,17 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
               Route
             </button>
 
-            {/* Profile Button with Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
-              >
-                <FaUserCircle size={18} />
-                <span>Your Profile</span>
-              </button>
-
-              {/* Dropdown Menu */}
-              {isProfileDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-2">
-                  <a
-                    href="/profile/edit"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Edit Profile
-                  </a>
-                  <a
-                    href="/settings"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Settings
-                  </a>
-                  <button
-                    onClick={() => alert('Logged Out')}
-                    className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Log Out
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* Profile Button */}
+            <a
+              href="/login"
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+            >
+              <FaUserCircle size={18} />
+              <span>Your Profile</span>
+            </a>
           </div>
+
+          {/* Hamburger Menu Icon for Mobile */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -84,6 +59,8 @@ export default function Header({ setActiveTab }: { setActiveTab: (tab: string) =
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden bg-white shadow-lg py-4">
             <nav className="flex flex-col space-y-4">
