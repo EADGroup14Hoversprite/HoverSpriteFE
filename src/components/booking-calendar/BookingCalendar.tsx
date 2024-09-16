@@ -15,7 +15,7 @@ import { Calendar } from "@/components/ui/calendar";
 import LucideIcon from "../lucide-icon";
 import { UseFormReturn } from "react-hook-form";
 import { OrderType } from "@/schema";
-import { DateInput } from "@/app/[role]/(farmer)/booking/_component/FormField";
+import { DateInput } from "@/app/[role]/farmer/booking/_component/FormField";
 import { useCalendarStore } from "@/store/calendar-store";
 import { SpraySlot, toSlot } from "@/models/Booking";
 import { Button } from "@/components/ui/button";

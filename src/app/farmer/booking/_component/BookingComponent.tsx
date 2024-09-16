@@ -16,8 +16,8 @@ import { addDays, addHours, startOfDay } from "date-fns";
 import { transformBookings } from "@/hooks/useDateMatrix";
 import { useCalendarStore } from "@/store/calendar-store";
 import { IOrder } from "@/models/Order";
-import BookingForm from "@/app/[role]/(farmer)/booking/_component/crop-area/BookingForm";
-import { Checkout } from "@/app/[role]/(farmer)/booking/_component/checkout";
+import BookingForm from "@/app/farmer/booking/_component/crop-area/BookingForm";
+import { Checkout } from "@/app/farmer/booking/_component/checkout";
 
 function isValidSlot(
   slot: SpraySlot,

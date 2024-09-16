@@ -9,7 +9,7 @@ import { PaymentType } from "@/types/payment";
 import { useCalendarStore } from "@/store/calendar-store";
 import { useUserStore } from "@/store/user-store";
 import React from "react";
-import BookingComponent from "@/app/[role]/(farmer)/booking/_component/BookingComponent";
+import BookingComponent from "@/app/farmer/booking/_component/BookingComponent";
 
 export default function Page() {
   const { initialState } = useCalendarStore();

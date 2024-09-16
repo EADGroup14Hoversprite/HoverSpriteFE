@@ -29,8 +29,8 @@ import {
 } from "@/components/ui/dialog";
 import { SpraySlot, toSlotString } from "@/models/Booking";
 import { PaymentType, toPaymentString } from "@/types/payment";
-import FeedbackForm from "@/app/[role]/(farmer)/orders/_component/feedback/FeedbackForm";
-import FeedbackOverview from "@/app/[role]/(farmer)/orders/_component/feedback/FeedbackOverview";
+import FeedbackForm from "@/app/farmer/orders/_component/feedback/FeedbackForm";
+import FeedbackOverview from "@/app/farmer/orders/_component/feedback/FeedbackOverview";
 import { getFeedback } from "@/actions/feedback";
 
 interface DataTableRowActionsProps<TData> {
