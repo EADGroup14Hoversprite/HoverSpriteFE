@@ -5,12 +5,15 @@ import { orderSchema, OrderType } from "@/schema";
 import { CropType } from "@/types/crop-type";
 import { SpraySlot } from "@/models/Booking";
 import { zodResolver } from "@hookform/resolvers/zod";
-import BookingComponent from "@/app/(farmer)/booking/_component/BookingComponent";
 import { PaymentType } from "@/types/payment";
 import { useCalendarStore } from "@/store/calendar-store";
+import { useUserStore } from "@/store/user-store";
+import React from "react";
+import BookingComponent from "@/app/[role]/(farmer)/booking/_component/BookingComponent";
 
 export default function Page() {
   const { initialState } = useCalendarStore();
+  const { currentUser } = useUserStore();
   const defaultValues: OrderType = {
     farmerId: "",
     farmlandArea: 0,
@@ -57,6 +60,7 @@ export default function Page() {
       {/*    }*/}
       {/*  ></BookingCalendar>*/}
       {/*</div>*/}
+      {/*<StompExample />*/}
 
       <BookingComponent methods={bookingForm} />
     </div>

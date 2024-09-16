@@ -21,7 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { OrderDetail } from "@/app/(farmer)/booking/_component/checkout";
+import { OrderDetail } from "@/app/[role]/(farmer)/booking/_component/checkout";
 
 interface ShippingPaymentProps {
   bookingForm: UseFormReturn<OrderType>;

@@ -1,9 +1,10 @@
-import { DataTable } from "@/components/data-table/data-table";
-import { columns } from "@/components/data-table/column";
+import * as React from "react";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { getMyOrders } from "@/actions/order";
 import { cookies } from "next/headers";
+import { DataTable } from "@/components/data-table/data-table";
+import { columns } from "@/components/data-table/column";
 
 export default async function Page() {
   // const [orders, setOrders] = useState<IOrder[]>([]);
@@ -13,8 +14,8 @@ export default async function Page() {
   if (session) {
     const getOrders = getMyOrders(session, 0, 10, "status", "ASC");
     return (
-      <div>
-        <div className="hidden h-full flex-1 flex-col space-y-8 p-4 md:flex">
+      <>
+        <div className="h-full flex-1 flex-col space-y-8 p-4 flex overflow-auto">
           <div className="flex items-center justify-between space-y-2">
             <div>
               <h2 className="text-2xl font-bold tracking-tight">
@@ -25,6 +26,7 @@ export default async function Page() {
               </p>
             </div>
           </div>
+
           <div className="flex items-center">
             <Suspense
               fallback={
@@ -37,15 +39,11 @@ export default async function Page() {
                 />
               }
             >
-              {/**
-               * Passing promises and consuming them using React.use for triggering the suspense fallback.
-               * @see https://react.dev/reference/react/use
-               */}
               <DataTable ordersPromise={getOrders} columns={columns} />
             </Suspense>
           </div>
         </div>
-      </div>
+      </>
     );
   }
   return <p>You session expired! Please login again!</p>;

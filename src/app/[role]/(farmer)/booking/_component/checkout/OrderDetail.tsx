@@ -12,7 +12,7 @@ import {
   AreaInput,
   CropSelection,
   SlotSelection,
-} from "@/app/(farmer)/booking/_component/FormField";
+} from "@/app/[role]/(farmer)/booking/_component/FormField";
 
 interface OrderDetailProps {
   bookingForm: UseFormReturn<OrderType>;

@@ -29,7 +29,9 @@ import {
 } from "@/components/ui/dialog";
 import { SpraySlot, toSlotString } from "@/models/Booking";
 import { PaymentType, toPaymentString } from "@/types/payment";
-import FeedbackForm from "@/app/(farmer)/orders/_component/feedback/FeedbackForm";
+import FeedbackForm from "@/app/[role]/(farmer)/orders/_component/feedback/FeedbackForm";
+import FeedbackOverview from "@/app/[role]/(farmer)/orders/_component/feedback/FeedbackOverview";
+import { getFeedback } from "@/actions/feedback";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -197,36 +199,59 @@ export function DataTableRowActions<TData>({
           </SheetFooter>
         </SheetContent>
       </Sheet>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            disabled={status?.value !== "completed"}
-            className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
-          >
-            {order.hasFeedback ? (
+
+      {order.hasFeedback ? (
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              disabled={status?.value !== "completed"}
+              className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
+            >
               <>
                 <ScanEye className="h-4 w-4" />
                 <span>View Feedback</span>
               </>
-            ) : (
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <DialogHeader>
+              <DialogTitle>Order #{order.id}</DialogTitle>
+              <DialogDescription>
+                Your feedback is recaptured as below
+              </DialogDescription>
+            </DialogHeader>
+            <React.Suspense fallback={<div className="mt-2">Loading...</div>}>
+              <FeedbackOverview feedbackPromise={getFeedback(order.id)} />
+            </React.Suspense>
+          </SheetContent>
+        </Sheet>
+      ) : (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              disabled={status?.value !== "completed"}
+              className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
+            >
               <>
                 <SquarePen className="h-4 w-4" />
                 <span>Feedback</span>
               </>
-            )}
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Give feedback to #{order.id}</DialogTitle>
-            <DialogDescription>
-              Your feedback is valuable for our future improvement!
-            </DialogDescription>
-          </DialogHeader>
-          <FeedbackForm order={order} setDialogOpen={setDialogOpen} />
-        </DialogContent>
-      </Dialog>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Give feedback to order #{order.id}</DialogTitle>
+              <DialogDescription>
+                Your feedback is valuable for our future improvement!
+              </DialogDescription>
+            </DialogHeader>
+            <FeedbackForm order={order} setDialogOpen={setDialogOpen} />
+          </DialogContent>
+        </Dialog>
+      )}
+
       {/*  </TooltipTrigger>*/}
       {/*  <TooltipContent align="start" side="bottom">*/}
       {/*    {status?.value !== "completed"*/}

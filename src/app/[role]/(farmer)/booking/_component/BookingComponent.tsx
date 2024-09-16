@@ -3,12 +3,10 @@
 import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 
-import BookingForm from "@/app/(farmer)/booking/_component/crop-area/BookingForm";
 import { BookingCalendar } from "@/components/booking-calendar";
 import StepperIndicator from "@/components/stepper-indicator";
 import { Button } from "@/components/ui/button";
 import { OrderType } from "@/schema";
-import { Checkout } from "@/app/(farmer)/booking/_component/checkout/Checkout";
 import { SpraySlot, toSlotNum } from "@/models/Booking";
 import { useUserStore } from "@/store/user-store";
 import { createOrder, getOrderRange } from "@/actions/order";
@@ -18,6 +16,8 @@ import { addDays, addHours, startOfDay } from "date-fns";
 import { transformBookings } from "@/hooks/useDateMatrix";
 import { useCalendarStore } from "@/store/calendar-store";
 import { IOrder } from "@/models/Order";
+import BookingForm from "@/app/[role]/(farmer)/booking/_component/crop-area/BookingForm";
+import { Checkout } from "@/app/[role]/(farmer)/booking/_component/checkout";
 
 function isValidSlot(
   slot: SpraySlot,
@@ -160,6 +160,7 @@ const HookMultiStepForm = ({
       loading: "Creating your order...",
       success: () => {
         router.push("/orders");
+        router.refresh();
         return `Order has been created successfully.`;
       },
       error: () => {

@@ -1,15 +1,30 @@
 "use client";
-import React, { PropsWithChildren, useEffect } from "react";
+import React, { PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar, Sidebar } from "@/components/layout";
 import { useSidebarToggle } from "@/store/use-sidebar-toggle";
 import DynamicBreadcrumb from "@/components/dynamic-breadcrumb/DynamicBreadcrumb";
 import { Toaster } from "sonner";
 import { useUserStore } from "@/store/user-store";
+import { useRouter } from "next/navigation";
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({
+  children,
+  params,
+}: PropsWithChildren<{ params: { role: string } }>) {
   const { isOpen } = useSidebarToggle();
   const { currentUser } = useUserStore();
+  console.log(params);
+
+  const router = useRouter();
+  // if (currentUser?.userRole === UserRole.ROLE_FARMER) {
+  //   router.replace("/farmer/orders");
+  // } else if (currentUser?.userRole === UserRole.ROLE_RECEPTIONIST) {
+  //   router.push("/receptionist/dashboard");
+  // } else if (currentUser?.userRole === UserRole.ROLE_SPRAYER) {
+  //   router.push("/sprayer/dashboard");
+  // }
+
   return (
     <div className="flex h-full w-full">
       <Sidebar />
@@ -20,6 +35,7 @@ export default function Layout({ children }: PropsWithChildren) {
             min-h-screen bg-zinc-50 transition-[margin-left] duration-300 ease-in-out
             dark:bg-zinc-900
             w-full flex flex-col
+            overflow-hidden
             data-[collapsed=false]:lg:ml-[68px] 
             data-[collapsed=true]:lg:ml-60
           `,

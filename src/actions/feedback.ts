@@ -34,7 +34,17 @@ export async function giveFeedback(
     );
     return res.data;
   } catch (e) {
-    console.log(e);
     throw new Error("Unable to create feedback");
+  }
+}
+
+export async function getFeedback(orderId: number) {
+  try {
+    const res = await API.get<{ message: string; feedbacks: IFeedback[] }>(
+      `/feedback?orderId=${orderId}`,
+    );
+    return res.data;
+  } catch (e) {
+    throw new Error("Unable to get feedback");
   }
 }

@@ -69,7 +69,7 @@ export default function RedirectRegisterForm({
         await auth(finalUser);
         login(finalUser);
         clientSessionToken.value = finalUser.accessToken;
-        router.push("/orders");
+        router.push("/farmer/orders");
         return "Register successfully!";
       },
       error: (e) => {

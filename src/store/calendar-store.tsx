@@ -27,6 +27,7 @@ type CalendarStateAction = {
   setSelectedSlot: (slot: SlotCell | undefined) => void;
   setStartDate: (date: Date) => void;
   setSelectedDate: (date: Date) => void;
+  setNumDays: (numDays: number) => void;
 };
 
 type CalendarStore = CalendarState & CalendarStateAction;
@@ -65,6 +66,10 @@ export const useCalendarStore = create<CalendarStore>(
     setSelectedDate: (date: Date) =>
       set((state) => ({
         initialState: { ...state.initialState, selectedDate: date },
+      })),
+    setNumDays: (numDays: number) =>
+      set((state) => ({
+        initialState: { ...state.initialState, numDays: numDays },
       })),
   }),
 );
