@@ -18,7 +18,7 @@ export function UserButton({ currentUser }: UserButtonProps) {
     logout();
   };
   return (
-    <div className="h-full flex items-center gap-2">
+    <div className="h-full items-center gap-2 hidden sm:flex">
       <div className="rounded-md flex items-center border border-primary border-solid p-2 h-10 gap-2">
         <Avatar className="h-6 w-6">
           <AvatarImage

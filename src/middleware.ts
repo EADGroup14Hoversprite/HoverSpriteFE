@@ -1,29 +1,40 @@
 import { jwtDecode } from "jwt-decode";
 import { JWTPayload } from "@/types/user";
 import { UserRole } from "@/types/role";
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const protectedPath = ["/booking", "/orders", "/dashboard"];
+const protectedPath = [
+  "/farmer/booking",
+  "/farmer/orders",
+  "/receptionist/dashboard",
+  "/sprayer/dashboard",
+];
 const authPath = ["/auth/login", "auth/signup"];
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const sessionToken = req.cookies.get("sessionToken");
-  if (protectedPath.some((path) => pathname.startsWith(path))) {
-    if (!sessionToken) {
-      return NextResponse.redirect(new URL("auth/login", req.url));
-    }
+  if (
+    protectedPath.some((path) => pathname.startsWith(path)) &&
+    !sessionToken
+  ) {
+    return NextResponse.redirect(new URL("/auth/login", req.url));
   }
+
   if (authPath.some((path) => pathname.startsWith(path)) && sessionToken) {
     const decodeData = jwtDecode<JWTPayload>(sessionToken.value);
     if (decodeData.userRole === UserRole.ROLE_FARMER) {
-      return NextResponse.redirect(new URL("/orders", req.url));
+      return NextResponse.redirect(new URL("farmer/orders", req.url));
+    }
+    if (decodeData.userRole === UserRole.ROLE_RECEPTIONIST) {
+      return NextResponse.redirect(new URL("receptionist/dashboard", req.url));
     }
     if (decodeData.userRole === UserRole.ROLE_SPRAYER) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      return NextResponse.redirect(new URL("sprayer/dashboard", req.url));
     }
   }
+
   return NextResponse.next();
 }
 

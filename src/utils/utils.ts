@@ -17,3 +17,15 @@ export function getUserImg(authRole: AuthRole, userRole: UserRole) {
       return "/avatar/admin.png";
   }
 }
+
+interface ImageLoaderParams {
+  src: string;
+  width: number;
+  quality?: number;
+}
+
+export const imageLoader = ({
+  src,
+  width,
+  quality = 75,
+}: ImageLoaderParams): string => `${src}?w=${width}&q=${quality}`;

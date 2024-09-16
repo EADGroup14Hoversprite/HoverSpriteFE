@@ -2,6 +2,20 @@ import API from "@/utils/axiosClient";
 import { IUser, JWTPayload } from "@/types/user";
 import { jwtDecode } from "jwt-decode";
 import { getUserImg } from "@/utils/utils";
+import { AuthRole, UserRole } from "@/types/role";
+
+export function extractRoleInfo(
+  user: IUser,
+  authRole: AuthRole,
+  userRole: UserRole,
+) {
+  return {
+    ...user,
+    imageUrl: getUserImg(authRole, userRole),
+    userRole: userRole,
+    authRole: authRole,
+  } as IUser;
+}
 
 export async function auth(value: IUser) {
   await API.post(
@@ -26,12 +40,11 @@ export async function getMe(sessionToken: string) {
     const decodeData = jwtDecode<JWTPayload>(res.data.dto.accessToken);
     return {
       message: res.data.message,
-      dto: {
-        ...res.data.dto,
-        imageUrl: getUserImg(decodeData.authRole, decodeData.userRole),
-        userRole: decodeData.userRole,
-        authRole: decodeData.authRole,
-      } as IUser,
+      dto: extractRoleInfo(
+        res.data.dto,
+        decodeData.authRole,
+        decodeData.userRole,
+      ),
     };
   } catch (e) {
     return {
@@ -61,17 +74,35 @@ export async function login(values: {
     password: values.password,
   });
   const decodeData = jwtDecode<JWTPayload>(res.data.dto.accessToken);
-  return {
-    ...res.data.dto,
-    imageUrl: getUserImg(decodeData.authRole, decodeData.userRole),
-    userRole: decodeData.userRole,
-    authRole: decodeData.authRole,
-  };
+  return extractRoleInfo(
+    res.data.dto,
+    decodeData.authRole,
+    decodeData.userRole,
+  );
 }
 
 export async function loginWithGoogle() {
   try {
     const res = await API.get<{ redirectUri: string }>("/auth/google/redirect");
+    return {
+      redirectUrl: res.data.redirectUri,
+      error: false,
+      message: "redirect ok!",
+    };
+  } catch (err) {
+    return {
+      redirectUrl: "",
+      error: true,
+      message: "redirect not oke!",
+    };
+  }
+}
+
+export async function loginWithFb() {
+  try {
+    const res = await API.get<{ redirectUri: string }>(
+      "/auth/facebook/redirect",
+    );
     return {
       redirectUrl: res.data.redirectUri,
       error: false,

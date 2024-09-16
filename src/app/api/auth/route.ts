@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json(res, {
     status: 200,
     headers: {
-      "Set-Cookie": `sessionToken=${res.accessToken}; Path=/; HttpOnly`,
+      "Set-Cookie": `sessionToken=${res.accessToken}; Path=/; HttpOnly; Max-Age=3600000`,
     },
   });
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import { Row } from "@tanstack/react-table";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IOrderSchema } from "@/models/Order";
-import { ListCollapse, Pencil, SquarePen } from "lucide-react";
+import { ListCollapse, ScanEye, SquarePen } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -19,27 +19,26 @@ import { Separator } from "@/components/ui/separator";
 import { getLunarDate } from "@/hooks/useDateMatrix";
 import { paymentStatuses, statuses } from "@/components/data-table/data/data";
 import { Badge } from "@/components/ui/badge";
-import LucideIcon from "@/components/lucide-icon";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SpraySlot, toSlotString } from "@/models/Booking";
 import { PaymentType, toPaymentString } from "@/types/payment";
+import FeedbackForm from "@/app/[role]/(farmer)/orders/_component/feedback/FeedbackForm";
+import FeedbackOverview from "@/app/[role]/(farmer)/orders/_component/feedback/FeedbackOverview";
+import { getFeedback } from "@/actions/feedback";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
-  feedbackForm: React.ReactNode;
 }
 
 export function DataTableRowActions<TData>({
   row,
-  feedbackForm,
 }: DataTableRowActionsProps<TData>) {
   const order = IOrderSchema.parse(row.original);
   const paymentStatus = paymentStatuses.find(
@@ -49,6 +48,8 @@ export function DataTableRowActions<TData>({
   const status = statuses.find(
     (status) => status.value === order.status.toLowerCase(),
   );
+
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <div className="flex items-center gap-2">
@@ -75,7 +76,7 @@ export function DataTableRowActions<TData>({
                   variant="outline"
                   className={`${status?.classes} font-semibold flex items-center gap-1 w-fit`}
                 >
-                  <LucideIcon name={status?.icon!} size={16} />
+                  {status && <status.icon size={16} />}
                   {status?.label}
                 </Badge>
               </div>
@@ -136,7 +137,7 @@ export function DataTableRowActions<TData>({
                     variant="outline"
                     className={`${paymentStatus?.classes} font-semibold flex items-center gap-1 w-fit`}
                   >
-                    <LucideIcon name={paymentStatus?.icon!} size={16} />
+                    {paymentStatus && <paymentStatus.icon size={16} />}
                     {paymentStatus?.label}
                   </Badge>
                 </div>
@@ -172,7 +173,7 @@ export function DataTableRowActions<TData>({
                         variant="outline"
                         className={`${paymentStatus?.classes} font-semibold flex items-center gap-1 w-fit`}
                       >
-                        <LucideIcon name={paymentStatus?.icon!} size={16} />
+                        {paymentStatus && <paymentStatus.icon size={16} />}
                         {paymentStatus?.label}
                       </Badge>
                     </div>
@@ -198,37 +199,59 @@ export function DataTableRowActions<TData>({
           </SheetFooter>
         </SheetContent>
       </Sheet>
-      <Button
-        variant="outline"
-        className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
-      >
-        <Pencil className="h-4 w-4" />
-        <span>Edit</span>
-      </Button>
-      {/*<Tooltip delayDuration={0.5}>*/}
-      {/*  <TooltipTrigger>*/}
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            disabled={status?.value !== "completed"}
-            className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
-          >
-            <SquarePen className="h-4 w-4" />
-            <span>Feedback</span>
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Give feedback to #{order.id}</DialogTitle>
-            <DialogDescription>
-              Your feedback is valuable for our future improvement!
-            </DialogDescription>
-          </DialogHeader>
-          {feedbackForm}
-        </DialogContent>
-        <DialogFooter></DialogFooter>
-      </Dialog>
+
+      {order.hasFeedback ? (
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              disabled={status?.value !== "completed"}
+              className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
+            >
+              <>
+                <ScanEye className="h-4 w-4" />
+                <span>View Feedback</span>
+              </>
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <DialogHeader>
+              <DialogTitle>Order #{order.id}</DialogTitle>
+              <DialogDescription>
+                Your feedback is recaptured as below
+              </DialogDescription>
+            </DialogHeader>
+            <React.Suspense fallback={<div className="mt-2">Loading...</div>}>
+              <FeedbackOverview feedbackPromise={getFeedback(order.id)} />
+            </React.Suspense>
+          </SheetContent>
+        </Sheet>
+      ) : (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              disabled={status?.value !== "completed"}
+              className="flex p-0 px-2 data-[state=open]:bg-muted gap-2"
+            >
+              <>
+                <SquarePen className="h-4 w-4" />
+                <span>Feedback</span>
+              </>
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Give feedback to order #{order.id}</DialogTitle>
+              <DialogDescription>
+                Your feedback is valuable for our future improvement!
+              </DialogDescription>
+            </DialogHeader>
+            <FeedbackForm order={order} setDialogOpen={setDialogOpen} />
+          </DialogContent>
+        </Dialog>
+      )}
+
       {/*  </TooltipTrigger>*/}
       {/*  <TooltipContent align="start" side="bottom">*/}
       {/*    {status?.value !== "completed"*/}

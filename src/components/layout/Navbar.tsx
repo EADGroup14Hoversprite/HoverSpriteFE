@@ -1,5 +1,6 @@
 import { SheetMenu, UserButton } from "@/components/layout";
 import { useUserStore } from "@/store/user-store";
+import UserButtonSmall from "@/components/layout/UserButtonSmall";
 
 interface NavbarProps {
   title: string;
@@ -13,7 +14,12 @@ export function Navbar({ title }: NavbarProps) {
           <SheetMenu />
           <h1 className="font-bold">{title}</h1>
         </div>
-        {currentUser && <UserButton currentUser={currentUser} />}
+        {currentUser && (
+          <>
+            <UserButtonSmall />
+            <UserButton currentUser={currentUser} />
+          </>
+        )}
       </div>
     </header>
   );

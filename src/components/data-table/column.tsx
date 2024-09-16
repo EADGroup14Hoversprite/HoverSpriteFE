@@ -5,39 +5,36 @@ import { ColumnDef } from "@tanstack/react-table";
 // import { labels, priorities, statuses } from "../data/data";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
-import { Checkbox } from "@/components/ui/checkbox";
 import { IOrder } from "@/models/Order";
 import { paymentStatuses, statuses } from "@/components/data-table/data/data";
 import { formatDate } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import LucideIcon from "@/components/lucide-icon";
-import FeedbackForm from "@/app/(farmer)/orders/_component/feedback/FeedbackForm";
 
 export const columns: ColumnDef<IOrder>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-        className="translate-y-[2px]"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-        className="translate-y-[2px]"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  // {
+  //   id: "select",
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && "indeterminate")
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //       className="translate-y-[2px]"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //       className="translate-y-[2px]"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -66,7 +63,7 @@ export const columns: ColumnDef<IOrder>[] = [
           variant="outline"
           className={`${status.classes} font-semibold flex items-center gap-1 w-fit`}
         >
-          <LucideIcon name={status.icon} size={16} />
+          <status.icon size={16} />
           {status.label}
         </Badge>
       );
@@ -95,7 +92,7 @@ export const columns: ColumnDef<IOrder>[] = [
           variant="outline"
           className={`${paymentStatus.classes} font-semibold flex items-center gap-1 w-fit`}
         >
-          <LucideIcon name={paymentStatus.icon} size={16} />
+          <paymentStatus.icon size={16} />
           {paymentStatus.label}
         </Badge>
       );
@@ -116,11 +113,6 @@ export const columns: ColumnDef<IOrder>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => (
-      <DataTableRowActions
-        row={row}
-        feedbackForm={<FeedbackForm order={row.original} />}
-      />
-    ),
+    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
