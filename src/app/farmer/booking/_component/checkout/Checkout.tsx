@@ -1,7 +1,7 @@
 import { UseFormReturn } from "react-hook-form";
 import { OrderType } from "@/schema";
-import { ShippingPayment } from "@/app/[role]/(farmer)/booking/_component/checkout/ShippingPayment";
-import { OrderSummary } from "@/app/[role]/(farmer)/booking/_component/checkout/OrderSummary";
+import { ShippingPayment } from "@/app/farmer/booking/_component/checkout/ShippingPayment";
+import { OrderSummary } from "@/app/farmer/booking/_component/checkout/OrderSummary";
 
 interface CheckoutProps {
   bookingForm: UseFormReturn<OrderType>;

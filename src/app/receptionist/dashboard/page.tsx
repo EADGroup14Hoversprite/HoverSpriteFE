@@ -1,5 +1,3 @@
-import { DataTable } from "@/components/data-table/data-table";
-import { columns } from "@/components/data-table/column";
 import { Suspense } from "react";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 // import { getAllOrders } from "@/actions/order"; // Update with the receptionist order fetching logic
@@ -30,10 +28,17 @@ export default async function ReceptionistPage() {
             <Suspense
               fallback={
                 <DataTableSkeleton
-                  columnCount={6} 
+                  columnCount={6}
                   searchableColumnCount={1}
                   filterableColumnCount={2}
-                  cellWidths={["10rem", "10rem", "12rem", "12rem", "8rem", "8rem"]}
+                  cellWidths={[
+                    "10rem",
+                    "10rem",
+                    "12rem",
+                    "12rem",
+                    "8rem",
+                    "8rem",
+                  ]}
                   shrinkZero
                 />
               }

@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/form";
 import { getCrops } from "@/lib/crop-list";
 import { getAreaList } from "@/lib/area-list";
-import { CropList } from "@/app/[role]/(farmer)/booking/_component/crop-area/CropList";
-import { AreaInput } from "@/app/[role]/(farmer)/booking/_component/FormField";
-import { AreaList } from "@/app/[role]/(farmer)/booking/_component/crop-area/AreaList";
+import { CropList } from "@/app/farmer/booking/_component/crop-area/CropList";
+import { AreaInput } from "@/app/farmer/booking/_component/FormField";
+import { AreaList } from "@/app/farmer/booking/_component/crop-area/AreaList";
 
 const crops = getCrops();
 const areaList = getAreaList();
