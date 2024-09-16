@@ -1,11 +1,10 @@
-import MapComponent from "@/components/map/mapComponent";
+
+import RoutingMap from "@/components/map/RoutingMap";
+import GeoSearchMap from "@/components/map/geoSearchMap";
+import GeoSearchForm from "@/components/map/geoSearchForm";
 
 export default function Page() {
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="w-full max-w-4xl h-96 bg-gray-200 shadow-lg rounded-lg overflow-hidden">
-        <MapComponent />
-      </div>
-    </div>
+    <RoutingMap/> //this is to show as example. Should put it in a smaller container to display to the user
   );
 }
