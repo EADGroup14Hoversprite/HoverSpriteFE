@@ -3,10 +3,9 @@ import React, { useState } from "react";
 import Header from "../components/Header";
 import AssignedOrdersTable from "../components/AssignedOrdersTable";
 import OrderHistoryTable from "../components/OrderHistoryTable";
-import RoutePlanner from "../components/RoutePlanner"; // Import the route component
+import RoutePlanner from "../components/RoutePlanner"; 
 
 export default function Page() {
-  // State to manage the active tab
   const [activeTab, setActiveTab] = useState<string>("assigned");
 
   return (
