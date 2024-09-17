@@ -21,8 +21,8 @@ const GeoSearchForm: React.FC<GeoSearchFormProps> = ({ onSelect }) => {
         try {
           const response = await fetch(
             `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-              query
-            )}&format=json&addressdetails=1`
+            query
+          )}&format=json&addressdetails=1&countrycodes=VN`
           );
           const data = await response.json();
           setResults(data);

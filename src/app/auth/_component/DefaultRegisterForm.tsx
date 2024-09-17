@@ -174,7 +174,7 @@ export default function DefaultRegisterForm() {
                   <FormItem className="mb-3">
                     <FormLabel>Home Address</FormLabel>
                     <GeoSearchForm onSelect={handleAddressSelect} />
-                    <Input {...field} placeholder="Enter your address" />
+                    <Input {...field} placeholder="Enter your address" disabled />
                     <FormMessage />
                   </FormItem>
                 )}
