@@ -16,22 +16,29 @@ export default function Page() {
       <main className="container mx-auto px-4 pt-24">
         {activeTab === "assigned" && (
           <section className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Assigned Orders</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Assigned Orders
+            </h2>
             <AssignedOrdersTable />
           </section>
         )}
 
         {activeTab === "history" && (
           <section className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Order History</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Order History
+            </h2>
             <OrderHistoryTable />
           </section>
         )}
-
         {activeTab === "route" && (
-          <section className="bg-white rounded-lg shadow-lg p-6" style={{ height: 'calc(100vh - 6rem)' }}> 
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Route Planning</h2>
-            <div className="h-full pb-6"> 
+          <section
+            className="bg-white rounded-lg shadow-lg p-6 flex flex-col"
+          >
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Route Planning
+            </h2>
+            <div className="pb-6 flex-1">
               <RoutePlanner />
             </div>
           </section>

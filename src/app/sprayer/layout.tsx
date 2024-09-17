@@ -11,7 +11,7 @@ import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
 import { JWTPayload } from "@/types/user";
 
-export default function Layout() {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const { currentUser } = useUserStore();
   const clientCookie = useCookies().get("sessionToken");
 
@@ -31,7 +31,7 @@ export default function Layout() {
       <Header setActiveTab={setActiveTab} />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 pt-24">
+      {/* <main className="container mx-auto px-4 pt-24">
         {activeTab === "assigned" && (
           <section className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -63,7 +63,8 @@ export default function Layout() {
             </div>
           </section>
         )}
-      </main>
+      </main> */}
+      {children}
     </div>
   );
 }
