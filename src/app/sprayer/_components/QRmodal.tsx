@@ -23,7 +23,7 @@ const QRmodal: React.FC<QRmodalProps> = ({ order, onClose }) => {
       const qrCodeUrl = URL.createObjectURL(qrCodeBlob); 
       setQrCode(qrCodeUrl);
     } catch (e) {
-      setError("Failed to generate QR code.");
+      setError("Failed to generate QR code. Make sure the order is completed and paid");
     } finally {
       setLoading(false);
     }
