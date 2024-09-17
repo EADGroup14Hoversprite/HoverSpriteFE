@@ -10,7 +10,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-gray-100 overflow-hidden relative">
-      <Header setActiveTab={setActiveTab} />
+      {/* <Header setActiveTab={setActiveTab} /> */}
 
       {/* Main Content */}
       <main className="container mx-auto px-4 pt-24">

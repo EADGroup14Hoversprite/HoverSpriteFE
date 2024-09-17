@@ -39,12 +39,27 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/receptionist/dashboard",
-          label: "Dashboard",
-          active: pathname.includes("/receptionist/dashboard"),
+          href: "/sprayer/assign-orders",
+          label: "Assigned Orders",
+          active: pathname.includes("/sprayer/assign-orders"),
           icon: "Book",
           submenus: [],
         },
+        {
+          href: "/sprayer/order-history",
+          label: "Order History",
+          active: pathname.includes("/sprayer/order-history"),
+          icon: "Book",
+          submenus: [],
+        },
+        {
+          href: "/sprayer/route",
+          label: "Map Routing",
+          active: pathname.includes("/sprayer/route"),
+          icon: "Map",
+          submenus: [],
+        },
+        
       ],
     },
     // {

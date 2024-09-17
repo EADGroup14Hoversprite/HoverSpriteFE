@@ -164,41 +164,13 @@ const RoutingMap: React.FC<RoutingMapProps> = ({ lat, lon }) => {
 
   return (
     <div className="relative w-full h-screen">
-      {/* Manual Search Input */}
-      <div className="absolute top-5 left-5 z-10 w-72">
-        <input
-          type="text"
-          value={searchInput}
-          onChange={handleSearchChange}
-          onKeyPress={handleKeyPress}
-          placeholder="Search by address or 'lat, lon'"
-          className="p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
-        />
-        {/* Display address suggestions */}
-        {loadingSuggestions ? (
-          <div className="bg-white shadow-lg rounded-md mt-2 p-3">Loading...</div>
-        ) : (
-          suggestions.length > 0 && (
-            <ul className="bg-white shadow-lg rounded-md max-h-40 overflow-y-auto mt-2">
-              {suggestions.map((suggestion) => (
-                <li
-                  key={suggestion.place_id || suggestion.id}
-                  className="p-2 cursor-pointer hover:bg-gray-200"
-                  onClick={() => fetchCoordinates(suggestion)}
-                >
-                  {suggestion.display_name || suggestion.place_name}
-                </li>
-              ))}
-            </ul>
-          )
-        )}
-      </div>
+
 
       <Map
         initialViewState={viewport}
         mapStyle="mapbox://styles/mapbox/streets-v11"
         mapboxAccessToken={MAPBOX_TOKEN}
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", zIndex: 0 }}
         onMove={(evt) => setViewport(evt.viewState)}
         ref={setMapRef}
       >
@@ -233,6 +205,36 @@ const RoutingMap: React.FC<RoutingMapProps> = ({ lat, lon }) => {
           </Source>
         )}
       </Map>
+
+            {/* Manual Search Input */}
+            <div className="absolute top-5 left-5 w-72">
+        <input
+          type="text"
+          value={searchInput}
+          onChange={handleSearchChange}
+          onKeyPress={handleKeyPress}
+          placeholder="Search by address or 'lat, lon'"
+          className="p-2 w-full border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600"
+        />
+        {/* Display address suggestions */}
+        {loadingSuggestions ? (
+          <div className="bg-white shadow-lg rounded-md mt-2 p-3">Loading...</div>
+        ) : (
+          suggestions.length > 0 && (
+            <ul className="bg-white shadow-lg rounded-md max-h-40 overflow-y-auto mt-2">
+              {suggestions.map((suggestion) => (
+                <li
+                  key={suggestion.place_id || suggestion.id}
+                  className="p-2 cursor-pointer hover:bg-gray-200"
+                  onClick={() => fetchCoordinates(suggestion)}
+                >
+                  {suggestion.display_name || suggestion.place_name}
+                </li>
+              ))}
+            </ul>
+          )
+        )}
+      </div>
     </div>
   );
 };
