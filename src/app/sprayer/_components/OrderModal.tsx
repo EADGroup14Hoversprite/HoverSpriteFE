@@ -3,7 +3,7 @@ import React from "react";
 import Button from "./Button";
 import { IOrder } from "@/models/Order";
 import API from "@/utils/axiosClient";
-import RoutingMap from "@/components/map/RoutingMap"; // Assuming your RoutingMap is reusable here.
+import RoutingMap from "@/components/map/RoutingMap"; // Import RoutingMap
 
 interface OrderModalProps {
   order: IOrder;
@@ -11,12 +11,9 @@ interface OrderModalProps {
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
-
   const confirmPayment = async () => {
     try {
-      await API.post<{ message: string }>(
-        `/order/${order.id}/confirm-cash-payment`
-      );
+      await API.post<{ message: string }>(`/order/${order.id}/confirm-cash-payment`);
     } catch (e) {
       return {
         message: "Failed to confirm cash payment",
@@ -26,19 +23,17 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
 
   const updateOrderStatus = async (status: string) => {
     try {
-      const response =  await API.post<{ message: string, order: IOrder }>(
+      const response = await API.post<{ message: string; order: IOrder }>(
         `/order/${order.id}/update-status`,
         JSON.stringify({ status })
       );
-        } catch (e) {
-          return {
-            message: "Failed to update order status",
-          };
-        }
-      onClose();
-      console.log("Order status updated:", order.status);
-    } 
-  
+    } catch (e) {
+      return {
+        message: "Failed to update order status",
+      };
+    }
+    onClose();
+  };
 
   return (
     <div
@@ -79,10 +74,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
           <div className="md:col-span-1 bg-gray-50 p-4 rounded-lg shadow-inner">
             <div className="space-y-4">
               <div className="pb-2 border-b">
-                <h4 className="text-lg font-semibold text-gray-700 flex items-center">
-                  <span className="material-icons mr-2">Farmer Details</span>
-                  Farmer Details
-                </h4>
+                <h4 className="text-lg font-semibold text-gray-700 flex items-center">Farmer Details</h4>
                 <p className="text-sm">
                   <strong>Farmer Name:</strong> {order.farmerName}
                 </p>
@@ -95,10 +87,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
               </div>
 
               <div className="pb-2 border-b">
-                <h4 className="text-lg font-semibold text-gray-700 flex items-center">
-                  <span className="material-icons mr-2">Order Info</span>
-                  
-                </h4>
+                <h4 className="text-lg font-semibold text-gray-700 flex items-center">Order Info</h4>
                 <p className="text-sm">
                   <strong>Order ID:</strong> {order.id}
                 </p>
@@ -123,10 +112,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
               </div>
 
               <div className="pb-2">
-                <h4 className="text-lg font-semibold text-gray-700 flex items-center">
-                  <span className="material-icons mr-2">Payment Info</span>
-                  
-                </h4>
+                <h4 className="text-lg font-semibold text-gray-700 flex items-center">Payment Info</h4>
                 <p className="text-sm">
                   <strong>Total Cost:</strong> ${order.totalCost}
                 </p>
@@ -135,8 +121,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
                 </p>
                 <p className="text-sm">
                   <strong>Payment Status:</strong>{" "}
-                  <span className={order.paymentStatus === true ? "text-green-600" : "text-red-600"}>
-                    {order.paymentStatus}
+                  <span className={order.paymentStatus ? "text-green-600" : "text-red-600"}>
+                    {order.paymentStatus ? "Accepted" : "Pending"}
                   </span>
                 </p>
               </div>
@@ -146,21 +132,22 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
             <div className="flex space-x-4 mt-4">
               <Button
                 className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
-                onClick={() => console.log("Order accepted")}
+                onClick={() => updateOrderStatus("IN_PROGRESS")}
                 text="Accept order"
               />
               <Button
                 className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded"
-                onClick={() => console.log("Payment confirmed")}
+                onClick={confirmPayment}
                 text="Confirm payment"
               />
             </div>
           </div>
 
-          {/* Map Section - Slightly Taller */}
+          {/* Routing Map Section */}
           <div className="md:col-span-2 w-full h-auto bg-gray-200 rounded-lg overflow-hidden shadow-inner">
-            <div className="h-72"> {/* Slightly increased height */}
-              <RoutingMap />
+            <div className="h-72"> 
+              {/* Pass lat and lon to the RoutingMap component */}
+              <RoutingMap lat={order.location.latitude} lon={order.location.longitude} />
             </div>
           </div>
         </div>
