@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Button from "./Button";
 import { IOrder } from "@/models/Order";
 import API from "@/utils/axiosClient";
-import RoutingMap from "@/components/map/RoutingMap"; // Assuming your RoutingMap is reusable here.
+import RoutingMap from "@/components/map/RoutingMap"; 
+import QRmodal from "./QRmodal";
 
 interface OrderModalProps {
   order: IOrder;
@@ -11,6 +12,7 @@ interface OrderModalProps {
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
+  const [showQRModal, setShowQRModal] = useState(false)
 
   const confirmPayment = async () => {
     try {
@@ -27,7 +29,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
 
   const updateOrderStatus = async (status: string) => {
     try {
-      await API.post<{ message: string, order: IOrder }>(
+      await API.post<{ message: string; order: IOrder }>(
         `/order/${order.id}/update-status`,
         {status}
       );
@@ -38,7 +40,10 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
         }
       onClose();
     } 
-  
+
+    const handleQRCodeModal = () => {
+      setShowQRModal(true); 
+    };
 
   return (
     <div
@@ -48,9 +53,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
       className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
     >
       <div className="relative w-full max-w-6xl h-auto bg-white rounded-lg shadow-lg">
-        {/* Close Button */}
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-gray-900">Order Details</h3>
+          <div className="flex space-x-2">
+          <Button
+                className="mr-10 bg-yellow-600 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded"
+                onClick={() => handleQRCodeModal()}
+                text="Generate QR code"
+              />
           <button
             type="button"
             onClick={onClose}
@@ -71,6 +81,8 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
               />
             </svg>
           </button>
+          </div>
+          
         </div>
 
         {/* Modal Body with Grid Layout */}
@@ -97,7 +109,6 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
               <div className="pb-2 border-b">
                 <h4 className="text-lg font-semibold text-gray-700 flex items-center">
                   <span className="material-icons mr-2">Order Info</span>
-                  
                 </h4>
                 <p className="text-sm">
                   <strong>Order ID:</strong> {order.id}
@@ -164,6 +175,13 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
             </div>
           </div>
         </div>
+
+        {showQRModal && (
+          <QRmodal
+            order={order}
+            onClose={() => setShowQRModal(false)} 
+          />
+        )}
       </div>
     </div>
   );
