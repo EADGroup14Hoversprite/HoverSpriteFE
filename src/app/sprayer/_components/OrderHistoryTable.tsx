@@ -77,7 +77,7 @@ const OrderHistoryTable: React.FC = () => {
         return "text-green-600 font-bold";
       case "ASSIGNED":
         return "text-blue-600 font-bold";
-      case "PENDING":
+      case "IN_PROGRESS":
         return "text-yellow-600 font-bold";
       default:
         return "";

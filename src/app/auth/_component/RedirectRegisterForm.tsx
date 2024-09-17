@@ -21,6 +21,7 @@ import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/user-store";
 import { jwtDecode } from "jwt-decode";
 import { clientSessionToken } from "@/utils/axiosClient";
+import GeoSearchForm from "@/components/map/geoSearchForm";
 
 export default function RedirectRegisterForm({
   authInfo,
@@ -91,6 +92,11 @@ export default function RedirectRegisterForm({
     }
   }, [authInfo]);
 
+   // Handle address selection from GeoSearchForm
+   const handleAddressSelect = (address: string) => {
+    form.setValue("homeAddress", address); // Update the home address field in the form
+  };
+
   return (
     <div className="flex screen">
       <div className="flex-[9] flex flex-col justify-center items-center w-full lg:w-auto">
@@ -142,14 +148,15 @@ export default function RedirectRegisterForm({
                 )}
               />
 
-              {/* Home Address Field */}
-              <FormField
+            {/* Home Address Field with GeoSearch */}
+            <FormField
                 name="homeAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
                     <FormLabel>Home Address</FormLabel>
-                    <Input {...field} placeholder="Enter your home address:" />
+                    <GeoSearchForm onSelect={handleAddressSelect} />
+                    <Input {...field} placeholder="Enter your address" disabled/>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -1,7 +1,5 @@
-"use client";
-
-//This component is for the address lookup form
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Search } from "lucide-react";
 
 interface Address {
   display_name: string;
@@ -9,52 +7,62 @@ interface Address {
   lon: string;
 }
 
-const GeoSearchForm: React.FC = () => {
+interface GeoSearchFormProps {
+  onSelect: (address: string) => void; // Callback to pass the selected address
+}
+
+const GeoSearchForm: React.FC<GeoSearchFormProps> = ({ onSelect }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Address[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (query.length > 2) {
+      const delayDebounceFn = setTimeout(async () => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+            query
+          )}&format=json&addressdetails=1&countrycodes=VN`
+          );
+          const data = await response.json();
+          setResults(data);
+        } catch (error) {
+          console.error("Error fetching geocode data:", error);
+        }
+      }, 300);
 
-    if (!query) return;
-
-    try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1`);
-      const data = await response.json();
-      setResults(data);
-    } catch (error) {
-      console.error("Error fetching geocode data:", error);
+      return () => clearTimeout(delayDebounceFn);
+    } else {
+      setResults([]); 
     }
-  };
+  }, [query]);
 
   const handleSelect = (address: Address) => {
-    setSelectedAddress(address);
+    onSelect(address.display_name);
     setQuery(""); // Clear the input after selection
     setResults([]); // Clear the results list
   };
 
-  
+
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <form onSubmit={handleSearch} className="flex flex-col space-y-4">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter an address"
-          className="p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Search
-        </button>
-      </form>
-      
+    <div className="relative flex items-center border-b border-gray-500 py-2" >
+      <Search strokeWidth={1} />
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search for an address"
+        className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+      />
       {results.length > 0 && (
-        <ul className="mt-4 border border-gray-300 rounded-md bg-gray-50">
+        <ul
+          className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
+          style={{
+            top: "100%", // Position the dropdown just below the input field
+            left: 0,
+            right: 0,
+          }}
+        >
           {results.map((address) => (
             <li
               key={address.lat + address.lon}
@@ -65,15 +73,6 @@ const GeoSearchForm: React.FC = () => {
             </li>
           ))}
         </ul>
-      )}
-
-      {selectedAddress && (
-        <div className="mt-6 p-4 border border-gray-300 rounded-md bg-gray-50">
-          <h3 className="text-lg font-semibold mb-2">Selected Address:</h3>
-          <p className="text-gray-700">{selectedAddress.display_name}</p>
-          <p className="text-gray-600">Latitude: {selectedAddress.lat}</p>
-          <p className="text-gray-600">Longitude: {selectedAddress.lon}</p>
-        </div>
       )}
     </div>
   );
