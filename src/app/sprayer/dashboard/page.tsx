@@ -33,7 +33,7 @@ export default function Page() {
         )}
         {activeTab === "route" && (
           <section
-            className="bg-white rounded-lg shadow-lg p-6 flex flex-col"
+            className="bg-white rounded-lg shadow-lg p-6 flex flex-col h-[calc(100vh-64px)]"
           >
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">
               Route Planning

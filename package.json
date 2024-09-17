@@ -81,6 +81,7 @@
     "@tsconfig/next": "^2.0.3",
     "@types/leaflet": "^1.9.12",
     "@types/leaflet-routing-machine": "^3.2.8",
+    "@types/mapbox__mapbox-gl-geocoder": "^5.0.0",
     "@types/node": "^20.12.13",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18",
