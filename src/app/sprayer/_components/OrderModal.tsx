@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import Button from "./Button";
 import { IOrder } from "@/models/Order";
 import API from "@/utils/axiosClient";
-import RoutingMap from "@/components/map/RoutingMap";
+import RoutingMap from "@/components/map/RoutingMap"; 
+import QRmodal from "./QRmodal";
 
 interface OrderModalProps {
   order: IOrder;
@@ -11,6 +12,8 @@ interface OrderModalProps {
 }
 
 const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
+  const [showQRModal, setShowQRModal] = useState(false)
+
   const confirmPayment = async () => {
     try {
       await API.post<{ message: string }>(
@@ -28,33 +31,19 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
     try {
       await API.post<{ message: string; order: IOrder }>(
         `/order/${order.id}/update-status`,
-        { status }
+        {status}
       );
-    } catch (e) {
-      return {
-        message: "Failed to update order status",
-      };
-    }
-    onClose();
-  };
+        } catch (e) {
+          return {
+            message: "Failed to update order status",
+          };
+        }
+      onClose();
+    } 
 
-  const [qrCode, setQrCode] = useState<string | null>(null);
-
-  const generateQR = async () => {
-    try {
-      const response = await API.get(`/order/${order.id}/generate-qr`, {
-        responseType: "arraybuffer", // This tells axios to treat the response as binary data
-      });
-
-      const qrCodeBlob = new Blob([response.data], { type: "image/png" });
-      const qrCodeUrl = URL.createObjectURL(qrCodeBlob);
-      setQrCode(qrCodeUrl); // Store the image URL in state
-    } catch (e) {
-      return {
-        message: "Failed to generate QR",
-      };
-    }
-  };
+    const handleQRCodeModal = () => {
+      setShowQRModal(true); 
+    };
 
   return (
     <div
@@ -67,32 +56,33 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-gray-900">Order Details</h3>
           <div className="flex space-x-2">
-            <Button
-              className="mr-10 bg-yellow-600 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded"
-              onClick={() => generateQR()}
-              text="Generate QR code"
-            />
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg p-2"
+          <Button
+                className="mr-10 bg-yellow-600 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded"
+                onClick={() => handleQRCodeModal()}
+                text="Generate QR code"
+              />
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg p-2"
+          >
+            <svg
+              className="w-5 h-5"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <svg
-                className="w-5 h-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
           </div>
+          
         </div>
 
         {/* Modal Body with Grid Layout */}
@@ -137,13 +127,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
                 </p>
                 <p className="text-sm">
                   <strong>Status:</strong>{" "}
-                  <span
-                    className={
-                      order.status === "ASSIGNED"
-                        ? "text-red-600"
-                        : "text-green-600"
-                    }
-                  >
+                  <span className={order.status === "ASSIGNED" ? "text-red-600" : "text-green-600"}>
                     {order.status}
                   </span>
                 </p>
@@ -152,6 +136,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
               <div className="pb-2">
                 <h4 className="text-lg font-semibold text-gray-700 flex items-center">
                   <span className="material-icons mr-2">Payment Info</span>
+                  
                 </h4>
                 <p className="text-sm">
                   <strong>Total Cost:</strong> ${order.totalCost}
@@ -161,13 +146,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
                 </p>
                 <p className="text-sm">
                   <strong>Payment Status:</strong>{" "}
-                  <span
-                    className={
-                      order.paymentStatus === true
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }
-                  >
+                  <span className={order.paymentStatus === true ? "text-green-600" : "text-red-600"}>
                     {order.paymentStatus}
                   </span>
                 </p>
@@ -196,14 +175,14 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
             </div>
           </div>
         </div>
-      </div>
 
-      
-      {qrCode && (
-      <div className="absolute inset-0 flex items-center justify-center z-60">
-        <img src={qrCode} alt="QR Code" className="w-64 h-64" />
+        {showQRModal && (
+          <QRmodal
+            order={order}
+            onClose={() => setShowQRModal(false)} 
+          />
+        )}
       </div>
-    )}
     </div>
   );
 };
