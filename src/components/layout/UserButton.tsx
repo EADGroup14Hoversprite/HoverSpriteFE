@@ -1,17 +1,13 @@
-import { IUser } from "@/types/user";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import LucideIcon from "@/components/lucide-icon";
 import { useUserStore } from "@/store/user-store";
 import { useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import { signOut } from "@/actions/auth";
+import Notifications from "@/components/Notifications";
 
-interface UserButtonProps {
-  currentUser: IUser;
-}
-export function UserButton({ currentUser }: UserButtonProps) {
-  const { logout } = useUserStore();
+export function UserButton() {
+  const { logout, currentUser } = useUserStore();
   const router = useRouter();
   const userSignOut = async () => {
     await signOut();
@@ -23,20 +19,19 @@ export function UserButton({ currentUser }: UserButtonProps) {
         <Avatar className="h-6 w-6">
           <AvatarImage
             className="rounded-full"
-            src={currentUser.imageUrl}
-            alt={`${currentUser.fullName}'s image`}
+            src={currentUser?.imageUrl}
+            alt={`${currentUser?.fullName}'s image`}
           />
           <AvatarFallback>
-            {currentUser.fullName.charAt(0).toUpperCase()}
+            {currentUser?.fullName.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
         <p className="text-semibold text-primary text-sm">
-          {currentUser.emailAddress}
+          {currentUser?.emailAddress}
         </p>
-        <Badge className="p-1">
-          <LucideIcon name="BellRing" size={16} />
-        </Badge>
       </div>
+      <Notifications token={currentUser?.accessToken!} />
+
       <Button
         variant="outline"
         className="flex gap-2 items-center w-full justify-start"

@@ -24,6 +24,17 @@ export async function createOrder(
   }
 }
 
+export async function paypalOrder(orderId: number) {
+  try {
+    const res = await API.post<{ successUrl: string; cancelUrl: string }>(
+      `/order/${orderId}/create-payment`,
+    );
+    return res.data;
+  } catch (e) {
+    throw new Error("Cannot proceed with paypal");
+  }
+}
+
 export async function getOrderRange(
   start: number,
   end: number,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 
 interface Address {
@@ -8,7 +8,7 @@ interface Address {
 }
 
 interface GeoSearchFormProps {
-  onSelect: (address: string) => void; // Callback to pass the selected address
+  onSelect: (address: string, longitude: number, latitude: number) => void; // Callback to pass the selected address
 }
 
 const GeoSearchForm: React.FC<GeoSearchFormProps> = ({ onSelect }) => {
@@ -21,8 +21,8 @@ const GeoSearchForm: React.FC<GeoSearchFormProps> = ({ onSelect }) => {
         try {
           const response = await fetch(
             `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-            query
-          )}&format=json&addressdetails=1&countrycodes=VN`
+              query,
+            )}&format=json&addressdetails=1&countrycodes=VN`,
           );
           const data = await response.json();
           setResults(data);
@@ -33,19 +33,18 @@ const GeoSearchForm: React.FC<GeoSearchFormProps> = ({ onSelect }) => {
 
       return () => clearTimeout(delayDebounceFn);
     } else {
-      setResults([]); 
+      setResults([]);
     }
   }, [query]);
 
   const handleSelect = (address: Address) => {
-    onSelect(address.display_name);
+    onSelect(address.display_name, Number(address.lon), Number(address.lat));
     setQuery(""); // Clear the input after selection
     setResults([]); // Clear the results list
   };
 
-
   return (
-    <div className="relative flex items-center border-b border-gray-500 py-2" >
+    <div className="relative flex items-center border-b border-gray-500 py-2">
       <Search strokeWidth={1} />
       <input
         type="text"

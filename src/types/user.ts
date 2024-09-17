@@ -1,12 +1,13 @@
 import { Expertise } from "@/types/expertise";
 import { AuthRole, UserRole } from "@/types/role";
+import { ILocation } from "@/types/location";
 
 export interface IUser {
   id: string;
   fullName: string;
   phoneNumber: string;
   emailAddress: string;
-  homeAddress: Location;
+  homeAddress: string;
   expertise?: Expertise | undefined;
   createdAt: Date;
   updatedAt: Date;
@@ -16,6 +17,7 @@ export interface IUser {
   accessToken: string;
   googleId: string | null;
   facebookId: string | null;
+  location: ILocation;
 }
 
 export interface ResIUser {

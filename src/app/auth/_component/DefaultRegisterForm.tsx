@@ -33,6 +33,10 @@ export default function DefaultRegisterForm() {
     confirmPassword: "",
     googleId: null,
     facebookId: null,
+    location: {
+      latitude: 0,
+      longitude: 0,
+    },
   };
 
   const form = useForm<SignUp>({
@@ -43,12 +47,8 @@ export default function DefaultRegisterForm() {
 
   const onSubmit = async (values: SignUp) => {
     const onRegister = userRegister({
-      fullName: values.fullName,
-      phoneNumber: values.phoneNumber,
-      emailAddress: values.emailAddress,
-      homeAddress: values.homeAddress,
+      ...values,
       userRole: "ROLE_FARMER",
-      password: values.password,
       googleId: null,
       facebookId: null,
     });
@@ -57,7 +57,7 @@ export default function DefaultRegisterForm() {
       success: async (res) => {
         await auth(res.data.dto);
         login(res.data.dto);
-        router.push("/orders");
+        router.push("/farmer/orders");
         return "Register successfully!";
       },
       error: (e) => {
@@ -67,8 +67,14 @@ export default function DefaultRegisterForm() {
   };
 
   // Handle address selection from GeoSearchForm
-  const handleAddressSelect = (address: string) => {
+  const handleAddressSelect = (
+    address: string,
+    longitude: number,
+    latitude: number,
+  ) => {
     form.setValue("homeAddress", address); // Update the home address field in the form
+    form.setValue("location.latitude", latitude); // Update the home address field in the form
+    form.setValue("location.longitude", longitude); // Update the home address field in the form
   };
 
   return (
@@ -166,15 +172,19 @@ export default function DefaultRegisterForm() {
                 )}
               />
 
-             {/* Home Address Field with GeoSearch */}
-             <FormField
+              {/* Home Address Field with GeoSearch */}
+              <FormField
                 name="homeAddress"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem className="mb-3">
                     <FormLabel>Home Address</FormLabel>
                     <GeoSearchForm onSelect={handleAddressSelect} />
-                    <Input {...field} placeholder="Enter your address" disabled />
+                    <Input
+                      {...field}
+                      placeholder="Enter your address"
+                      disabled
+                    />
                     <FormMessage />
                   </FormItem>
                 )}

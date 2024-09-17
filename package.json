@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/socket.io-client": "^1.4.36",
     "@hookform/resolvers": "^3.9.0",
     "@next/env": "^14.2.5",
     "@radix-ui/react-accordion": "^1.2.0",
@@ -61,7 +62,7 @@
     "react-hook-form": "^7.52.2",
     "react-icons": "^5.3.0",
     "react-leaflet": "^4.2.1",
-    "socket.io-client": "^4.7.5",
+    "socket.io-client": "^2.5.0",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",

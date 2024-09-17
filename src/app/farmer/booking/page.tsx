@@ -24,7 +24,7 @@ export default function Page() {
       latitude: 0,
       longitude: 0,
     },
-    address: "Nha cua trung ne",
+    address: "",
     paymentMethod: PaymentType.CASH,
   };
 

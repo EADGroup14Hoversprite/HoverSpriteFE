@@ -32,7 +32,7 @@ export function getMenuList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: "/orders",
+          href: "/farmer/orders",
           label: "All orders",
           active: pathname.includes("/farmer/orders"),
           icon: "Logs",

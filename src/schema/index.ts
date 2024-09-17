@@ -104,6 +104,10 @@ export const SignUpSchema = z
         message:
           "Password must be at least 6 characters long, contain at least 1 number, and 1 special character",
       }),
+    location: z.object({
+      longitude: z.number(),
+      latitude: z.number(),
+    }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {

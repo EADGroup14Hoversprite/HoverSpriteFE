@@ -30,7 +30,7 @@ export function SlotSelection({ bookingForm }: SlotSelectionProps) {
               onValueChange={field.onChange}
               disabled
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a time slot" />
               </SelectTrigger>
               <SelectContent>
