@@ -3,6 +3,7 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 // import { getAllOrders } from "@/actions/order"; // Update with the receptionist order fetching logic
 import { cookies } from "next/headers";
 // import AssignSprayerDropdown from "@/components/assign-sprayer-dropdown"; // Example component for assigning sprayers
+import OrderTable from "../_components/OrderTable";
 
 export default async function ReceptionistPage() {
   const cookieStore = cookies();
@@ -44,6 +45,7 @@ export default async function ReceptionistPage() {
               }
             >
               {/* <DataTable ordersPromise={getOrders} columns={columns} extraColumn={AssignSprayerDropdown} /> Add the AssignSprayer component */}
+              <OrderTable/>
             </Suspense>
           </div>
         </div>
