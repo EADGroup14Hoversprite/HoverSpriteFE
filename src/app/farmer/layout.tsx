@@ -1,33 +1,28 @@
 "use client";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Navbar, Sidebar } from "@/components/layout";
 import { useSidebarToggle } from "@/store/use-sidebar-toggle";
 import DynamicBreadcrumb from "@/components/dynamic-breadcrumb/DynamicBreadcrumb";
 import { Toaster } from "sonner";
-import { useUserStore } from "@/store/user-store";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
+import { UserRole } from "@/types/role";
+import { useCookies } from "next-client-cookies";
+import { jwtDecode } from "jwt-decode";
+import { JWTPayload } from "@/types/user";
 
-export default function Layout({
-  children,
-  params,
-}: PropsWithChildren<{ params: { role: string } }>) {
+export default function Layout({ children }: PropsWithChildren) {
   const { isOpen } = useSidebarToggle();
-  const { currentUser } = useUserStore();
+  const clientCookie = useCookies().get("sessionToken");
 
-  const router = useRouter();
-  // if (currentUser?.userRole === UserRole.ROLE_FARMER) {
-  //   router.replace("/farmer/orders");
-  // } else if (currentUser?.userRole === UserRole.ROLE_RECEPTIONIST) {
-  //   router.push("/receptionist/dashboard");
-  // } else if (currentUser?.userRole === UserRole.ROLE_SPRAYER) {
-  //   router.push("/sprayer/dashboard");
-  // }
-
-  const roles = ["farmer", "sprayer", "receptionist"];
-  if (!roles.includes(params.role)) {
-    notFound();
-  }
+  useEffect(() => {
+    if (clientCookie) {
+      const decodeData = jwtDecode<JWTPayload>(clientCookie!);
+      if (decodeData.userRole !== UserRole.ROLE_FARMER.toString()) {
+        notFound();
+      }
+    }
+  }, [clientCookie]);
 
   return (
     <div className="flex h-full w-full">
@@ -52,20 +47,4 @@ export default function Layout({
       <Toaster position="top-center" />
     </div>
   );
-  // : (
-  //     <div className={"bg-black/50 h-screen flex items-center justify-center"}>
-  //         <div className="flex flex-col gap-6 rounded-md p-4 border border-solid border-black w-[500px] bg-white">
-  //             <div className="flex flex-col gap-2">
-  //                 <p className="font-semibold text-lg">Session expired!</p>
-  //                 <p className="text-sm">
-  //                     It looks like your session has been expired! Please login again
-  //                 </p>
-  //             </div>
-  //             <Link href={"/auth/login"}>
-  //                 <Button>Login</Button>
-  //             </Link>
-  //         </div>
-  //         <Toaster />
-  //     </div>
-  // )
 }
