@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import OrderModal from "./OrderModal";
 import { ISprayer } from "@/models/Sprayers";
 import API from "@/utils/axiosClient";
 import { IOrder } from "@/models/Order";
@@ -15,6 +14,7 @@ const SprayerTable: React.FC<SprayerTableProp> = ({ order }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [message, setMessage] = useState<string | null>(null);
   const sprayersPerPage = 5;
 
   const currentDate = new Date();
@@ -41,8 +41,8 @@ const SprayerTable: React.FC<SprayerTableProp> = ({ order }) => {
       setLoading(false);
     } catch (e) {
       return {
-        message: "Failed to retrieve order",
-        order: null,
+        message: "Failed to retrieve sprayers",
+        sprayers: null,
       };
     }
   }
@@ -66,17 +66,19 @@ const SprayerTable: React.FC<SprayerTableProp> = ({ order }) => {
   };
 
   async function assignSprayer(values: { id: number }) {
+    const isConfirmed = confirm("Are you sure you want to assign this sprayer?");
+    if (!isConfirmed) return;
+
     try {
       await API.post<{ message: string; dto: ISprayer }>(
         `/order/${order.id}/assign-sprayer`,
         {
-            sprayerIds: [values.id],
+          sprayerIds: [values.id],
         }
       );
+      setMessage("Sprayer assigned successfully!");
     } catch (e) {
-      return {
-        message: "Failed to assign sprayer",
-      };
+      setMessage("Failed to assign sprayer. Please try again.");
     }
   }
 
@@ -90,27 +92,39 @@ const SprayerTable: React.FC<SprayerTableProp> = ({ order }) => {
         <p className="text-center text-gray-500">No sprayers available.</p>
       )}
 
+      {/* Show the confirmation message if it exists */}
+      {message && (
+        <div
+          className={`mt-4 p-4 rounded ${
+            message.includes("success")
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
+          }`}
+        >
+          {message}
+        </div>
+      )}
+
       {/* Responsive table container */}
       {!loading && !error && sprayers.length > 0 && (
-        <div className="overflow-hidden">
+        <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300 rounded-lg">
             <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Sprayer ID
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  ID
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
-                  Phone Number
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                  Phone
                 </th>
-                {/* Payment Status column, visible only on desktop */}
-                <th className="hidden md:table-cell px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                {/* Hidden on small screens */}
+                <th className="hidden md:table-cell px-4 py-2 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
                   Expertise
                 </th>
-                {/* Action column hidden on mobile */}
-                <th className="hidden md:table-cell px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
+                <th className="hidden md:table-cell px-4 py-2 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
                   Action
                 </th>
               </tr>
@@ -119,29 +133,20 @@ const SprayerTable: React.FC<SprayerTableProp> = ({ order }) => {
               {currentsprayers.map((sprayer) => (
                 <tr
                   key={sprayer.id}
-                  className="border-b hover:bg-gray-50 transition ease-in-out duration-150 cursor-pointer md:cursor-default"
-                  //   onClick={() => {
-                  //     if (window.innerWidth < 768) openOrderModal(order); // Clickable on mobile
-                  //   }} // Clickable row only on mobile
+                  className="border-b hover:bg-gray-50 transition ease-in-out duration-150"
                 >
-                  <td className="px-6 py-4 whitespace-normal text-sm font-medium text-gray-900">
+                  <td className="px-4 py-2 text-sm font-medium text-gray-900">
                     {sprayer.id}
                   </td>
-                  <td
-                    className={`px-6 py-4 whitespace-normal text-sm`} //${getsprayerstatusClass(order.status)}
-                  >
-                    {sprayer.fullName}
-                  </td>
-                  <td className="px-6 py-4 whitespace-normal text-sm text-gray-700">
+                  <td className="px-4 py-2 text-sm">{sprayer.fullName}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700">
                     {sprayer.phoneNumber}
                   </td>
-                  {/* Payment Status, visible only on desktop */}
-                  <td
-                    className={`hidden md:table-cell px-6 py-4 whitespace-normal text-sm`} //${getPaymentStatusClass(order.paymentStatus)}
-                  >
+                  {/* Expertise visible only on desktop */}
+                  <td className="hidden md:table-cell px-4 py-2 text-sm">
                     {sprayer.expertise}
                   </td>
-                  <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                  <td className="hidden md:table-cell px-4 py-2 text-sm">
                     <Button
                       className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded transition-colors duration-150"
                       onClick={() => assignSprayer(sprayer)}
