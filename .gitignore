@@ -42,3 +42,4 @@ package.json
 .flaskenv*
 !.env.project
 !.env.vault
+certificates

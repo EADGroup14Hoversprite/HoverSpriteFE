@@ -64,7 +64,6 @@ export async function getOrderByDate(date: Date) {
 }
 
 export async function getMyOrders(
-  accessToken: string,
   page: number,
   pageSize: number,
   sortBy: "status",
@@ -75,14 +74,14 @@ export async function getMyOrders(
       message: string;
       orders: IOrder[];
       error?: boolean;
-    }>(
-      `/order/my-orders?page=${page}&pageSize=${pageSize}&sortBy=${sortBy}&sortDirection=${sortDirection}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    }>(`/order/my-orders`, {
+      params: {
+        page: page,
+        pageSize: pageSize,
+        sortBy: sortBy,
+        sortDirection: sortDirection,
       },
-    );
+    });
     return res.data;
   } catch (e) {
     return {
