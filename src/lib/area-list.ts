@@ -28,3 +28,14 @@ export function getAreaList() {
     },
   ] as Area[];
 }
+
+const dictArea: Record<string, string> = {
+  smallArea: "Small Area (1 decare)",
+  area: "Medium Area (10 decares)",
+  mediumArea: "Large Area (100 decares)",
+  vastArea: "Vast Area (1000 decares)",
+};
+
+export function getAreaString(area: string) {
+  return dictArea[area];
+}

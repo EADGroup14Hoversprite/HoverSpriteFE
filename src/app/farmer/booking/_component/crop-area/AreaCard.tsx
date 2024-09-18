@@ -2,7 +2,7 @@ import { RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import { CircleCheck } from "lucide-react";
-import { Area } from "@/lib/area-list";
+import { Area, getAreaString } from "@/lib/area-list";
 
 interface AreaCardProps {
   area: Area;
@@ -45,7 +45,7 @@ export function AreaCard({ area, isSelected }: AreaCardProps) {
         className="absolute right-0 top-0 hidden -translate-y-1/2 translate-x-1/2"
       />
       <span className="w-full overflow-hidden text-ellipsis whitespace-nowrap break-words text-center">
-        {area.label}
+        {getAreaString(area.label)}
       </span>
     </Label>
   );

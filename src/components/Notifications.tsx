@@ -30,6 +30,7 @@ const NotificationsBell: React.FC<NotificationsBellProps> = ({ token }) => {
 
     getMyNotifications().then((notification) => {
       setNotifications(notification.notifications);
+      setIncomingMessage(notification.message);
     });
   }, []);
 

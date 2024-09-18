@@ -14,11 +14,11 @@ export function OrderSummary({ bookingForm }: OrderSummaryProps) {
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <p>Price per ha:</p>
+          <p>Price per decare:</p>
           <p>đ 30,000</p>
         </div>
         <div className="flex items-center justify-between">
-          <p>Total ha:</p>
+          <p>Total decare:</p>
           <p>{bookingForm.getValues("farmlandArea")}</p>
         </div>
       </div>
