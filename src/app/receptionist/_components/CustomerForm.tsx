@@ -1,6 +1,7 @@
 "use client";
 import { useEffect } from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormField,
@@ -9,17 +10,30 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { OrderType } from "@/schema";
+import { SignUp, SignUpSchema } from "@/schema";
 import API from "@/utils/axiosClient";
 
-interface CustomerFormProps {
-  bookingForm: UseFormReturn<OrderType>;
-}
+export default function CustomerForm() {
+  const defaultState: Partial<SignUp> = {
+    fullName: "",
+    emailAddress: "",
+    phoneNumber: "",
+    homeAddress: "",
+    password: "",
+    confirmPassword: "",
+    googleId: null,
+    facebookId: null,
+  };
 
-export default function CustomerForm({ bookingForm }: CustomerFormProps) {
-  const { watch, setValue, control } = bookingForm;
+  const form = useForm<SignUp>({
+    defaultValues: defaultState,
+    resolver: zodResolver(SignUpSchema),
+    mode: "onChange",
+  });
 
-  const phoneNumber = watch("farmerPhoneNumber");
+  const { watch, setValue, control } = form;
+
+  const phoneNumber = watch("phoneNumber");
 
   useEffect(() => {
     if (phoneNumber) {
@@ -33,9 +47,9 @@ export default function CustomerForm({ bookingForm }: CustomerFormProps) {
 
           if (user) {
             // If user exists, set the other form values
-            setValue("farmerName", user.fullName);
-            setValue("farmerEmailAddress", user.emailAddress);
-            setValue("address", user.homeAddress);
+            setValue("fullName", user.fullName);
+            setValue("emailAddress", user.emailAddress);
+            setValue("homeAddress", user.homeAddress);
           }
         } catch (error) {
           console.error("Failed to fetch user by phone number:", error);
@@ -52,12 +66,12 @@ export default function CustomerForm({ bookingForm }: CustomerFormProps) {
         <Form {...form}>
           <form>
             {/* Full Name Field */}
-            <div className="flex gap-4 mb-3">
+            <div className="mb-3">
               <FormField
-                name="farmerName"
+                name="fullName"
                 control={control}
                 render={({ field }) => (
-                  <FormItem className="w-full">
+                  <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <Input {...field} placeholder="Full name" />
                     <FormMessage />
