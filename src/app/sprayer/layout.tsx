@@ -24,7 +24,7 @@ export default function Layout({ children }: PropsWithChildren) {
           `,
         )}
       >
-        <Navbar title="Receptionist" />
+        <Navbar title="Sprayer" />
         <DynamicBreadcrumb />
         {children}
       </main>
