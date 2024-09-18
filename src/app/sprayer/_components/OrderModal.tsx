@@ -57,7 +57,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
           <h3 className="text-lg font-semibold text-gray-900">Order Details</h3>
           <div className="flex space-x-2">
           <Button
-                className="mr-10 bg-yellow-600 hover:bg-yellow-800 text-white font-bold py-2 px-4 rounded"
+                className="mr-10 bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
                 onClick={() => handleQRCodeModal()}
                 text="Generate QR code"
               />
@@ -93,7 +93,6 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
               <div className="pb-2 border-b">
                 <h4 className="text-lg font-semibold text-gray-700 flex items-center">
                   <span className="material-icons mr-2">Farmer Details</span>
-                  Farmer Details
                 </h4>
                 <p className="text-sm">
                   <strong>Farmer Name:</strong> {order.farmerName}
@@ -120,7 +119,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
                   <strong>Farmland Area:</strong> {order.farmlandArea} acres
                 </p>
                 <p className="text-sm">
-                  <strong>Desired Date:</strong> {order.desiredDate}
+                  <strong>Desired Date:</strong> {new Date(order.desiredDate * 1000).toLocaleDateString()}
                 </p>
                 <p className="text-sm">
                   <strong>Time Slot:</strong> {order.timeSlot}
@@ -135,8 +134,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
 
               <div className="pb-2">
                 <h4 className="text-lg font-semibold text-gray-700 flex items-center">
-                  <span className="material-icons mr-2">Payment Info</span>
-                  
+                  <span className="material-icons mr-2">Payment Info</span>            
                 </h4>
                 <p className="text-sm">
                   <strong>Total Cost:</strong> ${order.totalCost}
@@ -147,7 +145,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
                 <p className="text-sm">
                   <strong>Payment Status:</strong>{" "}
                   <span className={order.paymentStatus === true ? "text-green-600" : "text-red-600"}>
-                    {order.paymentStatus}
+                  {order.paymentStatus ? "Payment accepted" : "Ongoing"}
                   </span>
                 </p>
               </div>
@@ -156,7 +154,7 @@ const OrderModal: React.FC<OrderModalProps> = ({ order, onClose }) => {
             {/* Buttons */}
             <div className="flex space-x-4 mt-4">
               <Button
-                className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
+                className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded"
                 onClick={() => updateOrderStatus("IN_PROGRESS")}
                 text="Accept order"
               />

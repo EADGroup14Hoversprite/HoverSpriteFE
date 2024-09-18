@@ -38,7 +38,7 @@ export function OrderDetail({ bookingForm }: OrderDetailProps) {
             />
           </div>
 
-          <SlotSelection bookingForm={bookingForm} />
+          <SlotSelection bookingForm={bookingForm} isDisabled={true} />
         </div>
       </AccordionContent>
     </AccordionItem>

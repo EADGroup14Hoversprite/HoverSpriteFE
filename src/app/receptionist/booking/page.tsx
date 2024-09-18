@@ -1,6 +1,4 @@
 "use client";
-import { BookingCalendar } from "@/components/booking-calendar";
-import CustomerForm from "@/app/receptionist/_components/CustomerForm";
 import { orderSchema, OrderType } from "@/schema";
 import { CropType } from "@/types/crop-type";
 import { useCalendarStore } from "@/store/calendar-store";
@@ -12,15 +10,30 @@ import { createOrder, getOrderRange } from "@/actions/order";
 import { transformBookings } from "@/hooks/useDateMatrix";
 import { addDays } from "date-fns";
 import { IOrder } from "@/models/Order";
-import { DatePicker } from "@/components/date-picker/DatePicker";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import CustomerForm from "@/app/receptionist/_components/CustomerForm";
 import {
   AreaInput,
   CropSelection,
   SlotSelection,
 } from "@/app/farmer/booking/_component/FormField";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { DatePicker } from "@/components/date-picker/DatePicker";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { BookingCalendar } from "@/components/booking-calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function Page() {
   const { initialState } = useCalendarStore();
@@ -28,6 +41,7 @@ export default function Page() {
   const router = useRouter();
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
 
   const defaultState: OrderType = {
     address: "",
@@ -92,27 +106,46 @@ export default function Page() {
         bookingForm={bookingForm}
         orders={orders}
         isLoading={isLoading}
-      >
-        <>
-          <CustomerForm bookingForm={bookingForm}></CustomerForm>
-          <div>
-            <DatePicker
-              date={bookingForm.getValues("desiredDate")}
-              setDate={(date) => {
-                if (date) {
-                  bookingForm.setValue("desiredDate", date);
-                }
-              }}
-            />
-            <SlotSelection bookingForm={bookingForm} isDisabled={false} />
-            <CropSelection bookingForm={bookingForm} />
-            <AreaInput bookingForm={bookingForm} />
-            <Button onClick={() => submitOrder(bookingForm.getValues())}>
-              Create
-            </Button>
+        showBookingDialog={setShowDialog}
+      ></BookingCalendar>
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent>
+          <DialogTitle>Book an order</DialogTitle>
+          <DialogDescription>
+            Help your customer to book a slot!
+          </DialogDescription>
+          <div className="mt-3">
+            <CustomerForm bookingForm={bookingForm} />
+            <div>
+              <Form {...bookingForm}>
+                <form className="flex flex-col gap-3">
+                  <FormField
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel>Desire date</FormLabel>
+                        <FormControl>
+                          <DatePicker
+                            date={field.value}
+                            setDate={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                    name="desiredDate"
+                    control={bookingForm.control}
+                  />
+                  <SlotSelection bookingForm={bookingForm} isDisabled={false} />
+                  <CropSelection bookingForm={bookingForm} />
+                  <AreaInput bookingForm={bookingForm} />
+                  <Button onClick={() => submitOrder(bookingForm.getValues())}>
+                    Create
+                  </Button>
+                </form>
+              </Form>
+            </div>
           </div>
-        </>
-      </BookingCalendar>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
