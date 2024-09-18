@@ -144,3 +144,35 @@ export const feedbackCreateSchema = z.object({
 });
 
 export type FeedbackCreateType = z.infer<typeof feedbackCreateSchema>;
+
+export const bookingSchema = z
+  .object({
+    farmerName: z
+      .string()
+      .min(2, { message: "Name is too short" })
+      .regex(nameValidation, {
+        message:
+          "Full name must have at least 1 captalized letter, cannot have more than 2 capitalized letters in a word and must contain only letters and spaces",
+      }),
+      farmerEmailAddress: z
+      .string()
+      .email({
+        message:
+          "Email must follow the format with a domain of @hoversprite.com, @hoversprite.vn, or @gmail.com.",
+      })
+      .min(10, { message: "Invalid email format" })
+      .regex(emailValidation, {
+        message:
+          "Email must follow the format with a domain of @hoversprite.com, @hoversprite.vn, or @gmail.com.",
+      }),
+      farmerPhoneNumber: z
+      .string()
+      .min(1, { message: "Please enter your phone number" })
+      .regex(phoneValidation, {
+        message:
+          "Invalid phone number. Phone number must start with 0 or +84, followed by nine or ten digits",
+      }),
+      address: z.string().min(1, { message: "Please enter your address" }),
+  });
+
+export type BookingForm = z.infer<typeof bookingSchema>;
