@@ -12,11 +12,13 @@ import BookingComponent from "@/app/farmer/booking/_component/BookingComponent";
 export default function Page() {
   const { initialState } = useCalendarStore();
   const defaultValues: OrderType = {
-    farmerId: "",
+    farmerName: "",
+    farmerPhoneNumber: "",
     farmlandArea: 0,
     cropType: CropType.FRUIT,
     desiredDate: initialState.startDate,
-    timeSlot: null,
+    farmerEmailAddress: "",
+    timeSlot: undefined,
     location: {
       latitude: 0,
       longitude: 0,

@@ -19,12 +19,14 @@ interface ShippingPaymentProps {
 }
 
 export function ShippingPayment({ bookingForm }: ShippingPaymentProps) {
-  const paymentMethod = bookingForm.watch("paymentMethod");
   const { currentUser } = useUserStore();
 
   useEffect(() => {
     if (bookingForm.getValues("address"))
       bookingForm.setValue("address", currentUser?.homeAddress!);
+    bookingForm.setValue("farmerPhoneNumber", currentUser?.phoneNumber!);
+    bookingForm.setValue("farmerName", currentUser?.fullName!);
+    bookingForm.setValue("farmerEmailAddress", currentUser?.emailAddress!);
   }, []);
 
   const handleAddressSelect = (

@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import LucideIcon from "@/components/lucide-icon";
 import { useUserStore } from "@/store/user-store";
-import { useRouter } from "next/navigation";
 import { signOut } from "@/actions/auth";
 import Notifications from "@/components/Notifications";
+import { useRouter } from "next/navigation";
 
 export function UserButton() {
   const { logout, currentUser } = useUserStore();
@@ -36,8 +36,7 @@ export function UserButton() {
         variant="outline"
         className="flex gap-2 items-center w-full justify-start"
         onClick={() => {
-          router.push("/auth/login");
-          userSignOut().then((res) => {});
+          userSignOut().then((res) => router.push("/auth/login"));
         }}
       >
         <LucideIcon name="LogOut" />

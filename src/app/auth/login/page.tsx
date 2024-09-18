@@ -55,7 +55,7 @@ export default function Page() {
         if (data.userRole === UserRole.ROLE_FARMER) {
           router.push("/farmer/orders");
         } else if (data.userRole === UserRole.ROLE_SPRAYER) {
-          router.push("/sprayer/dashboard");
+          router.push("/sprayer/assign-orders");
         } else if (data.userRole === UserRole.ROLE_RECEPTIONIST) {
           router.push("/receptionist/dashboard");
         }

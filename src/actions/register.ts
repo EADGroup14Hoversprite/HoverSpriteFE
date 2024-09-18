@@ -1,5 +1,5 @@
 import { IUser } from "@/types/user";
-import axios from "axios";
+import API from "@/utils/axiosClient";
 
 export async function userRegister(values: {
   fullName: string;
@@ -16,8 +16,8 @@ export async function userRegister(values: {
   };
 }) {
   try {
-    const res = await axios.post<{ message: string; dto: IUser }>(
-      "http://localhost:8080/auth/register",
+    const res = await API.post<{ message: string; dto: IUser }>(
+      "/auth/register",
       {
         ...values,
       },

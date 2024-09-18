@@ -12,7 +12,7 @@ import { useUserStore } from "@/store/user-store";
 import { createOrder, getOrderRange, paypalOrder } from "@/actions/order";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { addDays, addHours, startOfDay } from "date-fns";
+import { addDays } from "date-fns";
 import { transformBookings } from "@/hooks/useDateMatrix";
 import { useCalendarStore } from "@/store/calendar-store";
 import { IOrder } from "@/models/Order";
@@ -21,7 +21,7 @@ import { Checkout } from "@/app/farmer/booking/_component/checkout";
 import { PaymentType } from "@/types/payment";
 
 function isValidSlot(
-  slot: SpraySlot | null,
+  slot: SpraySlot | undefined,
   bookingForm: UseFormReturn<OrderType>,
   slotMap: Map<number, number>,
 ) {
@@ -142,21 +142,7 @@ const HookMultiStepForm = ({
 
   async function onSubmit(value: OrderType) {
     setIsCreating(true);
-    const reqBody = {
-      farmlandArea: value.farmlandArea,
-      location: value.location,
-      address: value.address,
-      cropType: value.cropType,
-      desiredDate: addHours(startOfDay(value.desiredDate), 7),
-      timeSlot: value.timeSlot,
-      paymentMethod: value.paymentMethod,
-    };
-    const onCreatingOrder = createOrder(
-      reqBody,
-      currentUser?.accessToken!,
-      currentUser?.fullName!,
-      currentUser?.phoneNumber!,
-    );
+    const onCreatingOrder = createOrder(value);
 
     toast.promise(onCreatingOrder, {
       loading: "Creating your order...",
