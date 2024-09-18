@@ -1,4 +1,5 @@
 import { icons } from "lucide-react";
+import { UserRole } from "@/types/role";
 
 type Submenu = {
   href: string;
@@ -19,75 +20,77 @@ type Group = {
   menus: Menu[];
 };
 
-export function getMenuList(pathname: string): Group[] {
-  return [
-    {
-      groupLabel: "",
-      menus: [
-        {
-          href: "/dashboard",
-          label: "Dashboard",
-          active: pathname.includes("/dashboard"),
-          icon: "LayoutGrid",
-          submenus: [],
-        },
-      ],
-    },
-    {
-      groupLabel: "Contents",
-      menus: [
-        {
-          href: "",
-          label: "Posts",
-          active: pathname.includes("/posts"),
-          icon: "SquarePen",
-          submenus: [
-            {
-              href: "/posts",
-              label: "All Posts",
-              active: pathname === "/posts",
-            },
-            {
-              href: "/posts/new",
-              label: "New Post",
-              active: pathname === "/posts/new",
-            },
-          ],
-        },
-        {
-          href: "/categories",
-          label: "Categories",
-          active: pathname.includes("/categories"),
-          icon: "Bookmark",
-          submenus: [],
-        },
-        {
-          href: "/tags",
-          label: "Tags",
-          active: pathname.includes("/tags"),
-          icon: "Tag",
-          submenus: [],
-        },
-      ],
-    },
-    {
-      groupLabel: "Settings",
-      menus: [
-        {
-          href: "/users",
-          label: "Users",
-          active: pathname.includes("/users"),
-          icon: "Users",
-          submenus: [],
-        },
-        {
-          href: "/account",
-          label: "Account",
-          active: pathname.includes("/account"),
-          icon: "Settings",
-          submenus: [],
-        },
-      ],
-    },
-  ];
+export function getMenuList(pathname: string): Record<UserRole, Group[]> {
+  return {
+    ROLE_FARMER: [
+      {
+        groupLabel: "Farmer Dashboard",
+        menus: [
+          {
+            href: "/farmer/booking",
+            label: "Booking",
+            active: pathname.includes("/farmer/booking"),
+            icon: "Album",
+            submenus: [],
+          },
+          {
+            href: "/farmer/orders",
+            label: "All orders",
+            active: pathname.includes("/farmer/orders"),
+            icon: "Logs",
+            submenus: [],
+          },
+        ],
+      },
+    ],
+    ROLE_SPRAYER: [
+      {
+        groupLabel: "Sprayer Dashboard",
+        menus: [
+          {
+            href: "/sprayer/assign-orders",
+            label: "Assigned Orders",
+            active: pathname.includes("/sprayer/assign-orders"),
+            icon: "Book",
+            submenus: [],
+          },
+          {
+            href: "/sprayer/order-history",
+            label: "Order History",
+            active: pathname.includes("/sprayer/order-history"),
+            icon: "Book",
+            submenus: [],
+          },
+          {
+            href: "/sprayer/route",
+            label: "Map Routing",
+            active: pathname.includes("/sprayer/route"),
+            icon: "Map",
+            submenus: [],
+          },
+        ],
+      },
+    ],
+    ROLE_RECEPTIONIST: [
+      {
+        groupLabel: "Receptionist Dashboard",
+        menus: [
+          {
+            href: "/receptionist/dashboard",
+            label: "Dashboard",
+            active: pathname.includes("/receptionist/dashboard"),
+            icon: "Book",
+            submenus: [],
+          },
+          {
+            href: "/receptionist/booking",
+            label: "Booking",
+            active: pathname.includes("/receptionist/booking"),
+            icon: "Book",
+            submenus: [],
+          },
+        ],
+      },
+    ],
+  };
 }

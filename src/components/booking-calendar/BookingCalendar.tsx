@@ -1,30 +1,43 @@
+"use client";
 import * as React from "react";
-import { PropsWithChildren, useCallback, useContext } from "react";
-import CalendarContext from "@/context/CalendarContext";
-// import {Solar, Lunar, HolidayUtil} from 'lunar-typescript';
-// Import only the methods we need from date-fns in order to keep build size small
+import { PropsWithChildren, useCallback, useEffect } from "react";
+
 import { SlotCell, useDateMatrix } from "@/hooks/useDateMatrix";
-import { formatDate } from "date-fns";
+import { addMonths, formatDate, startOfWeek, subMonths } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
 import LucideIcon from "../lucide-icon";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { UseFormReturn } from "react-hook-form";
+import { OrderType } from "@/schema";
+import { DateInput } from "@/app/farmer/booking/_component/FormField";
+import { useCalendarStore } from "@/store/calendar-store";
+import { SpraySlot, toSlot } from "@/models/Booking";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Form, FormField } from "@/components/ui/form";
+import { IOrder } from "@/models/Order";
+import { useMediaQuery } from "react-responsive";
+import { useUserStore } from "@/store/user-store";
+import { UserRole } from "@/types/role";
+
+function compareDateSlot(first: SlotCell, second: SlotCell) {
+  return (
+    first?.solar.getDate() === second.solar.getDate() &&
+    first?.solar.getMonth() === second.solar.getMonth() &&
+    first?.solar.getFullYear() === second.solar.getFullYear() &&
+    first?.solar.getHours() === second.solar.getHours()
+  );
+}
 
 const CalendarDateCell = ({ children }: PropsWithChildren) => {
   return (
     <div
       style={{
         width: "100%",
-        height: "70px",
+        height: "80px",
         placeSelf: "stretch",
         touchAction: "none",
       }}
-      className={`border border-solid cursor-pointer`}
+      className={`border border-solid cursor-pointer border-gray-400`}
     >
       {children}
     </div>
@@ -60,29 +73,36 @@ const CalendarBody = ({
   );
 };
 
-// interface BookingCalendarProps {
-//   bookingForm: ReactNode;
-// }
+interface BookingCalendarProps {
+  bookingForm: UseFormReturn<OrderType>;
+  orders: IOrder[];
+  isLoading: boolean;
+  showBookingDialog?: (show: boolean) => void;
+}
 
-export function BookingCalendar() {
+export function BookingCalendar({
+  bookingForm,
+  orders,
+  isLoading,
+  children,
+  showBookingDialog,
+}: PropsWithChildren<BookingCalendarProps>) {
+  const currentUser = useUserStore.getState().currentUser;
   const {
     numDays,
-    rowGap,
-    colGap,
     startDate,
     hourChunk,
     startMorning,
     endMorning,
     startAfternoon,
     timeFormat,
-    dateFormat,
     selectedSlot,
+    selectedDate,
     endAfternoon,
-    setStartDate,
-    setSelectedSlot,
-  } = useContext(CalendarContext);
+  } = useCalendarStore.getState().initialState;
 
-  const matchesMin568 = useMediaQuery("max-width: 568px");
+  const { setStartDate, setSelectedSlot, setSelectedDate, setNumDays } =
+    useCalendarStore();
 
   const dateMatrix = useDateMatrix({
     numDays,
@@ -92,238 +112,159 @@ export function BookingCalendar() {
     endMorning,
     startAfternoon,
     endAfternoon,
+    ordersRange: orders,
   });
+  const isSmallScreen = useMediaQuery({ query: "(min-width: 768px)" });
 
-  // const getTimeFromTouchEvent = (event: React.TouchEvent<any>): Date | null => {
-  //   const { touches } = event;
-  //   if (!touches || touches.length === 0) return null;
-  //   const { clientX, clientY } = touches[0];
-  //   const targetElement = document.elementFromPoint(clientX, clientY);
-  //   if (targetElement) {
-  //     const cellTime = cellToDate.current.get(targetElement);
-  //     return cellTime ?? null;
-  //   }
-  //   return null;
-  // };
-  //
-  // const updateAvailabilityDraft = (
-  //   selectionEnd: Date | null,
-  //   callback?: () => void,
-  // ) => {
-  //   if (selectionType === null || selectionStart === null) return;
-  //
-  //   let newSelection: Array<Date> = [];
-  //   if (selectionStart && selectionEnd && selectionType) {
-  //     newSelection = selectionSchemeHandlers[selectionScheme](
-  //       selectionStart,
-  //       selectionEnd,
-  //       dates,
-  //     );
-  //   }
-  //
-  //   let nextDraft = [...selection];
-  //   if (selectionType === "add") {
-  //     nextDraft = Array.from(new Set([...nextDraft, ...newSelection]));
-  //   } else if (selectionType === "remove") {
-  //     nextDraft = nextDraft.filter(
-  //       (a) => !newSelection.find((b) => isSameMinute(a, b)),
-  //     );
-  //   }
-  //
-  //   setSelectionDraft(nextDraft);
-  //   if (callback) callback();
-  // };
-  //
-  // const handleSelectionStartEvent = (startTime: Date) => {
-  //   const timeSelected = selection.find((a) => isSameMinute(a, startTime));
-  //   setSelectionType(timeSelected ? "remove" : "add");
-  //   setSelectionStart(startTime);
-  // };
-  //
-  // const handleMouseEnterEvent = (time: Date) => {
-  //   updateAvailabilityDraft(time);
-  // };
-  //
-  // const handleMouseUpEvent = (time: Date) => {
-  //   updateAvailabilityDraft(time);
-  // };
-  //
-  // const handleTouchMoveEvent = (event: React.TouchEvent) => {
-  //   setIsTouchDragging(true);
-  //   const cellTime = getTimeFromTouchEvent(event);
-  //   if (cellTime) {
-  //     updateAvailabilityDraft(cellTime);
-  //   }
-  // };
-  //
-  // const handleTouchEndEvent = () => {
-  //   if (!isTouchDragging) {
-  //     updateAvailabilityDraft(null, () => {
-  //       setSelectionType(null);
-  //       setSelectionStart(null);
-  //     });
-  //   } else {
-  //     setSelectionType(null);
-  //     setSelectionStart(null);
-  //   }
-  //   setIsTouchDragging(false);
-  // };
+  useEffect(() => {
+    if (!isSmallScreen) {
+      setNumDays(4);
+      setStartDate(selectedDate);
+    } else {
+      setNumDays(7);
+    }
+  }, [isSmallScreen]);
 
-  // const renderDateCellWrapper = (time: Date): JSX.Element => {
-  //   // const startHandler = () => handleSelectionStartEvent(time);
-  //   // const selected = Boolean(selectionDraft.find((a) => isSameMinute(a, time)));
-  //
-  //   return (
-  //     <GridCell
-  //       className="rgdp__grid-cell"
-  //       role="presentation"
-  //       key={time.toISOString()}
-  //       onMouseDown={startHandler}
-  //       onMouseEnter={() => handleMouseEnterEvent(time)}
-  //       onMouseUp={() => handleMouseUpEvent(time)}
-  //       onTouchStart={startHandler}
-  //       onTouchMove={handleTouchMoveEvent}
-  //       onTouchEnd={handleTouchEndEvent}
-  //     >
-  //       {renderDateCell ? (
-  //         renderDateCell(time, selected, (element: HTMLElement) =>
-  //           cellToDate.current.set(element, time),
-  //         )
-  //       ) : (
-  //         <DateCell
-  //           selected={selected}
-  //           selectedColor={selectedColor}
-  //           unselectedColor={unselectedColor}
-  //           hoveredColor={hoveredColor}
-  //           ref={(el) => {
-  //             if (el) cellToDate.current.set(el, time);
-  //           }}
-  //         />
-  //       )}
-  //     </GridCell>
-  //   );
-  // };
   const renderTimeLabel = (time: Date) => {
     return <div>{formatDate(time, timeFormat)}</div>;
   };
 
-  const renderDateLabel = (date: Date, lunarDate: Date) => {
-    if (matchesMin568) {
-      return (
-        <div className="flex flex-col justify-center items-start uppercase font-semibold p-2">
-          {formatDate(date, dateFormat)}
-          <p className="text-lg font-bold">{date.getDate()}</p>
-        </div>
-      );
-    }
+  const renderDateLabel = (slotCell: SlotCell) => {
     return (
-      <div className="flex flex-col justify-center items-start uppercase font-semibold border border-solid border-primary p-2">
-        {formatDate(date, "EEE")}
+      <div
+        className={`flex flex-col justify-center items-start uppercase font-semibold border border-solid border-primary p-2 `}
+      >
+        {formatDate(slotCell.solar, "EEE")}
         <p className="text-lg font-bold flex items-center justify-between w-full">
-          {date.getDate()}
-          <span className="font-normal text-sm">{lunarDate.getDate()}</span>
+          {slotCell.solar.getDate()}
+          <span className="font-normal text-sm">
+            {slotCell.lunar.getDate()}
+          </span>
         </p>
       </div>
     );
   };
 
-  const renderFullDateGrid = useCallback(() => {
-    const flattenedDates: SlotCell[] = [];
-    const numDays = dateMatrix.length;
-    const numTimes = dateMatrix[0].length;
-    for (let j = 0; j < numTimes; j += 1) {
-      for (let i = 0; i < numDays; i += 1) {
-        flattenedDates.push(dateMatrix[i][j]);
+  const renderFullDateGrid = useCallback(
+    (onSlotUpdate: (slot: SpraySlot) => void) => {
+      const flattenedDates: SlotCell[] = [];
+      const numDays = dateMatrix.length;
+      const numTimes = dateMatrix[0].length;
+      for (let j = 0; j < numTimes; j += 1) {
+        for (let i = 0; i < numDays; i += 1) {
+          flattenedDates.push(dateMatrix[i][j]);
+        }
       }
-    }
-    const dateGridElements = flattenedDates.map((slot) => (
-      <CalendarDateCell>
-        <ContextMenu>
-          <ContextMenuTrigger className="">
-            {/*<BookingDialog date={date.solar} slot={1} form={bookingForm}>*/}
-            <div
-              className="w-full h-full flex relative bg-green-300"
-              role="button"
-              onClick={() => {
+      const dateGridElements = flattenedDates.map((slot) => (
+        <CalendarDateCell>
+          <div
+            role="button"
+            className={`w-full h-full flex relative ${slot?.solar.getHours() > 15 ? "bg-slate-300" : "bg-secondary"} ${slot.isAvailable ? "" : "!bg-black/50"}`}
+            onClick={() => {
+              if (currentUser?.userRole === UserRole.ROLE_RECEPTIONIST) {
+                showBookingDialog!(true);
+              }
+              if (slot.isAvailable) {
+                bookingForm.setValue("desiredDate", slot.solar);
+                onSlotUpdate(toSlot(slot.solar.getHours()));
                 setSelectedSlot(slot);
-              }}
-            >
-              <p className="absolute bottom-0 left-0 my-1 mx-2">1/2</p>
-              {selectedSlot?.solar === slot.solar && (
-                <LucideIcon
-                  name="Heart"
-                  size={24}
-                  fill="#d1001f"
-                  stroke="#d1001f"
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                />
-              )}
-            </div>
-            {/*</BookingDialog>*/}
-          </ContextMenuTrigger>
-          <ContextMenuContent className="w-64">
-            <ContextMenuItem
-              inset
-              className="flex items-center justify-between w-full pl-4 py-2 pr-2"
-            >
-              Add to cart
+              }
+            }}
+          >
+            {selectedSlot && compareDateSlot(selectedSlot, slot) && (
               <LucideIcon
-                name="ShoppingCart"
-                size={16}
-                className="font-semibold"
+                name="Heart"
+                size={24}
+                fill="#d1001f"
+                stroke="#d1001f"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
               />
-            </ContextMenuItem>
-            <ContextMenuItem
-              inset
-              className="flex items-center justify-between w-full pl-4 py-2 pr-2"
-            >
-              Book
-              <LucideIcon name="Heart" size={16} className="font-semibold" />
-            </ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenu>
-      </CalendarDateCell>
-    ));
-    for (let i = 0; i < numTimes; i += 1) {
-      const index = i * numDays;
-      const time = dateMatrix[0][i];
-      // Inject the time label at the start of every row
-      dateGridElements.splice(index + i, 0, renderTimeLabel(time.solar));
-    }
-    return [
-      // Empty top left corner
-      <div key="topleft" />,
-      // Top row of dates
-      ...dateMatrix.map((dayOfTimes, index) =>
-        React.cloneElement(
-          renderDateLabel(dayOfTimes[0].solar, dayOfTimes[0].lunar),
-          {
-            key: `date-${index}`,
-          },
-        ),
-      ),
-      // Every row after that
-      ...dateGridElements.map((element, index) =>
-        React.cloneElement(element, { key: `time-${index}` }),
-      ),
-    ];
-  }, [dateMatrix, selectedSlot]);
+            )}
+          </div>
+        </CalendarDateCell>
+      ));
+      for (let i = 0; i < numTimes; i += 1) {
+        const index = i * numDays;
+        const time = dateMatrix[0][i];
+        // Inject the time label at the start of every row
+        dateGridElements.splice(index + i, 0, renderTimeLabel(time.solar));
+      }
+
+      return !isLoading ? (
+        [
+          // Empty top left corner
+          <div key="topleft" />,
+          // Top row of dates
+          ...dateMatrix.map((dayOfTimes, index) =>
+            React.cloneElement(renderDateLabel(dayOfTimes[0]), {
+              key: `date-${index}`,
+            }),
+          ),
+          // Every row after that
+          ...dateGridElements.map((element, index) =>
+            React.cloneElement(element, { key: `time-${index}` }),
+          ),
+        ]
+      ) : (
+        <p>Fetching available slots...</p>
+      );
+    },
+    [dateMatrix, selectedSlot, isLoading],
+  );
 
   return (
     <div className="w-full">
       <div className=" flex flex-col xl:flex-row gap-8 items-start w-full select-none">
         <div className="flex flex-col gap-2">
+          <div>
+            <p className="text-md font-semibold">Enter your desire date:</p>
+            <DateInput
+              onChange={(date) => {
+                if (date) {
+                  setSelectedDate(date);
+                  numDays === 7
+                    ? setStartDate(startOfWeek(selectedDate))
+                    : setStartDate(selectedDate);
+                }
+              }}
+              value={selectedDate}
+            />
+          </div>
+
           <Calendar
             mode="single"
-            selected={startDate}
+            selected={selectedDate}
+            // defaultMonth={startOfMonth(selectedDate)}
+            fromDate={new Date()}
+            components={{
+              IconLeft: () => (
+                <ChevronLeft
+                  onClick={() => {
+                    setSelectedDate(subMonths(selectedDate, 1));
+                    setStartDate(startOfWeek(selectedDate));
+                  }}
+                  className="h-4 w-4"
+                />
+              ),
+              IconRight: () => (
+                <ChevronRight
+                  onClick={() => {
+                    setSelectedDate(addMonths(selectedDate, 1));
+                    setStartDate(startOfWeek(selectedDate));
+                  }}
+                  className="h-4 w-4"
+                />
+              ),
+            }}
             onSelect={(date) => {
               if (date) {
-                setStartDate(date);
+                setSelectedDate(date);
+                setStartDate(startOfWeek(date));
               }
             }}
             className="self-start rounded-md border shadow hidden xl:block"
           />
-          {selectedSlot && (
+          {selectedSlot && currentUser?.userRole === UserRole.ROLE_FARMER && (
             <div className="border border-solid border-border rounded-md p-2 shadow">
               <p className="text-md font-semibold">
                 Selected slot's information
@@ -340,13 +281,36 @@ export function BookingCalendar() {
                 <span className="font-semibold">Time: </span>
                 {selectedSlot.solar.getHours()}
               </p>
+              <Button
+                className="mt-2"
+                onClick={() => {
+                  setSelectedDate(selectedSlot.solar);
+                  setStartDate(startOfWeek(selectedSlot.solar));
+                }}
+              >
+                Focus selected slot
+              </Button>
             </div>
           )}
         </div>
-
-        <CalendarBody colGap={"4px"} numCol={numDays} numRow={7} rowGap={"4px"}>
-          {renderFullDateGrid()}
-        </CalendarBody>
+        <Form {...bookingForm}>
+          <form className="w-full">
+            <FormField
+              render={({ field }) => (
+                <CalendarBody
+                  colGap={"4px"}
+                  numCol={numDays}
+                  numRow={7}
+                  rowGap={"4px"}
+                >
+                  {renderFullDateGrid(field.onChange)}
+                </CalendarBody>
+              )}
+              name="timeSlot"
+              control={bookingForm.control}
+            />
+          </form>
+        </Form>
       </div>
     </div>
   );

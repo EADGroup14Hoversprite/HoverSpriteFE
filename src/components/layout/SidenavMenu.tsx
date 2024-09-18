@@ -17,6 +17,9 @@ import React from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CollapseMenuButton } from "@/components/layout";
 import LucideIcon from "@/components/lucide-icon";
+import { JWTPayload } from "@/types/user";
+import { clientSessionToken } from "@/utils/axiosClient";
+import { jwtDecode } from "jwt-decode";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -24,11 +27,13 @@ interface MenuProps {
 
 export function SidenavMenu({ isOpen }: MenuProps) {
   const pathname = usePathname();
-  const menuList = getMenuList(pathname);
-
+  const menuListRecord = getMenuList(pathname);
+  let role: JWTPayload;
+  role = jwtDecode<JWTPayload>(clientSessionToken.value);
+  const menuList = menuListRecord[role?.userRole!];
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
-      <nav className="mt-8 h-full w-full">
+      <nav className="h-full w-full">
         <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-2">
           {menuList.map(({ groupLabel, menus }, index) => (
             <li className={cn("w-full", groupLabel ? "pt-5" : "")} key={index}>

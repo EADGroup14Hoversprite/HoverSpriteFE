@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MenuIcon, PanelsTopLeft } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { SidenavMenu } from "@/components/layout";
+import Image from "next/image";
 
 export function SheetMenu() {
   return (
@@ -25,13 +26,18 @@ export function SheetMenu() {
       >
         <SheetHeader>
           <Button
-            className="flex justify-center items-center pb-2 pt-1"
+            className="flex justify-start items-center pb-2 pt-1"
             variant="link"
             asChild
           >
             <Link href="/booking" className="flex items-center gap-2">
-              <PanelsTopLeft className="w-6 h-6 mr-1" />
-              <SheetTitle className="font-bold text-lg">Brand</SheetTitle>
+              <Image
+                src="/logo/logo.svg"
+                alt="logo image"
+                width={40}
+                height={40}
+              />
+              <SheetTitle className="font-bold text-lg">HoverSprite</SheetTitle>
             </Link>
           </Button>
         </SheetHeader>

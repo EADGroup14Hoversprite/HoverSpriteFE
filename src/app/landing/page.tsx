@@ -1,9 +1,9 @@
-import Header from "./components/Header";
-import Hero from "./components/Hero";
-import Features from "./components/Features";
-import Testimonials from "./components/Testimonials";
-import Contact from "./components/Contact";
-import Footer from "./components/Footer";
+import Header from "@/app/_components/Header";
+import Hero from "@/app/_components/Hero";
+import Features from "@/app/_components/Features";
+import Testimonials from "@/app/_components/Testimonials";
+import Contact from "@/app/_components/Contact";
+import Footer from "@/app/_components/Footer";
 
 export default function LandingPage() {
   return (
