@@ -19,7 +19,7 @@ export function AreaInput({ bookingForm }: AreaInputProps) {
       control={bookingForm.control}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Area (declare)</FormLabel>
+          <FormLabel>Area (decare)</FormLabel>
           <FormControl>
             <Input
               value={field.value.toString()}

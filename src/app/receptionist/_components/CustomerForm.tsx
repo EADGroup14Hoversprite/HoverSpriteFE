@@ -47,63 +47,68 @@ export default function CustomerForm({ bookingForm }: CustomerFormProps) {
   }, [phoneNumber, setValue]);
 
   return (
-    <div className="flex-[9] flex flex-col justify-center items-center w-full lg:w-auto">
-      <div className="w-4/5">
-        <Form {...bookingForm}>
+    <div className="justify-center items-center">
+      <div className="w-full max-w-md">
+        <Form {...form}>
           <form>
-            {/* onSubmit={form.handleSubmit(onSubmit)} */}
+            {/* Full Name Field */}
             <div className="flex gap-4 mb-3">
               <FormField
                 name="farmerName"
                 control={control}
                 render={({ field }) => (
-                  <FormItem className="flex-1 basis-1/3">
+                  <FormItem className="w-full">
                     <FormLabel>Full Name</FormLabel>
-                    <Input {...field} placeholder="Farmer's name:" />
+                    <Input {...field} placeholder="Full name" />
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            {/* Phone Number Field */}
-            <FormField
-              name="farmerPhoneNumber"
-              control={control}
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Phone Number</FormLabel>
-                  <Input
-                    {...field}
-                    placeholder="Enter farmer's phone number:"
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {/* Email Address Field */}
-            <FormField
-              name="farmerEmailAddress"
-              control={control}
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Email Address</FormLabel>
-                  <Input {...field} placeholder="Enter your email address:" />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
+            {/* Email and Phone Number Fields */}
+            <div className="flex gap-4 mb-3">
+              {/* Email Address Field */}
+              <FormField
+                name="emailAddress"
+                control={control}
+                render={({ field }) => (
+                  <FormItem className="w-1/2">
+                    <FormLabel>Email</FormLabel>
+                    <Input {...field} placeholder="Email" />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Phone Number Field */}
+              <FormField
+                name="phoneNumber"
+                control={control}
+                render={({ field }) => (
+                  <FormItem className="w-1/2">
+                    <FormLabel>Phone Number</FormLabel>
+                    <Input {...field} placeholder="Phone number" />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             {/* Home Address Field */}
-            <FormField
-              name="address"
-              control={control}
-              render={({ field }) => (
-                <FormItem className="mb-3">
-                  <FormLabel>Home Address</FormLabel>
-                  <Input {...field} placeholder="Enter your address" />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="mb-3">
+              <FormField
+                name="homeAddress"
+                control={control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Home Address</FormLabel>
+                    <Input {...field} placeholder="Search for an address" />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </form>
         </Form>
       </div>
