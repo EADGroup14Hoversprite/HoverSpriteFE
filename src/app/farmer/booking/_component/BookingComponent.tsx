@@ -21,10 +21,13 @@ import { Checkout } from "@/app/farmer/booking/_component/checkout";
 import { PaymentType } from "@/types/payment";
 
 function isValidSlot(
-  slot: SpraySlot,
+  slot: SpraySlot | null,
   bookingForm: UseFormReturn<OrderType>,
   slotMap: Map<number, number>,
 ) {
+  if (!slot) {
+    return false;
+  }
   if (
     new Date().getDate() === bookingForm.getValues("desiredDate").getDate() &&
     new Date().getMonth() === bookingForm.getValues("desiredDate").getMonth() &&
@@ -103,7 +106,6 @@ const HookMultiStepForm = ({
     getOrderRange(
       initialState.startDate.getTime() / 1000,
       endDate.getTime() / 1000,
-      currentUser?.accessToken!,
     ).then((res) => {
       const slotMap = transformBookings(res.orders);
       setSlotMap(slotMap);

@@ -25,7 +25,7 @@ export function OrderDetail({ bookingForm }: OrderDetailProps) {
         Order details
       </AccordionTrigger>
       <AccordionContent className="space-y-4 p-2">
-        <div className="grid gap-2 content-center grid-cols-2 md:grid-cols-4">
+        <div className="grid gap-2 content-center grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
           <AreaInput bookingForm={bookingForm} />
           <CropSelection bookingForm={bookingForm} />
           <div>

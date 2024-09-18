@@ -35,21 +35,13 @@ export async function paypalOrder(orderId: number) {
   }
 }
 
-export async function getOrderRange(
-  start: number,
-  end: number,
-  sessionToken: string,
-) {
+export async function getOrderRange(start: number, end: number) {
   try {
     const res = await API.get<{
       message: string;
       orders: IOrder[];
       error?: boolean;
-    }>(`/order/by-date-range?startDate=${start}&endDate=${end}`, {
-      headers: {
-        Authorization: `Bearer ${sessionToken}`,
-      },
-    });
+    }>(`/order/by-date-range?startDate=${start}&endDate=${end}`);
     return res.data;
   } catch (e) {
     return {

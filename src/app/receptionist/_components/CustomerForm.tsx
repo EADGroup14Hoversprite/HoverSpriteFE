@@ -14,7 +14,7 @@ import { SignUp, SignUpSchema } from "@/schema";
 import API from "@/utils/axiosClient";
 
 export default function CustomerForm() {
-  const defaultState: SignUp = {
+  const defaultState: Partial<SignUp> = {
     fullName: "",
     emailAddress: "",
     phoneNumber: "",
@@ -32,7 +32,6 @@ export default function CustomerForm() {
   });
 
   const { watch, setValue, control } = form;
-
 
   const phoneNumber = watch("phoneNumber");
 
@@ -65,7 +64,9 @@ export default function CustomerForm() {
     <div className="flex-[9] flex flex-col justify-center items-center w-full lg:w-auto">
       <div className="w-4/5">
         <Form {...form}>
-          <form> {/* onSubmit={form.handleSubmit(onSubmit)} */}
+          <form>
+            {" "}
+            {/* onSubmit={form.handleSubmit(onSubmit)} */}
             <div className="flex gap-4 mb-3">
               <FormField
                 name="fullName"
@@ -79,7 +80,6 @@ export default function CustomerForm() {
                 )}
               />
             </div>
-
             {/* Phone Number Field */}
             <FormField
               name="phoneNumber"
@@ -92,7 +92,6 @@ export default function CustomerForm() {
                 </FormItem>
               )}
             />
-
             {/* Email Address Field */}
             <FormField
               name="emailAddress"
@@ -105,7 +104,6 @@ export default function CustomerForm() {
                 </FormItem>
               )}
             />
-
             {/* Home Address Field */}
             <FormField
               name="homeAddress"

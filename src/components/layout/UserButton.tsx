@@ -36,9 +36,8 @@ export function UserButton() {
         variant="outline"
         className="flex gap-2 items-center w-full justify-start"
         onClick={() => {
-          userSignOut().then((res) => {
-            router.push("/auth/login");
-          });
+          router.push("/auth/login");
+          userSignOut().then((res) => {});
         }}
       >
         <LucideIcon name="LogOut" />

@@ -68,8 +68,10 @@ export const useCalendarStore = create<CalendarStore>(
         initialState: { ...state.initialState, selectedDate: date },
       })),
     setNumDays: (numDays: number) =>
-      set((state) => ({
-        initialState: { ...state.initialState, numDays: numDays },
-      })),
+      set((state) => {
+        return {
+          initialState: { ...state.initialState, numDays: numDays },
+        };
+      }),
   }),
 );

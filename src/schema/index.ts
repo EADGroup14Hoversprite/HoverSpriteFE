@@ -15,7 +15,7 @@ export const orderSchema = z
       .nonnegative()
       .finite(),
     desiredDate: z.date(),
-    timeSlot: z.nativeEnum(SpraySlot),
+    timeSlot: z.nativeEnum(SpraySlot).nullable(),
     location: z.object({
       latitude: z.number(),
       longitude: z.number(),
@@ -27,6 +27,9 @@ export const orderSchema = z
     (data) => {
       const currentDate = new Date();
       const currentHour = currentDate.getHours();
+      if (!data.timeSlot) {
+        return false;
+      }
       if (
         currentDate.getDate() === data.desiredDate.getDate() &&
         currentDate.getMonth() === data.desiredDate.getMonth() &&

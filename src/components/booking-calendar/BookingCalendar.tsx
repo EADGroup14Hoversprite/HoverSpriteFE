@@ -1,16 +1,9 @@
 "use client";
 import * as React from "react";
-import { PropsWithChildren, useCallback } from "react";
+import { PropsWithChildren, useCallback, useEffect } from "react";
 
 import { SlotCell, useDateMatrix } from "@/hooks/useDateMatrix";
-import {
-  addHours,
-  addMonths,
-  formatDate,
-  startOfDay,
-  startOfWeek,
-  subMonths,
-} from "date-fns";
+import { addMonths, formatDate, startOfWeek, subMonths } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import LucideIcon from "../lucide-icon";
 import { UseFormReturn } from "react-hook-form";
@@ -22,6 +15,16 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Form, FormField } from "@/components/ui/form";
 import { IOrder } from "@/models/Order";
+import { useMediaQuery } from "react-responsive";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useUserStore } from "@/store/user-store";
+import { UserRole } from "@/types/role";
 
 function compareDateSlot(first: SlotCell, second: SlotCell) {
   return (
@@ -46,40 +49,6 @@ const CalendarDateCell = ({ children }: PropsWithChildren) => {
       {children}
     </div>
   );
-};
-
-const times = [4, 5, 6, 7, 16, 17];
-
-const loadingTime = [
-  ...new Array(6)
-    .fill(null)
-    .map((_, i) => addHours(startOfDay(new Date()), times[i])),
-];
-
-const loadingCalendar = () => {
-  const loadingGrid = [
-    ...new Array(56).fill(null).map((_, index) => (
-      <CalendarDateCell key={`cell-${index}`}>
-        <div
-          className="bg-muted animate-pulse h-full w-full"
-          role="button"
-        ></div>
-      </CalendarDateCell>
-    )),
-  ];
-  for (let i = 0; i < 6; i += 1) {
-    const index = i * 7;
-    const time = loadingTime[i];
-    // Inject the time label at the start of every row
-    loadingGrid.splice(
-      index + i,
-      0,
-      <>
-        <div>{formatDate(time, "ha")}</div>
-      </>,
-    );
-  }
-  return loadingGrid;
 };
 
 const CalendarBody = ({
@@ -121,18 +90,17 @@ export function BookingCalendar({
   bookingForm,
   orders,
   isLoading,
-}: BookingCalendarProps) {
+  children,
+}: PropsWithChildren<BookingCalendarProps>) {
+  const currentUser = useUserStore.getState().currentUser;
   const {
     numDays,
-    rowGap,
-    colGap,
     startDate,
     hourChunk,
     startMorning,
     endMorning,
     startAfternoon,
     timeFormat,
-    dateFormat,
     selectedSlot,
     selectedDate,
     endAfternoon,
@@ -151,6 +119,16 @@ export function BookingCalendar({
     endAfternoon,
     ordersRange: orders,
   });
+  const isSmallScreen = useMediaQuery({ query: "(min-width: 768px)" });
+
+  useEffect(() => {
+    if (!isSmallScreen) {
+      setNumDays(4);
+      setStartDate(selectedDate);
+    } else {
+      setNumDays(7);
+    }
+  }, [isSmallScreen]);
 
   const renderTimeLabel = (time: Date) => {
     return <div>{formatDate(time, timeFormat)}</div>;
@@ -184,28 +162,40 @@ export function BookingCalendar({
       }
       const dateGridElements = flattenedDates.map((slot) => (
         <CalendarDateCell>
-          <div
-            className={`w-full h-full flex relative ${slot?.solar.getHours() > 15 ? "bg-slate-300" : "bg-secondary"} ${slot.isAvailable ? "" : "!bg-black/50"}`}
-            role="button"
-            onClick={() => {
-              if (slot.isAvailable) {
-                console.log(slot.solar);
-                bookingForm.setValue("desiredDate", slot.solar);
-                onSlotUpdate(toSlot(slot.solar.getHours()));
-                setSelectedSlot(slot);
-              }
-            }}
-          >
-            {selectedSlot && compareDateSlot(selectedSlot, slot) && (
-              <LucideIcon
-                name="Heart"
-                size={24}
-                fill="#d1001f"
-                stroke="#d1001f"
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              />
-            )}
-          </div>
+          <Dialog>
+            <DialogTrigger
+              asChild
+              className={`w-full h-full flex relative ${slot?.solar.getHours() > 15 ? "bg-slate-300" : "bg-secondary"} ${slot.isAvailable ? "" : "!bg-black/50"}`}
+            >
+              <div
+                role="button"
+                onClick={() => {
+                  if (slot.isAvailable) {
+                    bookingForm.setValue("desiredDate", slot.solar);
+                    onSlotUpdate(toSlot(slot.solar.getHours()));
+                    setSelectedSlot(slot);
+                  }
+                }}
+              >
+                {selectedSlot && compareDateSlot(selectedSlot, slot) && (
+                  <LucideIcon
+                    name="Heart"
+                    size={24}
+                    fill="#d1001f"
+                    stroke="#d1001f"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  />
+                )}
+              </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogTitle>Book an order</DialogTitle>
+              <DialogDescription>
+                Help your customer to book a slot!
+              </DialogDescription>
+              {children}
+            </DialogContent>
+          </Dialog>
         </CalendarDateCell>
       ));
       for (let i = 0; i < numTimes; i += 1) {
@@ -215,27 +205,24 @@ export function BookingCalendar({
         dateGridElements.splice(index + i, 0, renderTimeLabel(time.solar));
       }
 
-      return !isLoading
-        ? [
-            // Empty top left corner
-            <div key="topleft" />,
-            // Top row of dates
-            ...dateMatrix.map((dayOfTimes, index) =>
-              React.cloneElement(renderDateLabel(dayOfTimes[0]), {
-                key: `date-${index}`,
-              }),
-            ),
-            // Every row after that
-            ...dateGridElements.map((element, index) =>
-              React.cloneElement(element, { key: `time-${index}` }),
-            ),
-          ]
-        : [
-            <div key="topleft" />,
-            ...loadingCalendar().map((element, index) =>
-              React.cloneElement(element, { key: `time-${index}` }),
-            ),
-          ];
+      return !isLoading ? (
+        [
+          // Empty top left corner
+          <div key="topleft" />,
+          // Top row of dates
+          ...dateMatrix.map((dayOfTimes, index) =>
+            React.cloneElement(renderDateLabel(dayOfTimes[0]), {
+              key: `date-${index}`,
+            }),
+          ),
+          // Every row after that
+          ...dateGridElements.map((element, index) =>
+            React.cloneElement(element, { key: `time-${index}` }),
+          ),
+        ]
+      ) : (
+        <p>Fetching available slots...</p>
+      );
     },
     [dateMatrix, selectedSlot, isLoading],
   );
@@ -250,7 +237,9 @@ export function BookingCalendar({
               onChange={(date) => {
                 if (date) {
                   setSelectedDate(date);
-                  setStartDate(startOfWeek(selectedDate));
+                  numDays === 7
+                    ? setStartDate(startOfWeek(selectedDate))
+                    : setStartDate(selectedDate);
                 }
               }}
               value={selectedDate}
@@ -263,7 +252,7 @@ export function BookingCalendar({
             // defaultMonth={startOfMonth(selectedDate)}
             fromDate={new Date()}
             components={{
-              IconLeft: ({ ...props }) => (
+              IconLeft: () => (
                 <ChevronLeft
                   onClick={() => {
                     setSelectedDate(subMonths(selectedDate, 1));
@@ -272,7 +261,7 @@ export function BookingCalendar({
                   className="h-4 w-4"
                 />
               ),
-              IconRight: ({ ...props }) => (
+              IconRight: () => (
                 <ChevronRight
                   onClick={() => {
                     setSelectedDate(addMonths(selectedDate, 1));
@@ -290,7 +279,7 @@ export function BookingCalendar({
             }}
             className="self-start rounded-md border shadow hidden xl:block"
           />
-          {selectedSlot && (
+          {selectedSlot && currentUser?.userRole === UserRole.ROLE_FARMER && (
             <div className="border border-solid border-border rounded-md p-2 shadow">
               <p className="text-md font-semibold">
                 Selected slot's information

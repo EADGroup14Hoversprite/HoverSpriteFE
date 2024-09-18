@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface Address {
   display_name: string;
@@ -44,9 +45,9 @@ const GeoSearchForm: React.FC<GeoSearchFormProps> = ({ onSelect }) => {
   };
 
   return (
-    <div className="relative flex items-center border-b border-gray-500 py-2">
+    <div className="relative flex items-center py-2">
       <Search strokeWidth={1} />
-      <input
+      <Input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
