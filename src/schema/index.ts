@@ -5,17 +5,18 @@ import { PaymentType } from "@/types/payment";
 import { FeedbackType } from "@/types/feedback-type";
 
 const passwordValidation = new RegExp(
-  /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/,
+  /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/,
 );
 const phoneValidation = new RegExp(
   /^((\+84\s\d{3}\s\d{3}\s\d{3})|(0\d{3}\s\d{3}\s\d{3})|((\+84|0)\d{9}))$/,
 );
 const nameValidation = new RegExp(
-  /^(?=\b[A-Za-z]*[A-Z][a-z]*[A-Z]?[a-z]*\b)[A-Za-z ]+$/,
+  /^(?=\b[A-Za-z]*[A-Z][a-z]*\b)(?!.*[A-Z]{2})[A-Za-z ]+$/
 );
 const emailValidation = new RegExp(
   /^[\w.-]+@(hoversprite\.(com|vn)|gmail\.com)$/,
 );
+
 export const orderSchema = z
   .object({
     farmerName: z.string(),
@@ -80,19 +81,6 @@ export const signInSchema = z.object({
 });
 
 export type SignIn = z.infer<typeof signInSchema>;
-
-const passwordValidation = new RegExp(
-  /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/,
-);
-const phoneValidation = new RegExp(
-  /^((\+84\s\d{3}\s\d{3}\s\d{3})|(0\d{3}\s\d{3}\s\d{3})|((\+84|0)\d{9}))$/,
-);
-const nameValidation = new RegExp(
-  /^(?=\b[A-Za-z]*[A-Z][a-z]*\b)(?!.*[A-Z]{2})[A-Za-z ]+$/
-);
-const emailValidation = new RegExp(
-  /^[\w.-]+@(hoversprite\.(com|vn)|gmail\.com)$/,
-);
 
 export const SignUpSchema = z
   .object({
