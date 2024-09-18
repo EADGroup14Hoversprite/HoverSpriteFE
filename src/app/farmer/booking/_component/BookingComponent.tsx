@@ -12,7 +12,7 @@ import { useUserStore } from "@/store/user-store";
 import { createOrder, getOrderRange } from "@/actions/order";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { addDays } from "date-fns";
+import { addDays, addHours, startOfDay } from "date-fns";
 import { transformBookings } from "@/hooks/useDateMatrix";
 import { useCalendarStore } from "@/store/calendar-store";
 import { IOrder } from "@/models/Order";
@@ -141,20 +141,14 @@ const HookMultiStepForm = ({
 
   async function onSubmit(value: OrderType) {
     setIsCreating(true);
-    const onCreatingOrder = createOrder(value);
+    const onCreatingOrder = createOrder({
+      ...value,
+      desiredDate: addHours(startOfDay(value.desiredDate), 7),
+    });
 
     toast.promise(onCreatingOrder, {
       loading: "Creating your order...",
       success: async (res) => {
-        // if (res.order.paymentMethod === PaymentType.CREDIT_CARD) {
-        //   const urls = await paypalOrder(res.order.id);
-        //   if (urls.cancelUrl) {
-        //     router.push("/farmer/orders");
-        //     router.refresh();
-        //   } else {
-        //     router.push(urls.successUrl);
-        //   }
-        // }
         methods.reset();
         router.push("/farmer/orders");
         router.refresh();

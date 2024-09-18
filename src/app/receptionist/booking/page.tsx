@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { createOrder, getOrderRange } from "@/actions/order";
 import { transformBookings } from "@/hooks/useDateMatrix";
-import { addDays } from "date-fns";
+import { addDays, addHours, startOfDay } from "date-fns";
 import { IOrder } from "@/models/Order";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -80,7 +80,10 @@ export default function Page() {
   }, [initialState.startDate]);
 
   const submitOrder = async (order: OrderType) => {
-    const onCreatingOrder = createOrder(order);
+    const onCreatingOrder = createOrder({
+      ...order,
+      desiredDate: addHours(startOfDay(order.desiredDate), 7),
+    });
 
     toast.promise(onCreatingOrder, {
       loading: "Creating order...",

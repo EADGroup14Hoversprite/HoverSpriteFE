@@ -38,6 +38,7 @@ export default function CustomPagination({
             value={pageSize.toString()}
             onValueChange={(value) => {
               setPageSize(Number(value));
+              setCurrentPage(0);
             }}
           >
             <SelectTrigger className="h-8 w-[4.5rem]">

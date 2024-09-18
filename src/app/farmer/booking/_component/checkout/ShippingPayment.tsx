@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 import { OrderType } from "@/schema";
 import { useUserStore } from "@/store/user-store";
-import { Form } from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 import { OrderDetail } from "@/app/farmer/booking/_component/checkout";
 import GeoSearchForm from "@/components/map/geoSearchForm";
 
@@ -22,8 +22,7 @@ export function ShippingPayment({ bookingForm }: ShippingPaymentProps) {
   const { currentUser } = useUserStore();
 
   useEffect(() => {
-    if (bookingForm.getValues("address"))
-      bookingForm.setValue("address", currentUser?.homeAddress!);
+    bookingForm.setValue("address", currentUser?.homeAddress!);
     bookingForm.setValue("farmerPhoneNumber", currentUser?.phoneNumber!);
     bookingForm.setValue("farmerName", currentUser?.fullName!);
     bookingForm.setValue("farmerEmailAddress", currentUser?.emailAddress!);
@@ -74,15 +73,24 @@ export function ShippingPayment({ bookingForm }: ShippingPaymentProps) {
                   />
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="farmerAddress">Home Address</Label>
-                <GeoSearchForm onSelect={handleAddressSelect} />
-                <Input
-                  value={bookingForm.getValues("address")}
-                  placeholder="Your address"
-                  disabled
-                />
-              </div>
+              <FormField
+                render={({ field }) => (
+                  <div className="flex flex-col gap-2">
+                    <Label htmlFor="farmerAddress">Home Address</Label>
+                    <GeoSearchForm
+                      onSelect={(data, long, lat) =>
+                        handleAddressSelect(data, long, lat)
+                      }
+                    />
+                    <Input
+                      value={field.value}
+                      placeholder="Your address"
+                      disabled
+                    />
+                  </div>
+                )}
+                name="address"
+              />
             </AccordionContent>
           </AccordionItem>
           {/*      <AccordionItem value="item-2">*/}
