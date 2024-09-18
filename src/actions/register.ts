@@ -23,22 +23,7 @@ export async function userRegister(values: {
       },
     );
     return res;
-
-    // return await signIn("credentials", {
-    //   emailOrPhone: values.emailAddress,
-    //   password: values.password,
-    //   redirect: false,
-    // });
   } catch (error) {
     throw error;
-    // if (error === 409) {
-    //     throw new Error("User Already Exists");
-    //   } else if (!res.ok) {
-    //     throw new Error("Internal Error");
-    //   }
-    // return {
-    //   error: (error as any).message,
-    //   code: 500,
-    // };
   }
 }

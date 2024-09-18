@@ -18,7 +18,7 @@ import { userRegister } from "@/actions/register";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/user-store";
 import { useRouter } from "next/navigation";
-import { auth } from "@/actions/auth";
+import { auth, loginWithFb, loginWithGoogle } from "@/actions/auth";
 import GeoSearchForm from "@/components/map/geoSearchForm";
 
 export default function DefaultRegisterForm() {
@@ -44,6 +44,24 @@ export default function DefaultRegisterForm() {
     resolver: zodResolver(SignUpSchema),
     mode: "onChange",
   });
+
+  const loginGoogle = async () => {
+    const res = await loginWithGoogle();
+    if (res.error) {
+      toast.error("Something went wrong");
+    } else {
+      router.push(res.redirectUrl);
+    }
+  };
+
+  const loginFb = async () => {
+    const res = await loginWithFb();
+    if (res.error) {
+      toast.error("Something went wrong");
+    } else {
+      router.push(res.redirectUrl);
+    }
+  };
 
   const onSubmit = async (values: SignUp) => {
     const onRegister = userRegister({
@@ -242,13 +260,21 @@ export default function DefaultRegisterForm() {
         {/* Social login*/}
         <div className="flex flex-col justify-center items-center ">
           <Link href={``}>
-            <Button className="mx-2 rounded-full mb-2 w-96" variant={"outline"}>
+            <Button
+              className="mx-2 rounded-full mb-2 w-96"
+              variant={"outline"}
+              onClick={() => loginGoogle()}
+            >
               Continue with Google
             </Button>
           </Link>
 
           <Link href={``}>
-            <Button className="mx-2 rounded-full w-96 mb-2" variant={"outline"}>
+            <Button
+              className="mx-2 rounded-full w-96 mb-2"
+              variant={"outline"}
+              onClick={() => loginFb()}
+            >
               Continue with Facebook
             </Button>
           </Link>

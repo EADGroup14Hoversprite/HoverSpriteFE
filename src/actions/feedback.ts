@@ -2,8 +2,6 @@ import { IFeedback } from "@/models/Feedback";
 import { FeedbackCreateType } from "@/schema";
 import API from "@/utils/axiosClient";
 
-const backendUrl = "http://localhost:8080";
-
 export async function giveFeedback(
   value: FeedbackCreateType,
   orderId: number,
@@ -24,7 +22,7 @@ export async function giveFeedback(
     });
 
     const res = await API.post<{ message: string; dto: IFeedback }>(
-      `${backendUrl}/feedback`,
+      `/feedback`,
       formData,
       {
         headers: {

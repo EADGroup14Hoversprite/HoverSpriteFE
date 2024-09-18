@@ -15,8 +15,6 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-
-import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import {
   Table,
@@ -126,7 +124,6 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
     </div>
   );
 }

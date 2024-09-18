@@ -22,7 +22,7 @@ export async function auth(value: IUser) {
     "/api/auth",
     { ...value },
     {
-      baseURL: "http://localhost:3000",
+      baseURL: "https://localhost:3000",
     },
   );
 }
@@ -60,7 +60,7 @@ export async function signOut() {
     "/api/logout",
     {},
     {
-      baseURL: "http://localhost:3000",
+      baseURL: "https://localhost:3000",
     },
   );
 }

@@ -38,7 +38,7 @@ API.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
     const baseUrl = config.baseURL;
 
     if (!baseUrl) {
-      config.baseURL = "http://localhost:3000";
+      config.baseURL = "https://localhost:3000";
     }
 
     return config;

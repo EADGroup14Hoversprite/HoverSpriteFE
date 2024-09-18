@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export default function Contact() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,16 +17,16 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="min-h-screen w-full max-w-7xl mx-auto py-24 px-4 flex flex-col justify-center text-center scroll-snap-start"
+      className="py-16 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Contact Form and Info */}
         <div className="flex flex-col justify-center items-center lg:items-start">
-          <h2 className="text-4xl font-bold text-gray-900 mb-6" data-aos="fade-right">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6" data-aos="fade-right">
             Get in Touch
           </h2>
-          <p className="text-lg text-gray-600 mb-8" data-aos="fade-right">
-            Have questions? We'd love to hear from you! Reach out to us via email or follow us on social media.
+          <p className="text-lg text-gray-600 mb-6" data-aos="fade-right">
+            Have questions? We’d love to hear from you! Reach out to us via email or follow us on social media.
           </p>
           <button
             onClick={handleModalOpen}
@@ -38,7 +39,9 @@ export default function Contact() {
 
         {/* Social Media Links */}
         <div className="flex flex-col items-center justify-center bg-gray-100 p-8 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Connect with us on Social Media</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            Connect with us on Social Media
+          </h3>
           <div className="flex space-x-6">
             <a
               href="https://facebook.com"
@@ -53,10 +56,10 @@ export default function Contact() {
               href="https://twitter.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-600 transition"
+              className="text-black hover:text-gray-600 transition"
               aria-label="Twitter"
             >
-              <FaTwitter size={30} />
+              <FaXTwitter size={30} />
             </a>
             <a
               href="https://instagram.com"

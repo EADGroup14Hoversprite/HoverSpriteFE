@@ -1,5 +1,4 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import LucideIcon from "@/components/lucide-icon";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/store/user-store";
@@ -10,6 +9,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import Notifications from "@/components/Notifications";
+import { clientSessionToken } from "@/utils/axiosClient";
 
 export default function UserButtonSmall() {
   const { currentUser, logout } = useUserStore();
@@ -44,7 +45,7 @@ export default function UserButtonSmall() {
             className="flex gap-2 items-center w-full justify-start"
             onClick={() => {
               userSignOut().then((res) => {
-                router.refresh();
+                router.push("/auth/login");
               });
             }}
           >
@@ -54,9 +55,7 @@ export default function UserButtonSmall() {
         </PopoverContent>
       </Popover>
 
-      <Badge className="p-1">
-        <LucideIcon name="BellRing" size={16} />
-      </Badge>
+      <Notifications token={clientSessionToken.value} />
     </div>
   );
 }

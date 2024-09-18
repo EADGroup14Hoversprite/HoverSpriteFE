@@ -1,13 +1,38 @@
 "use client";
 import * as React from "react";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { getMyOrders } from "@/actions/order";
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "@/components/data-table/column";
+import CustomPagination from "@/components/data-table/custom-pagination";
+import { useOrderPaginationStore } from "@/store/use-orders-pagination";
 
 export default function Page() {
-  const getOrders = getMyOrders(0, 10, "status", "ASC");
+  const {
+    currentPage,
+    pageSize,
+    options,
+    setCurrentPage,
+    canPrevPage,
+    setCanNextPage,
+    setCanPrevPage,
+    canNextPage,
+    maxPage,
+    setMaxPage,
+    setPageSize,
+  } = useOrderPaginationStore();
+  const getOrders = getMyOrders(currentPage, pageSize, "status", "ASC");
+
+  useEffect(() => {
+    const fetchOrders = async () =>
+      await getMyOrders(currentPage, pageSize, "status", "ASC");
+
+    fetchOrders().then((res) => {
+      setMaxPage(res.maxPage);
+    });
+  }, []);
+
   return (
     <>
       <div className="h-full flex-1 flex-col space-y-8 p-4 flex overflow-auto">
@@ -32,7 +57,19 @@ export default function Page() {
               />
             }
           >
-            <DataTable ordersPromise={getOrders} columns={columns} />
+            <div className="flex flex-col gap-2 flex-1">
+              <DataTable ordersPromise={getOrders} columns={columns} />
+              <CustomPagination
+                currentPage={currentPage}
+                pageSize={pageSize}
+                setCurrentPage={setCurrentPage}
+                canPrevPage={canPrevPage}
+                canNextPage={canNextPage}
+                pageSizeOptions={options}
+                maxPage={maxPage}
+                setPageSize={setPageSize}
+              />
+            </div>
           </Suspense>
         </div>
       </div>
