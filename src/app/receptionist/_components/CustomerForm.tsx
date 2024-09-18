@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import {
   Form,
   FormField,
@@ -9,10 +9,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { BookingForm, OrderType } from "@/schema";
+import { OrderType } from "@/schema";
 import API from "@/utils/axiosClient";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { bookingSchema } from "@/schema";
 
 interface CustomerFormProps {
   bookingForm: UseFormReturn<OrderType>;
@@ -22,18 +20,18 @@ export default function CustomerForm({ bookingForm }: CustomerFormProps) {
   const { watch, setValue, control } = bookingForm;
   const phoneNumber = watch("farmerPhoneNumber");
 
-  const defaultState: BookingForm = {
-    farmerName: "",
-    farmerEmailAddress: "",
-    farmerPhoneNumber: "",
-    address: "",
-  };
-
-  const form = useForm<BookingForm>({
-    defaultValues: defaultState,
-    resolver: zodResolver(bookingSchema),
-    mode: "onChange",
-  });
+  // const defaultState: BookingForm = {
+  //   farmerName: "",
+  //   farmerEmailAddress: "",
+  //   farmerPhoneNumber: "",
+  //   address: "",
+  // };
+  //
+  // const form = useForm<BookingForm>({
+  //   defaultValues: defaultState,
+  //   resolver: zodResolver(bookingSchema),
+  //   mode: "onChange",
+  // });
 
   useEffect(() => {
     if (phoneNumber) {
@@ -63,13 +61,13 @@ export default function CustomerForm({ bookingForm }: CustomerFormProps) {
   return (
     <div className="justify-center items-center">
       <div className="w-full max-w-md">
-        <Form {...form}>
+        <Form {...bookingForm}>
           <form>
             {/* Full Name Field */}
             <div className="mb-3">
               <FormField
                 name="farmerName"
-                control={form.control}
+                control={bookingForm.control}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
@@ -85,7 +83,7 @@ export default function CustomerForm({ bookingForm }: CustomerFormProps) {
               {/* Email Address Field */}
               <FormField
                 name="farmerEmailAddress"
-                control={form.control}
+                control={bookingForm.control}
                 render={({ field }) => (
                   <FormItem className="w-1/2">
                     <FormLabel>Email</FormLabel>
@@ -98,7 +96,7 @@ export default function CustomerForm({ bookingForm }: CustomerFormProps) {
               {/* Phone Number Field */}
               <FormField
                 name="farmerPhoneNumber"
-                control={form.control}
+                control={bookingForm.control}
                 render={({ field }) => (
                   <FormItem className="w-1/2">
                     <FormLabel>Phone Number</FormLabel>
@@ -113,7 +111,7 @@ export default function CustomerForm({ bookingForm }: CustomerFormProps) {
             <div className="mb-3">
               <FormField
                 name="address"
-                control={form.control}
+                control={bookingForm.control}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Home Address</FormLabel>
