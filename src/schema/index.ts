@@ -55,13 +55,13 @@ export const signInSchema = z.object({
 export type SignIn = z.infer<typeof signInSchema>;
 
 const passwordValidation = new RegExp(
-  /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/,
+  /^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/,
 );
 const phoneValidation = new RegExp(
   /^((\+84\s\d{3}\s\d{3}\s\d{3})|(0\d{3}\s\d{3}\s\d{3})|((\+84|0)\d{9}))$/,
 );
 const nameValidation = new RegExp(
-  /^(?=\b[A-Za-z]*[A-Z][a-z]*[A-Z]?[a-z]*\b)[A-Za-z ]+$/,
+  /^(?=\b[A-Za-z]*[A-Z][a-z]*\b)(?!.*[A-Z]{2})[A-Za-z ]+$/
 );
 const emailValidation = new RegExp(
   /^[\w.-]+@(hoversprite\.(com|vn)|gmail\.com)$/,
@@ -76,7 +76,7 @@ export const SignUpSchema = z
       .min(2, { message: "Name is too short" })
       .regex(nameValidation, {
         message:
-          "Full name cannot have more than 2 capitalized letters in a word and must contain only letters and spaces",
+          "Full name must have at least 1 captalized letter, cannot have more than 2 capitalized letters in a word and must contain only letters and spaces",
       }),
     emailAddress: z
       .string()
@@ -102,7 +102,7 @@ export const SignUpSchema = z
       .min(6, { message: "Password must have at least 6 characters" })
       .regex(passwordValidation, {
         message:
-          "Password must be at least 6 characters long, contain at least 1 number, and 1 special character",
+          "Password must contain at least 1 capitalized letter, and 1 special character",
       }),
     confirmPassword: z.string(),
   })
