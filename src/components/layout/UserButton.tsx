@@ -3,8 +3,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import LucideIcon from "@/components/lucide-icon";
 import { useUserStore } from "@/store/user-store";
 import { signOut } from "@/actions/auth";
-import Notifications from "@/components/Notifications";
 import { useRouter } from "next/navigation";
+import NotificationsBell from "@/components/Notifications";
+import { clientSessionToken } from "@/utils/axiosClient";
 
 export function UserButton() {
   const { logout, currentUser } = useUserStore();
@@ -30,7 +31,7 @@ export function UserButton() {
           {currentUser?.emailAddress}
         </p>
       </div>
-      <Notifications token={currentUser?.accessToken!} />
+      <NotificationsBell token={clientSessionToken.value} />
 
       <Button
         variant="outline"

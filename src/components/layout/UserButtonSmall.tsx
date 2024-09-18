@@ -9,7 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import Notifications from "@/components/Notifications";
+import NotificationsBell from "@/components/Notifications";
 import { clientSessionToken } from "@/utils/axiosClient";
 
 export default function UserButtonSmall() {
@@ -55,7 +55,7 @@ export default function UserButtonSmall() {
         </PopoverContent>
       </Popover>
 
-      <Notifications token={clientSessionToken.value} />
+      <NotificationsBell token={clientSessionToken.value} />
     </div>
   );
 }
