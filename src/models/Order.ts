@@ -1,22 +1,5 @@
 import { z } from "zod";
 
-// export interface IOrder {
-//   id: number;
-//   farmerId: number;
-//   cropType: string;
-//   address: string;
-//   location: Location;
-//   farmlandArea: number;
-//   desiredDate: number;
-//   totalCost: number;
-//   timeSlot: string;
-//   status: string;
-//   paymentStatus: boolean;
-//   assignedSprayerIds: any[];
-//   createdAt: number;
-//   updatedAt: number;
-// }
-
 export const IOrderSchema = z.object({
   location: z.object({
     latitude: z.number(),
