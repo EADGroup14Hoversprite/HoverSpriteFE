@@ -2,12 +2,7 @@ import { OrderType } from "@/schema";
 import { IOrder } from "@/models/Order";
 import API from "@/utils/axiosClient";
 
-export async function createOrder(
-  value: Partial<OrderType>,
-  accessToken: string,
-  farmerName: string,
-  farmerPhoneNumber: string,
-) {
+export async function createOrder(value: Partial<OrderType>) {
   try {
     const res = await API.post<{
       message: string;
@@ -15,8 +10,6 @@ export async function createOrder(
       error?: boolean;
     }>("/order", {
       ...value,
-      farmerName: farmerName,
-      farmerPhoneNumber: farmerPhoneNumber,
     });
     return res.data;
   } catch (e) {
@@ -24,21 +17,42 @@ export async function createOrder(
   }
 }
 
-export async function getOrderRange(
-  start: number,
-  end: number,
-  sessionToken: string,
-) {
+export async function paypalOrder(orderId: number) {
+  try {
+    const res = await API.post<{ successUrl: string; cancelUrl: string }>(
+      `/order/${orderId}/create-payment`,
+    );
+    return res.data;
+  } catch (e) {
+    throw new Error("Cannot proceed with paypal");
+  }
+}
+
+export async function getOrderRange(start: number, end: number) {
   try {
     const res = await API.get<{
       message: string;
       orders: IOrder[];
       error?: boolean;
-    }>(`/order/by-date-range?startDate=${start}&endDate=${end}`, {
-      headers: {
-        Authorization: `Bearer ${sessionToken}`,
-      },
-    });
+    }>(`/order/by-date-range?startDate=${start}&endDate=${end}`);
+    return res.data;
+  } catch (e) {
+    return {
+      message: "Cannot get order in the range",
+      error: true,
+      orders: [],
+    };
+  }
+}
+
+export async function getOrderByDate(date: Date) {
+  const time = date.getTime();
+  try {
+    const res = await API.get<{
+      message: string;
+      orders: IOrder[];
+      error?: boolean;
+    }>(`/order/by-date?desireDate=${time}`);
     return res.data;
   } catch (e) {
     return {

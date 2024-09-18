@@ -1,7 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { UseFormReturn } from "react-hook-form";
 import { OrderType } from "@/schema";
-import { toPaymentString } from "@/types/payment";
 
 interface OrderSummaryProps {
   bookingForm: UseFormReturn<OrderType>;
@@ -55,13 +54,13 @@ export function OrderSummary({ bookingForm }: OrderSummaryProps) {
           )}
         </p>
       </div>
-      <Separator className="flex-grow-0" />
-      <div className="flex items-center justify-between">
-        <p>Payment method:</p>
-        <p className="font-bold text-xl capitalize">
-          {toPaymentString(bookingForm.getValues("paymentMethod"))}
-        </p>
-      </div>
+      {/*<Separator className="flex-grow-0" />*/}
+      {/*<div className="flex items-center justify-between">*/}
+      {/*  <p>Payment method:</p>*/}
+      {/*  <p className="font-bold text-xl capitalize">*/}
+      {/*    {toPaymentString(bookingForm.getValues("paymentMethod"))}*/}
+      {/*  </p>*/}
+      {/*</div>*/}
     </div>
   );
 }

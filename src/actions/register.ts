@@ -1,5 +1,5 @@
 import { IUser } from "@/types/user";
-import axios from "axios";
+import API from "@/utils/axiosClient";
 
 export async function userRegister(values: {
   fullName: string;
@@ -10,19 +10,16 @@ export async function userRegister(values: {
   password: string;
   googleId: string | null;
   facebookId: string | null;
+  location: {
+    longitude: number;
+    latitude: number;
+  };
 }) {
   try {
-    const res = await axios.post<{ message: string; dto: IUser }>(
-      "http://localhost:8080/auth/register",
+    const res = await API.post<{ message: string; dto: IUser }>(
+      "/auth/register",
       {
-        fullName: values.fullName,
-        phoneNumber: values.phoneNumber,
-        emailAddress: values.emailAddress,
-        homeAddress: values.homeAddress,
-        userRole: values.userRole,
-        password: values.password,
-        googleId: values.googleId,
-        facebookId: values.facebookId,
+        ...values,
       },
     );
     return res;
@@ -33,8 +30,6 @@ export async function userRegister(values: {
     //   redirect: false,
     // });
   } catch (error) {
-    console.log(error);
-
     throw error;
     // if (error === 409) {
     //     throw new Error("User Already Exists");

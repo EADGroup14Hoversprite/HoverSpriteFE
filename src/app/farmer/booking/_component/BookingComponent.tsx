@@ -9,21 +9,25 @@ import { Button } from "@/components/ui/button";
 import { OrderType } from "@/schema";
 import { SpraySlot, toSlotNum } from "@/models/Booking";
 import { useUserStore } from "@/store/user-store";
-import { createOrder, getOrderRange } from "@/actions/order";
+import { createOrder, getOrderRange, paypalOrder } from "@/actions/order";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { addDays, addHours, startOfDay } from "date-fns";
+import { addDays } from "date-fns";
 import { transformBookings } from "@/hooks/useDateMatrix";
 import { useCalendarStore } from "@/store/calendar-store";
 import { IOrder } from "@/models/Order";
 import BookingForm from "@/app/farmer/booking/_component/crop-area/BookingForm";
 import { Checkout } from "@/app/farmer/booking/_component/checkout";
+import { PaymentType } from "@/types/payment";
 
 function isValidSlot(
-  slot: SpraySlot,
+  slot: SpraySlot | undefined,
   bookingForm: UseFormReturn<OrderType>,
   slotMap: Map<number, number>,
 ) {
+  if (!slot) {
+    return false;
+  }
   if (
     new Date().getDate() === bookingForm.getValues("desiredDate").getDate() &&
     new Date().getMonth() === bookingForm.getValues("desiredDate").getMonth() &&
@@ -102,10 +106,8 @@ const HookMultiStepForm = ({
     getOrderRange(
       initialState.startDate.getTime() / 1000,
       endDate.getTime() / 1000,
-      currentUser?.accessToken!,
     ).then((res) => {
       const slotMap = transformBookings(res.orders);
-      console.log(slotMap);
       setSlotMap(slotMap);
       setOrders(res.orders);
       setIsLoading(false);
@@ -139,27 +141,23 @@ const HookMultiStepForm = ({
   };
 
   async function onSubmit(value: OrderType) {
-    console.log(value.desiredDate);
     setIsCreating(true);
-    const reqBody = {
-      farmlandArea: value.farmlandArea,
-      location: value.location,
-      address: value.address,
-      cropType: value.cropType,
-      desiredDate: addHours(startOfDay(value.desiredDate), 7),
-      timeSlot: value.timeSlot,
-    };
-    const onCreatingOrder = createOrder(
-      reqBody,
-      currentUser?.accessToken!,
-      currentUser?.fullName!,
-      currentUser?.phoneNumber!,
-    );
+    const onCreatingOrder = createOrder(value);
 
     toast.promise(onCreatingOrder, {
       loading: "Creating your order...",
-      success: () => {
-        router.push("/orders");
+      success: async (res) => {
+        console.log(res.order.paymentMethod);
+        if (res.order.paymentMethod === PaymentType.CREDIT_CARD) {
+          const urls = await paypalOrder(res.order.id);
+          if (urls.cancelUrl) {
+            router.push("/farmer/orders");
+            router.refresh();
+          } else {
+            router.push(urls.successUrl);
+          }
+        }
+        router.push("/farmer/orders");
         router.refresh();
         return `Order has been created successfully.`;
       },

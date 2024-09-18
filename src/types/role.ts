@@ -8,3 +8,13 @@ export enum UserRole {
   ROLE_RECEPTIONIST = "ROLE_RECEPTIONIST",
   ROLE_SPRAYER = "ROLE_SPRAYER",
 }
+
+const dictRoleString: Record<string, string> = {
+  ROLE_FARMER: "farmer",
+  ROLE_RECEPTIONIST: "receptionist",
+  ROLE_SPRAYER: "sprayer",
+};
+
+export function getRoleString(userRole: UserRole) {
+  return dictRoleString[userRole];
+}

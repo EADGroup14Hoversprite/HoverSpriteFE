@@ -25,17 +25,19 @@ export function OrderDetail({ bookingForm }: OrderDetailProps) {
         Order details
       </AccordionTrigger>
       <AccordionContent className="space-y-4 p-2">
-        <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        <div className="grid gap-2 content-center grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
           <AreaInput bookingForm={bookingForm} />
           <CropSelection bookingForm={bookingForm} />
-          <div className="flex flex-col gap-2">
+          <div>
             <Label htmlFor="desireDate">Desire date</Label>
             <Input
               value={bookingForm.getValues("desiredDate").toDateString()}
               id="desireDate"
+              className="mt-2 w-full"
               disabled
             />
           </div>
+
           <SlotSelection bookingForm={bookingForm} />
         </div>
       </AccordionContent>

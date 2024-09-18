@@ -4,32 +4,40 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import React from "react";
+import React, { useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import LucideIcon from "@/components/lucide-icon";
 import { UseFormReturn } from "react-hook-form";
 import { OrderType } from "@/schema";
-import { PaymentType } from "@/types/payment";
 import { useUserStore } from "@/store/user-store";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { OrderDetail } from "@/app/farmer/booking/_component/checkout";
+import GeoSearchForm from "@/components/map/geoSearchForm";
 
 interface ShippingPaymentProps {
   bookingForm: UseFormReturn<OrderType>;
 }
 
 export function ShippingPayment({ bookingForm }: ShippingPaymentProps) {
-  const paymentMethod = bookingForm.watch("paymentMethod");
   const { currentUser } = useUserStore();
+
+  useEffect(() => {
+    if (bookingForm.getValues("address"))
+      bookingForm.setValue("address", currentUser?.homeAddress!);
+    bookingForm.setValue("farmerPhoneNumber", currentUser?.phoneNumber!);
+    bookingForm.setValue("farmerName", currentUser?.fullName!);
+    bookingForm.setValue("farmerEmailAddress", currentUser?.emailAddress!);
+  }, []);
+
+  const handleAddressSelect = (
+    address: string,
+    longitude: number,
+    latitude: number,
+  ) => {
+    bookingForm.setValue("address", address); // Update the home address field in the form
+    bookingForm.setValue("location.latitude", latitude); // Update the home address field in the form
+    bookingForm.setValue("location.longitude", longitude); // Update the home address field in the form
+  };
   return (
     <Form {...bookingForm}>
       <form className="flex-1">
@@ -66,95 +74,87 @@ export function ShippingPayment({ bookingForm }: ShippingPaymentProps) {
                   />
                 </div>
               </div>
-              <FormField
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="farmerAddress">Address</FormLabel>
-                    <FormMessage />
-                    <FormControl>
-                      <Input
-                        id="farmerAddress"
-                        {...field}
-                        placeholder="Enter your address"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-                control={bookingForm.control}
-                name="address"
-              />
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="farmerAddress">Home Address</Label>
+                <GeoSearchForm onSelect={handleAddressSelect} />
+                <Input
+                  value={bookingForm.getValues("address")}
+                  placeholder="Your address"
+                  disabled
+                />
+              </div>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger className="text-2xl font-semibold pt-0 pb-4">
-              Payment
-            </AccordionTrigger>
-            <AccordionContent className="p-1 pb-2 space-y-4">
-              <FormField
-                render={({ field }) => (
-                  <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <Label
-                      htmlFor="cash"
-                      className={`
-          relative flex cursor-pointer items-center gap-2 rounded-md bg-popover p-4 font-semibold leading-normal ring-1 ring-border
-    hover:bg-accent hover:text-accent-foreground
-    has-[*[data-state=checked]]:ring-2 has-[*[data-state=checked]]:ring-foreground
-        `}
-                    >
-                      <RadioGroupItem
-                        value={PaymentType.CASH}
-                        id="cash"
-                        className="flex-shrink-0"
-                      />
-                      <div className="flex items-center justify-between flex-1">
-                        <span className="overflow-hidden text-ellipsis whitespace-nowrap break-words text-center">
-                          Pay on delivery
-                        </span>
-                        <LucideIcon name="Receipt" />
-                      </div>
-                    </Label>
-                    <Label
-                      htmlFor="creditCard"
-                      className={`
-       relative flex cursor-pointer items-center gap-2 rounded-md bg-popover p-4 font-semibold leading-normal ring-1 ring-border
-    hover:bg-accent hover:text-accent-foreground
-    has-[*[data-state=checked]]:ring-2 has-[*[data-state=checked]]:ring-foreground
-        `}
-                    >
-                      <RadioGroupItem
-                        value={PaymentType.CREDIT_CARD}
-                        id="creditCard"
-                        className="flex-shrink-0"
-                      />
-                      <div className="flex items-center justify-between flex-1">
-                        <span className="overflow-hidden text-ellipsis whitespace-nowrap break-words text-center">
-                          Pay by credit card
-                        </span>
-                        <LucideIcon name="CreditCard" />
-                      </div>
-                    </Label>
-                  </RadioGroup>
-                )}
-                name="paymentMethod"
-                control={bookingForm.control}
-              />
+          {/*      <AccordionItem value="item-2">*/}
+          {/*        <AccordionTrigger className="text-2xl font-semibold pt-0 pb-4">*/}
+          {/*          Payment*/}
+          {/*        </AccordionTrigger>*/}
+          {/*        <AccordionContent className="p-1 pb-2 space-y-4">*/}
+          {/*          <FormField*/}
+          {/*            render={({ field }) => (*/}
+          {/*              <RadioGroup*/}
+          {/*                value={field.value}*/}
+          {/*                onValueChange={field.onChange}*/}
+          {/*              >*/}
+          {/*                <Label*/}
+          {/*                  htmlFor="cash"*/}
+          {/*                  className={`*/}
+          {/*      relative flex cursor-pointer items-center gap-2 rounded-md bg-popover p-4 font-semibold leading-normal ring-1 ring-border*/}
+          {/*hover:bg-accent hover:text-accent-foreground*/}
+          {/*has-[*[data-state=checked]]:ring-2 has-[*[data-state=checked]]:ring-foreground*/}
+          {/*    `}*/}
+          {/*                >*/}
+          {/*                  <RadioGroupItem*/}
+          {/*                    value={PaymentType.CASH}*/}
+          {/*                    id="cash"*/}
+          {/*                    className="flex-shrink-0"*/}
+          {/*                  />*/}
+          {/*                  <div className="flex items-center justify-between flex-1">*/}
+          {/*                    <span className="overflow-hidden text-ellipsis whitespace-nowrap break-words text-center">*/}
+          {/*                      Pay on delivery*/}
+          {/*                    </span>*/}
+          {/*                    <LucideIcon name="Receipt" />*/}
+          {/*                  </div>*/}
+          {/*                </Label>*/}
+          {/*                <Label*/}
+          {/*                  htmlFor="creditCard"*/}
+          {/*                  className={`*/}
+          {/*   relative flex cursor-pointer items-center gap-2 rounded-md bg-popover p-4 font-semibold leading-normal ring-1 ring-border*/}
+          {/*hover:bg-accent hover:text-accent-foreground*/}
+          {/*has-[*[data-state=checked]]:ring-2 has-[*[data-state=checked]]:ring-foreground*/}
+          {/*    `}*/}
+          {/*                >*/}
+          {/*                  <RadioGroupItem*/}
+          {/*                    value={PaymentType.CREDIT_CARD}*/}
+          {/*                    id="creditCard"*/}
+          {/*                    className="flex-shrink-0"*/}
+          {/*                  />*/}
+          {/*                  <div className="flex items-center justify-between flex-1">*/}
+          {/*                    <span className="overflow-hidden text-ellipsis whitespace-nowrap break-words text-center">*/}
+          {/*                      Pay by credit card*/}
+          {/*                    </span>*/}
+          {/*                    <LucideIcon name="CreditCard" />*/}
+          {/*                  </div>*/}
+          {/*                </Label>*/}
+          {/*              </RadioGroup>*/}
+          {/*            )}*/}
+          {/*            name="paymentMethod"*/}
+          {/*            control={bookingForm.control}*/}
+          {/*          />*/}
 
-              {paymentMethod === PaymentType.CREDIT_CARD && (
-                <div className="flex flex-col gap-2">
-                  <Input value="CARD HOLDER NAME" disabled />
-                  <Input value="CARD NUMBER" disabled />
-                  <div className="grid grid-cols-3 gap-4">
-                    <Input value="MM" disabled />
-                    <Input value="YY" disabled />
-                    <Input value="CVV" disabled />
-                  </div>
-                </div>
-              )}
-            </AccordionContent>
-          </AccordionItem>
+          {/*          {paymentMethod === PaymentType.CREDIT_CARD && (*/}
+          {/*            <div className="flex flex-col gap-2">*/}
+          {/*              <Input value="CARD HOLDER NAME" disabled />*/}
+          {/*              <Input value="CARD NUMBER" disabled />*/}
+          {/*              <div className="grid grid-cols-3 gap-4">*/}
+          {/*                <Input value="MM" disabled />*/}
+          {/*                <Input value="YY" disabled />*/}
+          {/*                <Input value="CVV" disabled />*/}
+          {/*              </div>*/}
+          {/*            </div>*/}
+          {/*          )}*/}
+          {/*        </AccordionContent>*/}
+          {/*      </AccordionItem>*/}
         </Accordion>
       </form>
     </Form>

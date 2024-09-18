@@ -1,6 +1,6 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
-const backendUrl = "http://localhost:8080";
+const backendUrl = "https://localhost:8443";
 
 const isServer = typeof window === "undefined";
 

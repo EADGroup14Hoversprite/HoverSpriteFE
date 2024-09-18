@@ -26,7 +26,7 @@ export function CropSelection({ bookingForm }: CropSelectionProps) {
           <FormLabel htmlFor="">Crop Type</FormLabel>
           <FormControl>
             <Select defaultValue={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a time slot" />
               </SelectTrigger>
               <SelectContent>

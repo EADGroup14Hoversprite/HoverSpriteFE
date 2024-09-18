@@ -4,10 +4,34 @@ import { SpraySlot, toSlotNum } from "@/models/Booking";
 import { PaymentType } from "@/types/payment";
 import { FeedbackType } from "@/types/feedback-type";
 
+const passwordValidation = new RegExp(
+  /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z0-9!@#$%^&*(),.?":{}|<>]{6,}$/,
+);
+const phoneValidation = new RegExp(
+  /^((\+84\s\d{3}\s\d{3}\s\d{3})|(0\d{3}\s\d{3}\s\d{3})|((\+84|0)\d{9}))$/,
+);
+const nameValidation = new RegExp(
+  /^(?=\b[A-Za-z]*[A-Z][a-z]*[A-Z]?[a-z]*\b)[A-Za-z ]+$/,
+);
+const emailValidation = new RegExp(
+  /^[\w.-]+@(hoversprite\.(com|vn)|gmail\.com)$/,
+);
 export const orderSchema = z
   .object({
-    farmerId: z.string(),
+    farmerName: z.string(),
+    farmerPhoneNumber: z.string(),
     cropType: z.nativeEnum(CropType),
+    farmerEmailAddress: z
+      .string()
+      .email({
+        message:
+          "Email must follow the format with a domain of @hoversprite.com, @hoversprite.vn, or @gmail.com.",
+      })
+      .min(10, { message: "Invalid email format" })
+      .regex(emailValidation, {
+        message:
+          "Email must follow the format with a domain of @hoversprite.com, @hoversprite.vn, or @gmail.com.",
+      }),
     farmlandArea: z
       .number()
       .min(1, "Area must be non-negative")
@@ -15,7 +39,7 @@ export const orderSchema = z
       .nonnegative()
       .finite(),
     desiredDate: z.date(),
-    timeSlot: z.nativeEnum(SpraySlot),
+    timeSlot: z.nativeEnum(SpraySlot).optional(),
     location: z.object({
       latitude: z.number(),
       longitude: z.number(),
@@ -27,6 +51,9 @@ export const orderSchema = z
     (data) => {
       const currentDate = new Date();
       const currentHour = currentDate.getHours();
+      if (!data.timeSlot) {
+        return false;
+      }
       if (
         currentDate.getDate() === data.desiredDate.getDate() &&
         currentDate.getMonth() === data.desiredDate.getMonth() &&
@@ -104,6 +131,10 @@ export const SignUpSchema = z
         message:
           "Password must contain at least 1 capitalized letter, and 1 special character",
       }),
+    location: z.object({
+      longitude: z.number(),
+      latitude: z.number(),
+    }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
