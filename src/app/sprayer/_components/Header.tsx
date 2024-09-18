@@ -18,7 +18,7 @@ export default function Header({
           <a href="/public" className="flex items-center space-x-3">
             {/* Logo */}
             <Image
-              src="/logo/hoversprite-logo.png"
+              src="/logo/logo.svg"
               alt="HoverSprite Logo"
               width={50}
               height={50}

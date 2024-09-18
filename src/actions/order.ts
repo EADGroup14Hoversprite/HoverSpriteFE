@@ -74,6 +74,7 @@ export async function getMyOrders(
       message: string;
       orders: IOrder[];
       error?: boolean;
+      maxPage: number;
     }>(`/order/my-orders`, {
       params: {
         page: page,
@@ -88,6 +89,7 @@ export async function getMyOrders(
       error: true,
       message: "Unable to get user orders",
       orders: [],
+      maxPage: 0,
     };
   }
 }
