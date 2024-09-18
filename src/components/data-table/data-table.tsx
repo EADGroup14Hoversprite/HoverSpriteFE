@@ -29,11 +29,13 @@ import { IOrder } from "@/models/Order";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   ordersPromise: IOrder[];
+  pageSize: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   ordersPromise,
+  pageSize,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -51,6 +53,10 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      pagination: {
+        pageSize: pageSize,
+        pageIndex: 0,
+      },
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,

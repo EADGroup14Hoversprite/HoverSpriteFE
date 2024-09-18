@@ -61,7 +61,7 @@ export default function CustomPagination({
             variant="outline"
             className="hidden size-8 p-0 lg:flex"
             onClick={() => setCurrentPage(0)}
-            disabled={!canPrevPage}
+            disabled={currentPage === 0}
           >
             <LucideIcon
               name={"ChevronsLeft"}
@@ -75,7 +75,7 @@ export default function CustomPagination({
             size="icon"
             className="size-8"
             onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={!canPrevPage}
+            disabled={currentPage === 0}
           >
             <LucideIcon
               name={"ChevronLeft"}
@@ -89,7 +89,7 @@ export default function CustomPagination({
             size="icon"
             className="size-8"
             onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={!canNextPage}
+            disabled={currentPage === maxPage - 1}
           >
             <LucideIcon
               name={"ChevronRight"}
@@ -103,7 +103,7 @@ export default function CustomPagination({
             size="icon"
             className="hidden size-8 lg:flex"
             onClick={() => setCurrentPage(maxPage - 1)}
-            disabled={!canNextPage}
+            disabled={currentPage === maxPage - 1}
           >
             <LucideIcon
               name={"ChevronsRight"}

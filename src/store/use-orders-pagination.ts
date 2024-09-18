@@ -22,13 +22,19 @@ type OrderPaginationStore = OrderPaginationState & OrderPaginationAction;
 export const useOrderPaginationStore = create<OrderPaginationStore>(
   (set): OrderPaginationStore => ({
     pageSize: 10,
-    canNextPage: false,
-    canPrevPage: false,
+    canNextPage: true,
+    canPrevPage: true,
     currentPage: 0,
     maxPage: 0,
     options: [10, 20, 30, 40, 50],
     setMaxPage: (maxPage: number) => set({ maxPage: maxPage }),
-    setCanNextPage: (canNextPage: boolean) => set({ canNextPage: canNextPage }),
+    setCanNextPage: (canNextPage: boolean) =>
+      set((state) => {
+        if (state.currentPage === state.maxPage - 1) {
+          return { ...state, canNextPage: false };
+        }
+        return { ...state, canNextPage: canNextPage };
+      }),
     setCanPrevPage: (canPrevPage: boolean) => set({ canPrevPage: canPrevPage }),
     setPageSize: (pageSize: number) => set({ pageSize: pageSize }),
     setCurrentPage: (currentPage: number) => set({ currentPage: currentPage }),

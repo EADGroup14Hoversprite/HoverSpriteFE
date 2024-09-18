@@ -67,7 +67,7 @@ export async function getMyOrders(
   page: number,
   pageSize: number,
   sortBy: "status",
-  sortDirection: "ASC",
+  sortDirection: "ASC" | "DESC",
 ) {
   try {
     const res = await API.get<{

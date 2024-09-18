@@ -37,7 +37,7 @@
     "@t3-oss/env-nextjs": "^0.11.1",
     "@tanstack/react-query": "^5.54.1",
     "@tanstack/react-table": "^8.20.5",
-    "@types/socket.io": "^3.0.2",
+    "@types/socket.io": "^1.4.36",
     "aos": "^2.3.4",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",

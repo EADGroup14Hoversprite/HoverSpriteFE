@@ -23,18 +23,17 @@ export default function Page() {
     setMaxPage,
     setPageSize,
   } = useOrderPaginationStore();
-  // const getOrders = getMyOrders(currentPage, pageSize, "status", "ASC");
   const [orders, setOrders] = useState<IOrder[]>([]);
 
   useEffect(() => {
     const fetchOrders = async () =>
-      await getMyOrders(currentPage, pageSize, "status", "ASC");
+      await getMyOrders(currentPage, pageSize, "status", "DESC");
 
     fetchOrders().then((res) => {
       setMaxPage(res.maxPage);
       setOrders(res.orders);
     });
-  }, []);
+  }, [currentPage, pageSize]);
 
   return (
     <>
@@ -61,7 +60,11 @@ export default function Page() {
             }
           >
             <div className="flex flex-col gap-2 flex-1">
-              <DataTable ordersPromise={orders} columns={columns} />
+              <DataTable
+                ordersPromise={orders}
+                columns={columns}
+                pageSize={pageSize}
+              />
               <CustomPagination
                 currentPage={currentPage}
                 pageSize={pageSize}

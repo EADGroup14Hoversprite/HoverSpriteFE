@@ -45,9 +45,10 @@ const NotificationsBell: React.FC<NotificationsBellProps> = ({ token }) => {
         };
         getMyNotifications().then((notification) => {
           setNotifications(notification.notifications);
+          router.refresh();
         });
+
         toast.success(data);
-        router.refresh();
       });
 
       return () => {
