@@ -16,8 +16,8 @@ import {
 import { slots, SpraySlot, toSlotNum, toSlotString } from "@/models/Booking";
 import { useEffect, useState } from "react";
 import { getOrderByDate } from "@/actions/order";
-import { transformBookings } from "@/hooks/useDateMatrix";
 import { addHours } from "date-fns";
+import { transformBookings } from "@/hooks/useDateMatrix";
 
 interface SlotSelectionProps {
   bookingForm: UseFormReturn<OrderType>;
@@ -27,10 +27,12 @@ export function SlotSelection({
   bookingForm,
   isDisabled = true,
 }: SlotSelectionProps) {
-  const [availableSlots, setAvailableSlots] = useState<SpraySlot[]>([]);
+  const [availableSlots, setAvailableSlots] = useState<SpraySlot[]>(slots);
+  const desiredDate = bookingForm.watch("desiredDate");
   useEffect(() => {
+    console.log(desiredDate);
     const getBookingsByDate = async () => {
-      const res = await getOrderByDate(bookingForm.getValues("desiredDate"));
+      const res = await getOrderByDate(desiredDate);
       const slotMap = transformBookings(res.orders);
       const dateTimes = res.orders.map((order) => {
         return addHours(
@@ -41,17 +43,30 @@ export function SlotSelection({
       const occupiedDateTime = dateTimes.filter(
         (dateTime) => slotMap.get(dateTime) === 2,
       );
-      setAvailableSlots(
-        slots.filter((slot) =>
-          occupiedDateTime.some(
-            (occupiedDate) =>
-              new Date(occupiedDate * 1000).getHours() !== toSlotNum(slot),
-          ),
-        ),
-      );
+      const filteredSlots =
+        res.orders.length > 0
+          ? slots.filter(
+              (slot) =>
+                !occupiedDateTime.some(
+                  (occupiedDate) =>
+                    new Date(occupiedDate * 1000).getHours() ===
+                    toSlotNum(slot),
+                ),
+            )
+          : slots;
+      if (desiredDate.getTime() > new Date().getTime()) {
+        return filteredSlots;
+      } else {
+        return filteredSlots.filter(
+          (slot) => toSlotNum(slot) > new Date().getHours(),
+        );
+      }
     };
-    getBookingsByDate().then();
-  }, []);
+    getBookingsByDate().then((res) => {
+      setAvailableSlots(res);
+    });
+  }, [desiredDate]);
+
   return (
     <FormField
       render={({ field }) => (
@@ -67,11 +82,15 @@ export function SlotSelection({
                 <SelectValue placeholder="Select a time slot" />
               </SelectTrigger>
               <SelectContent>
-                {availableSlots.map((slot) => (
-                  <SelectItem key={slot} value={slot}>
-                    {toSlotString(slot)}
-                  </SelectItem>
-                ))}
+                {availableSlots.length > 0 ? (
+                  availableSlots.map((slot) => (
+                    <SelectItem key={slot} value={slot}>
+                      {toSlotString(slot)}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <p>No slots available</p>
+                )}
               </SelectContent>
             </Select>
           </FormControl>

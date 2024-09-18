@@ -28,7 +28,8 @@ interface MenuProps {
 export function SidenavMenu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuListRecord = getMenuList(pathname);
-  const role = jwtDecode<JWTPayload>(clientSessionToken.value);
+  let role: JWTPayload;
+  role = jwtDecode<JWTPayload>(clientSessionToken.value);
   const menuList = menuListRecord[role?.userRole!];
   return (
     <ScrollArea className="[&>div>div[style]]:!block">

@@ -16,13 +16,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Form, FormField } from "@/components/ui/form";
 import { IOrder } from "@/models/Order";
 import { useMediaQuery } from "react-responsive";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { useUserStore } from "@/store/user-store";
 import { UserRole } from "@/types/role";
 
@@ -84,6 +77,7 @@ interface BookingCalendarProps {
   bookingForm: UseFormReturn<OrderType>;
   orders: IOrder[];
   isLoading: boolean;
+  showBookingDialog?: (show: boolean) => void;
 }
 
 export function BookingCalendar({
@@ -91,6 +85,7 @@ export function BookingCalendar({
   orders,
   isLoading,
   children,
+  showBookingDialog,
 }: PropsWithChildren<BookingCalendarProps>) {
   const currentUser = useUserStore.getState().currentUser;
   const {
@@ -162,40 +157,30 @@ export function BookingCalendar({
       }
       const dateGridElements = flattenedDates.map((slot) => (
         <CalendarDateCell>
-          <Dialog>
-            <DialogTrigger
-              asChild
-              className={`w-full h-full flex relative ${slot?.solar.getHours() > 15 ? "bg-slate-300" : "bg-secondary"} ${slot.isAvailable ? "" : "!bg-black/50"}`}
-            >
-              <div
-                role="button"
-                onClick={() => {
-                  if (slot.isAvailable) {
-                    bookingForm.setValue("desiredDate", slot.solar);
-                    onSlotUpdate(toSlot(slot.solar.getHours()));
-                    setSelectedSlot(slot);
-                  }
-                }}
-              >
-                {selectedSlot && compareDateSlot(selectedSlot, slot) && (
-                  <LucideIcon
-                    name="Heart"
-                    size={24}
-                    fill="#d1001f"
-                    stroke="#d1001f"
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                  />
-                )}
-              </div>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogTitle>Book an order</DialogTitle>
-              <DialogDescription>
-                Help your customer to book a slot!
-              </DialogDescription>
-              {children}
-            </DialogContent>
-          </Dialog>
+          <div
+            role="button"
+            className={`w-full h-full flex relative ${slot?.solar.getHours() > 15 ? "bg-slate-300" : "bg-secondary"} ${slot.isAvailable ? "" : "!bg-black/50"}`}
+            onClick={() => {
+              if (currentUser?.userRole === UserRole.ROLE_RECEPTIONIST) {
+                showBookingDialog!(true);
+              }
+              if (slot.isAvailable) {
+                bookingForm.setValue("desiredDate", slot.solar);
+                onSlotUpdate(toSlot(slot.solar.getHours()));
+                setSelectedSlot(slot);
+              }
+            }}
+          >
+            {selectedSlot && compareDateSlot(selectedSlot, slot) && (
+              <LucideIcon
+                name="Heart"
+                size={24}
+                fill="#d1001f"
+                stroke="#d1001f"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              />
+            )}
+          </div>
         </CalendarDateCell>
       ));
       for (let i = 0; i < numTimes; i += 1) {

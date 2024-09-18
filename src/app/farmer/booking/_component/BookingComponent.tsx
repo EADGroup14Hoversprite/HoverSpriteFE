@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { OrderType } from "@/schema";
 import { SpraySlot, toSlotNum } from "@/models/Booking";
 import { useUserStore } from "@/store/user-store";
-import { createOrder, getOrderRange, paypalOrder } from "@/actions/order";
+import { createOrder, getOrderRange } from "@/actions/order";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { addDays } from "date-fns";
@@ -18,7 +18,6 @@ import { useCalendarStore } from "@/store/calendar-store";
 import { IOrder } from "@/models/Order";
 import BookingForm from "@/app/farmer/booking/_component/crop-area/BookingForm";
 import { Checkout } from "@/app/farmer/booking/_component/checkout";
-import { PaymentType } from "@/types/payment";
 
 function isValidSlot(
   slot: SpraySlot | undefined,
@@ -147,16 +146,16 @@ const HookMultiStepForm = ({
     toast.promise(onCreatingOrder, {
       loading: "Creating your order...",
       success: async (res) => {
-        console.log(res.order.paymentMethod);
-        if (res.order.paymentMethod === PaymentType.CREDIT_CARD) {
-          const urls = await paypalOrder(res.order.id);
-          if (urls.cancelUrl) {
-            router.push("/farmer/orders");
-            router.refresh();
-          } else {
-            router.push(urls.successUrl);
-          }
-        }
+        // if (res.order.paymentMethod === PaymentType.CREDIT_CARD) {
+        //   const urls = await paypalOrder(res.order.id);
+        //   if (urls.cancelUrl) {
+        //     router.push("/farmer/orders");
+        //     router.refresh();
+        //   } else {
+        //     router.push(urls.successUrl);
+        //   }
+        // }
+        methods.reset();
         router.push("/farmer/orders");
         router.refresh();
         return `Order has been created successfully.`;

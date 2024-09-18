@@ -1,7 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { UseFormReturn } from "react-hook-form";
 import {
   Form,
   FormField,
@@ -10,30 +9,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { SignUp, SignUpSchema } from "@/schema";
+import { OrderType } from "@/schema";
 import API from "@/utils/axiosClient";
 
-export default function CustomerForm() {
-  const defaultState: Partial<SignUp> = {
-    fullName: "",
-    emailAddress: "",
-    phoneNumber: "",
-    homeAddress: "",
-    password: "",
-    confirmPassword: "",
-    googleId: null,
-    facebookId: null,
-  };
+interface CustomerFormProps {
+  bookingForm: UseFormReturn<OrderType>;
+}
 
-  const form = useForm<SignUp>({
-    defaultValues: defaultState,
-    resolver: zodResolver(SignUpSchema),
-    mode: "onChange",
-  });
+export default function CustomerForm({ bookingForm }: CustomerFormProps) {
+  const { watch, setValue, control } = bookingForm;
 
-  const { watch, setValue, control } = form;
-
-  const phoneNumber = watch("phoneNumber");
+  const phoneNumber = watch("farmerPhoneNumber");
 
   useEffect(() => {
     if (phoneNumber) {
@@ -47,9 +33,9 @@ export default function CustomerForm() {
 
           if (user) {
             // If user exists, set the other form values
-            setValue("fullName", user.fullName);
-            setValue("emailAddress", user.emailAddress);
-            setValue("homeAddress", user.homeAddress);
+            setValue("farmerName", user.fullName);
+            setValue("farmerEmailAddress", user.emailAddress);
+            setValue("address", user.homeAddress);
           }
         } catch (error) {
           console.error("Failed to fetch user by phone number:", error);
@@ -63,12 +49,12 @@ export default function CustomerForm() {
   return (
     <div className="justify-center items-center">
       <div className="w-full max-w-md">
-        <Form {...form}>
+        <Form {...bookingForm}>
           <form>
             {/* Full Name Field */}
             <div className="mb-3">
               <FormField
-                name="fullName"
+                name="farmerName"
                 control={control}
                 render={({ field }) => (
                   <FormItem>
@@ -84,7 +70,7 @@ export default function CustomerForm() {
             <div className="flex gap-4 mb-3">
               {/* Email Address Field */}
               <FormField
-                name="emailAddress"
+                name="farmerEmailAddress"
                 control={control}
                 render={({ field }) => (
                   <FormItem className="w-1/2">
@@ -97,7 +83,7 @@ export default function CustomerForm() {
 
               {/* Phone Number Field */}
               <FormField
-                name="phoneNumber"
+                name="farmerPhoneNumber"
                 control={control}
                 render={({ field }) => (
                   <FormItem className="w-1/2">
@@ -112,7 +98,7 @@ export default function CustomerForm() {
             {/* Home Address Field */}
             <div className="mb-3">
               <FormField
-                name="homeAddress"
+                name="address"
                 control={control}
                 render={({ field }) => (
                   <FormItem>

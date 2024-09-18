@@ -46,13 +46,13 @@ export async function getOrderRange(start: number, end: number) {
 }
 
 export async function getOrderByDate(date: Date) {
-  const time = date.getTime();
+  const time = date.getTime() / 1000;
   try {
     const res = await API.get<{
       message: string;
       orders: IOrder[];
       error?: boolean;
-    }>(`/order/by-date?desireDate=${time}`);
+    }>(`/order/by-date?desiredDate=${time}`);
     return res.data;
   } catch (e) {
     return {

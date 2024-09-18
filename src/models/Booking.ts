@@ -36,10 +36,8 @@ export const slots = [
   SpraySlot.SLOT_5,
   SpraySlot.SLOT_6,
   SpraySlot.SLOT_7,
-  SpraySlot.SLOT_8,
   SpraySlot.SLOT_16,
   SpraySlot.SLOT_17,
-  SpraySlot.SLOT_18,
 ];
 
 const dictDateToSpay: Record<number, SpraySlot> = {
