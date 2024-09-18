@@ -95,7 +95,7 @@ const OrderHistoryTable: React.FC = () => {
       {/* Responsive table container */}
       {!loading && !error && completedOrders.length > 0 && (
         <div className="overflow-hidden">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg">
             <thead>
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
@@ -137,7 +137,7 @@ const OrderHistoryTable: React.FC = () => {
                   </td>
                   {/* Payment Status, visible only on desktop */}
                   <td className={`hidden md:table-cell px-6 py-4 whitespace-normal text-sm ${getPaymentStatusClass(order.paymentStatus)}`}>
-                    {order.paymentStatus}
+                    {order.paymentStatus ? "Payment accwepted" : "Ongoing"}
                   </td>
                   {/* Show the action button only on desktop */}
                   <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-700">
