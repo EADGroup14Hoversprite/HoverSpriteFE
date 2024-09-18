@@ -72,7 +72,16 @@ export default function RedirectRegisterForm({
         return "Register successfully!";
       },
       error: (e) => {
-        return e.response?.error?.message;
+        switch (e.response.status) {
+          case 401:
+            return e.response.data.message as string;
+          case 404:
+            return e.response.data.message as string;
+          case 409:
+            return e.response.data.message as string;
+          default:
+            return "Internal Server Error";
+        }
       },
     });
   };

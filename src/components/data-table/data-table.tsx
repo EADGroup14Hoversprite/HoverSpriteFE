@@ -24,11 +24,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getMyOrders } from "@/actions/order";
+import { IOrder } from "@/models/Order";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  ordersPromise: ReturnType<typeof getMyOrders>;
+  ordersPromise: IOrder[];
 }
 
 export function DataTable<TData, TValue>({
@@ -43,9 +43,8 @@ export function DataTable<TData, TValue>({
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
-  const orders = React.use(ordersPromise);
   const table = useReactTable({
-    data: orders.orders as unknown as TData[],
+    data: ordersPromise as unknown as TData[],
     columns,
     state: {
       sorting,

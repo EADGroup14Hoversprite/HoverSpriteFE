@@ -14,12 +14,10 @@ export const useSocket = (token: string) => {
     });
     newSocket.on("notification", () => {
       console.log("Connected to Socket.IO server");
-      console.log(token);
     });
 
     newSocket.on("connect_error", (error: Error) => {
       console.error("Socket.IO connection error:", error);
-      console.error("Socket.IO connection error:", token);
     });
 
     setSocket(newSocket);
