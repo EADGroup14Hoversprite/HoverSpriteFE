@@ -17,7 +17,7 @@ const SprayerModal: React.FC<SprayerModalProp> = ({ order, onClose }) => {
       aria-hidden="true"
       className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50"
     >
-      <div className="relative w-full max-w-6xl h-auto bg-white rounded-lg shadow-lg">
+      <div className="relative w-full max-w-6xl h-auto bg-white rounded-lg">
         <div className="flex items-center justify-between p-4 border-b">
           <h3 className="text-lg font-semibold text-gray-900">Suggested sprayers</h3>
           <div className="flex space-x-2">

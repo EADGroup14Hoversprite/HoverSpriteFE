@@ -93,7 +93,7 @@ const SprayerTable: React.FC<SprayerTableProp> = ({ order }) => {
       {/* Responsive table container */}
       {!loading && !error && sprayers.length > 0 && (
         <div className="overflow-hidden">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg">
             <thead>
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-medium text-gray-900 bg-gray-100 border-b">
