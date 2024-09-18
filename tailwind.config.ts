@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config = {
   darkMode: ["class"],
@@ -52,6 +52,16 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        
+        hsprimary: "#0077b6", // Blue for primary actions
+        hssecondary: "#023e8a", // Dark blue for contrast
+        hsaccent: "#90e0ef", // Light blue for accent
+        hstext: "#333333", // Dark gray for text
+        hsbackground: "#f9f9f9", // Light gray for background
+      },
+      fontFamily: {
+        heading: ['Montserrat', 'sans-serif'], 
+        body: ['Lato', 'sans-serif'],          
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -75,6 +85,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;

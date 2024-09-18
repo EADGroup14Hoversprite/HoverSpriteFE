@@ -67,3 +67,74 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Shadows */
+.shadow-top {
+    box-shadow: 0 -10px 20px -5px rgba(115,115,115,0.75);
+}
+.shadow-right {
+    box-shadow: 10px 0 20px -5px rgba(115,115,115,0.75);
+}
+.shadow-bottom {
+    box-shadow: 0 10px 20px -5px rgba(115,115,115,0.75);
+}
+.shadow-left {
+    box-shadow: -10px 0 20px -5px rgba(115,115,115,0.75);
+}
+.shadow-all {
+    box-shadow: 0 0 20px rgba(115,115,115,0.75);
+}
+
+/*General text color*/
+.text-blue{
+  color: #1e3a8a
+}
+
+/* Login/Signup Layout */
+.screen {
+  min-height: 100vh;
+}
+
+/*Login/Signup form container*/
+.form-container {
+  width: 80%; 
+}
+
+/* ----  Login/Signup info screen  ------*/
+.info-box {
+  position: relative;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 5rem; 
+  border-radius: 0.5rem; 
+  width: 60%; 
+  min-width: 24rem; 
+}
+
+.info-content {
+  margin: 2.5rem 2.5rem 0 2.5rem; 
+  width: 80%; 
+  padding-bottom: 5rem; 
+  text-wrap: balance; 
+}
+
+.info-content h1 {
+  font-weight: bold;
+  font-size: 1.875rem; 
+}
+
+.rating-box {
+  position: relative;
+  bottom: -2.25rem; 
+  left: 1.25rem; 
+  background-color: white;
+  border-radius: 9999px; 
+  padding: 1rem 1rem; 
+  width: 50%; 
+  display: flex;
+  flex-direction: row;
+}
+
+
