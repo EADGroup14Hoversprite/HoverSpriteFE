@@ -4,7 +4,6 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { cookies } from "next/headers";
 // import AssignSprayerDropdown from "@/components/assign-sprayer-dropdown"; // Example component for assigning sprayers
 import OrderTable from "../_components/OrderTable";
-import CustomerForm from "../_components/CustomerForm";
 
 export default async function ReceptionistPage() {
   const cookieStore = cookies();
@@ -45,12 +44,9 @@ export default async function ReceptionistPage() {
                 />
               }
             >
-              {/* <DataTable ordersPromise={getOrders} columns={columns} extraColumn={AssignSprayerDropdown} /> Add the AssignSprayer component */}
-              <OrderTable/>
-             
+              <OrderTable />
             </Suspense>
           </div>
-          <CustomerForm/>
         </div>
       </div>
     );

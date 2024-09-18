@@ -76,6 +76,13 @@ export function getMenuList(pathname: string): Record<UserRole, Group[]> {
         groupLabel: "Receptionist Dashboard",
         menus: [
           {
+            href: "/receptionist/dashboard",
+            label: "Dashboard",
+            active: pathname.includes("/receptionist/dashboard"),
+            icon: "Book",
+            submenus: [],
+          },
+          {
             href: "/receptionist/booking",
             label: "Booking",
             active: pathname.includes("/receptionist/booking"),
